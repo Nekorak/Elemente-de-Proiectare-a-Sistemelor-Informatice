@@ -1,0 +1,11 @@
+# Secrete - nu se urca niciodata pe GitHub
+Credentials.txt
+
+# .NET build artifacts
+bin/
+obj/
+*.user
+
+# OS
+.DS_Store
+Thumbs.db
