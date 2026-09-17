@@ -77,7 +77,7 @@ Backup complet zilnic + diferențial la câteva ore, păstrate 30 zile; backup s
 
 ## File Server
 
-Server separat de partajare fișiere, pe același computer de acasă ca MS SQL Server, expus prin **SFTP** (OpenSSH Server, funcție opțională din Windows) pe un port dedicat propriu, redirecționat separat pe router față de portul SQL. Aplicația nu citește niciodată fișiere din folderul local al proiectului: datele vin din baza de date, fișierele JSON vin de pe file server prin internet. Folderul `File-Server/` din repository e doar copia de referință/seed.
+Server separat de partajare fișiere, pe același computer de acasă ca MS SQL Server (hostname `PC`, IP local 192.168.1.10), expus prin **SFTP** (OpenSSH Server — deja instalat pe acel calculator, serviciul `sshd` doar de pornit) pe un port dedicat propriu, redirecționat separat pe router față de portul SQL. Aplicația nu citește niciodată fișiere din folderul local al proiectului: datele vin din baza de date, fișierele JSON vin de pe file server prin internet. Folderul `File-Server/` din repository e doar copia de referință/seed.
 
 ### Structură foldere
 Folderul rădăcină pe server se numește `File-Server` (același nume ca folderul creat local în proiect, pentru consistență):
