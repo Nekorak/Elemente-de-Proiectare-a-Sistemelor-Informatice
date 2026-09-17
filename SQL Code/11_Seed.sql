@@ -49,19 +49,19 @@ DECLARE @Utilizatori TABLE
 );
 
 INSERT INTO @Utilizatori VALUES
-    (N'd.gojinevschii',     N'Gojinevschii', N'Dmitri',    N'd.gojinevschii@autogara.local',     NULL,               1, 1, 60,  N'Vs7uLTx*EtdxQQU!'),
-    (N's.hanganu',          N'Hanganu',      N'Sergiu',    N's.hanganu@autogara.local',          NULL,               1, 1, 60,  N'aci*#vkBk5jaBaip'),
-    (N'a.crivenco',         N'Crivenco',     N'Alexandr',  N'a.crivenco@autogara.local',         NULL,               1, 1, 60,  N'pE!-J#H?oiBT57Ut'),
-    (N'm.sopivnic',         N'Sopivnic',     N'Maxim',     N'm.sopivnic@autogara.local',         NULL,               1, 1, 60,  N'BG5oZP!b6AN!+yz4'),
-    (N'gheorghe.lungu',    N'Lungu',        N'Gheorghe',  N'gheorghe.lungu@autogara.local',     N'+373 69 214 377', 1, 1, 420, N'Autogara#2026'),
-    (N'rodica.cazacu',      N'Cazacu',       N'Rodica',    N'rodica.cazacu@autogara.local',      N'+373 68 530 912', 1, 1, 240, N'Autogara#2026'),
-    (N'tatiana.rusu',       N'Rusu',         N'Tatiana',   N'tatiana.rusu@autogara.local',       N'+373 69 781 046', 2, 1, 380, N'Autogara#2026'),
-    (N'victoria.ceban',     N'Ceban',        N'Victoria',  N'victoria.ceban@autogara.local',     N'+373 78 115 629', 2, 1, 310, N'Autogara#2026'),
-    (N'ion.munteanu',       N'Munteanu',     N'Ion',       N'ion.munteanu@autogara.local',       N'+373 60 947 233', 2, 1, 150, N'Autogara#2026'),
-    (N'natalia.bivol',      N'Bivol',        N'Natalia',   N'natalia.bivol@autogara.local',      N'+373 69 356 804', 2, 1, 95, N'Autogara#2026'),
-    (N'olga.cojocaru',      N'Cojocaru',     N'Olga',      N'olga.cojocaru@autogara.local',      N'+373 79 663 170', 2, 0, 520, N'Autogara#2026'),
-    (N'ana.popa',           N'Popa',         N'Ana',       N'ana.popa@example.com',              N'+373 69 845 302', 3, 1, 45, N'Autogara#2026'),
-    (N'mihai.botnaru',      N'Botnaru',      N'Mihai',     N'mihai.botnaru@example.com',         N'+373 78 290 614', 3, 1, 12, N'Autogara#2026');
+    (N'd.gojinevschii',     N'Gojinevschii', N'Dmitri',    N'd.gojinevschii@autogara.local',     NULL,               1, 1, 60,  N'Dmitri2026'),
+    (N's.hanganu',          N'Hanganu',      N'Sergiu',    N's.hanganu@autogara.local',          NULL,               1, 1, 60,  N'Sergiu2026'),
+    (N'a.crivenco',         N'Crivenco',     N'Alexandr',  N'a.crivenco@autogara.local',         NULL,               1, 1, 60,  N'Alexandr2026'),
+    (N'm.sopivnic',         N'Sopivnic',     N'Maxim',     N'm.sopivnic@autogara.local',         NULL,               1, 1, 60,  N'Maxim2026'),
+    (N'gheorghe.lungu',    N'Lungu',        N'Gheorghe',  N'gheorghe.lungu@autogara.local',     N'+373 69 214 377', 1, 1, 420, N'Test2026'),
+    (N'rodica.cazacu',      N'Cazacu',       N'Rodica',    N'rodica.cazacu@autogara.local',      N'+373 68 530 912', 1, 1, 240, N'Test2026'),
+    (N'tatiana.rusu',       N'Rusu',         N'Tatiana',   N'tatiana.rusu@autogara.local',       N'+373 69 781 046', 2, 1, 380, N'Test2026'),
+    (N'victoria.ceban',     N'Ceban',        N'Victoria',  N'victoria.ceban@autogara.local',     N'+373 78 115 629', 2, 1, 310, N'Test2026'),
+    (N'ion.munteanu',       N'Munteanu',     N'Ion',       N'ion.munteanu@autogara.local',       N'+373 60 947 233', 2, 1, 150, N'Test2026'),
+    (N'natalia.bivol',      N'Bivol',        N'Natalia',   N'natalia.bivol@autogara.local',      N'+373 69 356 804', 2, 1, 95, N'Test2026'),
+    (N'olga.cojocaru',      N'Cojocaru',     N'Olga',      N'olga.cojocaru@autogara.local',      N'+373 79 663 170', 2, 0, 520, N'Test2026'),
+    (N'ana.popa',           N'Popa',         N'Ana',       N'ana.popa@example.com',              N'+373 69 845 302', 3, 1, 45, N'Test2026'),
+    (N'mihai.botnaru',      N'Botnaru',      N'Mihai',     N'mihai.botnaru@example.com',         N'+373 78 290 614', 3, 1, 12, N'Test2026');
 
 INSERT INTO autogara.Utilizatori
     (UtilizatorID, NumeUtilizator, ParolaHash, Nume, Prenume, Email, Telefon, RolID, Activ, CreatLa, ModificatLa)

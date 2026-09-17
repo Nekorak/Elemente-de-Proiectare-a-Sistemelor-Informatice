@@ -9,3 +9,20 @@ Thumbs.db
 
 # Parole locale SQL (nu se urca in Git)
 SQL Code/Parole.local.sql
+
+# Backup baza de date (ocupa mult spatiu, nu se urca in Git)
+*.bak
+*.trn
+*.dif
+*.mdf
+*.ldf
+*.ndf
+
+# Backup fisiere de pe File Server (se pastreaza doar structura de foldere)
+File-Server/Backup/**
+!File-Server/Backup/**/
+!File-Server/Backup/**/.gitkeep
+
+# Configurare locala per statie de lucru
+appsettings.local.json
+*.local.config

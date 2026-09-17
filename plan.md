@@ -77,7 +77,7 @@ Backup complet zilnic + diferențial la câteva ore, păstrate 30 zile; backup s
 
 ## File Server
 
-Server separat de partajare fișiere, pe același computer de acasă ca MS SQL Server, dar cu port dedicat propriu (redirecționat separat pe router față de portul SQL).
+Server separat de partajare fișiere, pe același computer de acasă ca MS SQL Server, expus prin **SFTP** (OpenSSH Server, funcție opțională din Windows) pe un port dedicat propriu, redirecționat separat pe router față de portul SQL. Aplicația nu citește niciodată fișiere din folderul local al proiectului: datele vin din baza de date, fișierele JSON vin de pe file server prin internet. Folderul `File-Server/` din repository e doar copia de referință/seed.
 
 ### Structură foldere
 Folderul rădăcină pe server se numește `File-Server` (același nume ca folderul creat local în proiect, pentru consistență):
@@ -126,8 +126,9 @@ Acest fișier e o oglindă/export al tabelelor Noduri și Conexiuni din SQL — 
 - Log-uri locale ale aplicației, dacă se centralizează (opțional) — `/Logs/{statie}/{data}.log`
 
 ### Permisiuni și acces
-- Share SMB dedicat, cu cont de rețea separat de contul SQL Server (nu „Everyone”, nu cont de administrator)
-- Acces citire/scriere limitat la contul aplicației; fără acces anonim
+- Acces prin SFTP (OpenSSH Server), pe port dedicat redirecționat pe router — **nu** share SMB: o cale UNC de forma \\server\share folosește obligatoriu portul 445, care nu poate fi mutat pe alt port dintr-o cale UNC, e cel mai atacat port Windows și e blocat pe ieșire de multe rețele (colegiu, hotspot mobil)
+- Cont Windows local dedicat `autogara_fs`, separat de contul SQL Server (nu „Everyone”, nu administrator), închis în folder prin `ChrootDirectory C:\File-Server` + `ForceCommand internal-sftp` — fără shell, fără acces la restul sistemului, fără port forwarding
+- Acces citire/scriere limitat la acest cont; fără acces anonim
 - Backup periodic al întregului folder `File-Server` către o locație externă (disc secundar/cloud), la fel ca backup-ul bazei de date
 
 ## Backend (C# .NET 10) — Hanganu Sergiu
@@ -139,7 +140,7 @@ Nu e un API web separat — e un set de proiecte C# (class libraries) în aceea�
 Autogara.sln
   Autogara.Domain        — entități (POCO) și enum-uri, fără dependențe externe
   Autogara.DataAccess    — DbContext (EF Core), mapări, acces la proceduri stocate
-  Autogara.FileServer    — citire/scriere JSON (autobuze, hartă) pe share-ul de rețea
+  Autogara.FileServer    — citire/scriere JSON (autobuze, hartă) pe file server, prin SFTP
   Autogara.Business      — servicii de business, orchestrează DataAccess + FileServer
   Autogara.Common        — configurare, retry/Polly, logare, excepții
   Autogara.WinForms      — proiectul UI (Frontend)
@@ -159,7 +160,8 @@ Autogara.sln
 ### Autogara.FileServer
 - `JsonAutobuzRepository`: `ReadAsync(caleFisier)`, `WriteAsync(caleFisier, structura)` — validează schema JSON înainte de scriere, retry pe erori de rețea
 - `JsonHartaRepository`: `ReadAsync()`, `WriteAsync(hartaDto)` — citește/scrie `harta.json`
-- Cale de rețea (UNC, ex. `\\ServerAcasa\File-Server\...`) configurabilă, separată de connection string-ul SQL
+- `SftpFileClient` — conexiune SFTP (SSH.NET) către `sftp://<server>:44545`, cont `autogara_fs`; host, port, utilizator și parolă citite din configurarea locală, separat de connection string-ul SQL
+- Fără nicio cale locală în cod: orice citire/scriere de fișier trece prin acest client
 
 ### Autogara.Business — servicii (cu metodele lor principale)
 - `AuthService` — `AutentificaAsync(user, parola)`, `SchimbaParolaAsync(...)`, `GenereazaTokenResetareAsync(...)`; parole hash-uite (PBKDF2/BCrypt), niciodată în clar

@@ -5,40 +5,40 @@ SET QUOTED_IDENTIFIER ON;
 GO
 
 IF SUSER_ID(N'autogara_app') IS NULL
-    CREATE LOGIN autogara_app WITH PASSWORD = N'LD*xsv=45y!ztw3v',
+    CREATE LOGIN autogara_app WITH PASSWORD = N'AppEPSI2026',
         DEFAULT_DATABASE = autogara, CHECK_POLICY = ON, CHECK_EXPIRATION = OFF;
 ELSE
-    ALTER LOGIN autogara_app WITH PASSWORD = N'LD*xsv=45y!ztw3v';
+    ALTER LOGIN autogara_app WITH PASSWORD = N'AppEPSI2026';
 
 IF SUSER_ID(N'autogara_rapoarte') IS NULL
-    CREATE LOGIN autogara_rapoarte WITH PASSWORD = N'gmHb+p!tG9*5VKkK',
+    CREATE LOGIN autogara_rapoarte WITH PASSWORD = N'RapEPSI2026',
         DEFAULT_DATABASE = autogara, CHECK_POLICY = ON, CHECK_EXPIRATION = OFF;
 ELSE
-    ALTER LOGIN autogara_rapoarte WITH PASSWORD = N'gmHb+p!tG9*5VKkK';
+    ALTER LOGIN autogara_rapoarte WITH PASSWORD = N'RapEPSI2026';
 
 IF SUSER_ID(N'dba_gojinevschii') IS NULL
-    CREATE LOGIN dba_gojinevschii WITH PASSWORD = N'4?CWzxVTqgeag368',
+    CREATE LOGIN dba_gojinevschii WITH PASSWORD = N'Dmitri2026',
         DEFAULT_DATABASE = autogara, CHECK_POLICY = ON, CHECK_EXPIRATION = OFF;
 ELSE
-    ALTER LOGIN dba_gojinevschii WITH PASSWORD = N'4?CWzxVTqgeag368';
+    ALTER LOGIN dba_gojinevschii WITH PASSWORD = N'Dmitri2026';
 
 IF SUSER_ID(N'dev_hanganu') IS NULL
-    CREATE LOGIN dev_hanganu WITH PASSWORD = N'wc*Gc-kDb#6*DQcj',
+    CREATE LOGIN dev_hanganu WITH PASSWORD = N'Sergiu2026',
         DEFAULT_DATABASE = autogara, CHECK_POLICY = ON, CHECK_EXPIRATION = OFF;
 ELSE
-    ALTER LOGIN dev_hanganu WITH PASSWORD = N'wc*Gc-kDb#6*DQcj';
+    ALTER LOGIN dev_hanganu WITH PASSWORD = N'Sergiu2026';
 
 IF SUSER_ID(N'dev_crivenco') IS NULL
-    CREATE LOGIN dev_crivenco WITH PASSWORD = N'mW8DqAu*9U4Sw-xg',
+    CREATE LOGIN dev_crivenco WITH PASSWORD = N'Alexandr2026',
         DEFAULT_DATABASE = autogara, CHECK_POLICY = ON, CHECK_EXPIRATION = OFF;
 ELSE
-    ALTER LOGIN dev_crivenco WITH PASSWORD = N'mW8DqAu*9U4Sw-xg';
+    ALTER LOGIN dev_crivenco WITH PASSWORD = N'Alexandr2026';
 
 IF SUSER_ID(N'test_sopivnic') IS NULL
-    CREATE LOGIN test_sopivnic WITH PASSWORD = N'9=a6RKyfvNP7_RF8',
+    CREATE LOGIN test_sopivnic WITH PASSWORD = N'Maxim2026',
         DEFAULT_DATABASE = autogara, CHECK_POLICY = ON, CHECK_EXPIRATION = OFF;
 ELSE
-    ALTER LOGIN test_sopivnic WITH PASSWORD = N'9=a6RKyfvNP7_RF8';
+    ALTER LOGIN test_sopivnic WITH PASSWORD = N'Maxim2026';
 GO
 
 ALTER SERVER ROLE sysadmin ADD MEMBER dba_gojinevschii;
