@@ -1,22 +1,4 @@
-﻿/* =====================================================================
-   11_Seed.sql
-   Date de test realiste: rețeaua de autogări din Republica Moldova,
-   flota, șoferii, personalul, rutele și orarul, plus vânzări generate
-   pentru ultimele 7 zile și rezervări pentru următoarele 7 zile.
-
-   Datele curselor sunt RELATIVE la data rulării (azi − 7 … azi + 7),
-   ca dashboard-ul și rapoartele să aibă mereu date „vii”.
-
-   ATENȚIE: scriptul GOLEȘTE toate tabelele înainte de inserare.
-
-   Parole: câmpul ParolaHash conține un hash TEMPORAR
-   SHA2_512(NumeUtilizator + ':' + 'Autogara#2026'). Nu este schema finală
-   (PBKDF2/BCrypt din backend) — la prima pornire backend-ul trebuie să
-   reseteze parolele conturilor de seed sau să accepte acest format o
-   singură dată și să re-hash-uiască parola la prima logare.
-   Conturile personale ale echipei NU sunt aici — le creează 12_TeamAccounts.sql.
-   ===================================================================== */
-USE autogara;
+﻿USE autogara;
 GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
@@ -25,7 +7,6 @@ SET NOCOUNT ON;
 SET XACT_ABORT ON;
 GO
 
-/* ============================ Curățare ============================= */
 DELETE FROM autogara.LogAudit;
 DELETE FROM autogara.Plati;
 DELETE FROM autogara.Bilete;
@@ -44,7 +25,6 @@ DELETE FROM autogara.Noduri;
 DELETE FROM autogara.Utilizatori;
 DELETE FROM autogara.Roluri;
 
--- Resetare IDENTITY doar pentru tabelele care au avut deja rânduri
 DECLARE @Reseed NVARCHAR(MAX) = N'';
 SELECT @Reseed += CONCAT(N'DBCC CHECKIDENT (''autogara.', OBJECT_NAME(ic.object_id), N''', RESEED, 0) WITH NO_INFOMSGS;', CHAR(10))
 FROM sys.identity_columns AS ic
@@ -55,7 +35,6 @@ GO
 
 BEGIN TRANSACTION;
 
-/* ============================== Roluri ============================= */
 SET IDENTITY_INSERT autogara.Roluri ON;
 INSERT INTO autogara.Roluri (RolID, Denumire) VALUES
     (1, N'Admin'),
@@ -63,40 +42,38 @@ INSERT INTO autogara.Roluri (RolID, Denumire) VALUES
     (3, N'Pasager');
 SET IDENTITY_INSERT autogara.Roluri OFF;
 
-/* ============================ Utilizatori ========================== */
 DECLARE @Utilizatori TABLE
 (
     NumeUtilizator NVARCHAR(50), Nume NVARCHAR(100), Prenume NVARCHAR(100),
-    Email NVARCHAR(150), Telefon NVARCHAR(20), RolID INT, Activ BIT, VechimeZile INT
+    Email NVARCHAR(150), Telefon NVARCHAR(20), RolID INT, Activ BIT, VechimeZile INT, Parola NVARCHAR(100)
 );
 
 INSERT INTO @Utilizatori VALUES
-    -- administratori
-    (N'gheorghe.lungu',     N'Lungu',        N'Gheorghe',  N'gheorghe.lungu@autogara.local',     N'+373 69 214 377', 1, 1, 420),
-    (N'rodica.cazacu',      N'Cazacu',       N'Rodica',    N'rodica.cazacu@autogara.local',      N'+373 68 530 912', 1, 1, 240),
-    -- casieri
-    (N'tatiana.rusu',       N'Rusu',         N'Tatiana',   N'tatiana.rusu@autogara.local',       N'+373 69 781 046', 2, 1, 380),
-    (N'victoria.ceban',     N'Ceban',        N'Victoria',  N'victoria.ceban@autogara.local',     N'+373 78 115 629', 2, 1, 310),
-    (N'ion.munteanu',       N'Munteanu',     N'Ion',       N'ion.munteanu@autogara.local',       N'+373 60 947 233', 2, 1, 150),
-    (N'natalia.bivol',      N'Bivol',        N'Natalia',   N'natalia.bivol@autogara.local',      N'+373 69 356 804', 2, 1, 95),
-    (N'olga.cojocaru',      N'Cojocaru',     N'Olga',      N'olga.cojocaru@autogara.local',      N'+373 79 663 170', 2, 0, 520),
-    -- pasageri cu cont
-    (N'ana.popa',           N'Popa',         N'Ana',       N'ana.popa@example.com',              N'+373 69 845 302', 3, 1, 45),
-    (N'mihai.botnaru',      N'Botnaru',      N'Mihai',     N'mihai.botnaru@example.com',         N'+373 78 290 614', 3, 1, 12);
+    (N'd.gojinevschii',     N'Gojinevschii', N'Dmitri',    N'd.gojinevschii@autogara.local',     NULL,               1, 1, 60,  N'Vs7uLTx*EtdxQQU!'),
+    (N's.hanganu',          N'Hanganu',      N'Sergiu',    N's.hanganu@autogara.local',          NULL,               1, 1, 60,  N'aci*#vkBk5jaBaip'),
+    (N'a.crivenco',         N'Crivenco',     N'Alexandr',  N'a.crivenco@autogara.local',         NULL,               1, 1, 60,  N'pE!-J#H?oiBT57Ut'),
+    (N'm.sopivnic',         N'Sopivnic',     N'Maxim',     N'm.sopivnic@autogara.local',         NULL,               1, 1, 60,  N'BG5oZP!b6AN!+yz4'),
+    (N'gheorghe.lungu',    N'Lungu',        N'Gheorghe',  N'gheorghe.lungu@autogara.local',     N'+373 69 214 377', 1, 1, 420, N'Autogara#2026'),
+    (N'rodica.cazacu',      N'Cazacu',       N'Rodica',    N'rodica.cazacu@autogara.local',      N'+373 68 530 912', 1, 1, 240, N'Autogara#2026'),
+    (N'tatiana.rusu',       N'Rusu',         N'Tatiana',   N'tatiana.rusu@autogara.local',       N'+373 69 781 046', 2, 1, 380, N'Autogara#2026'),
+    (N'victoria.ceban',     N'Ceban',        N'Victoria',  N'victoria.ceban@autogara.local',     N'+373 78 115 629', 2, 1, 310, N'Autogara#2026'),
+    (N'ion.munteanu',       N'Munteanu',     N'Ion',       N'ion.munteanu@autogara.local',       N'+373 60 947 233', 2, 1, 150, N'Autogara#2026'),
+    (N'natalia.bivol',      N'Bivol',        N'Natalia',   N'natalia.bivol@autogara.local',      N'+373 69 356 804', 2, 1, 95, N'Autogara#2026'),
+    (N'olga.cojocaru',      N'Cojocaru',     N'Olga',      N'olga.cojocaru@autogara.local',      N'+373 79 663 170', 2, 0, 520, N'Autogara#2026'),
+    (N'ana.popa',           N'Popa',         N'Ana',       N'ana.popa@example.com',              N'+373 69 845 302', 3, 1, 45, N'Autogara#2026'),
+    (N'mihai.botnaru',      N'Botnaru',      N'Mihai',     N'mihai.botnaru@example.com',         N'+373 78 290 614', 3, 1, 12, N'Autogara#2026');
 
 INSERT INTO autogara.Utilizatori
     (UtilizatorID, NumeUtilizator, ParolaHash, Nume, Prenume, Email, Telefon, RolID, Activ, CreatLa, ModificatLa)
 SELECT
     NEWID(),
     u.NumeUtilizator,
-    HASHBYTES('SHA2_512', CONCAT(u.NumeUtilizator, N':', N'Autogara#2026')),
+    HASHBYTES('SHA2_512', CONCAT(u.NumeUtilizator, N':', u.Parola)),
     u.Nume, u.Prenume, u.Email, u.Telefon, u.RolID, u.Activ,
     DATEADD(DAY, -u.VechimeZile, SYSUTCDATETIME()),
     CASE WHEN u.Activ = 0 THEN DATEADD(DAY, -20, SYSUTCDATETIME()) END
 FROM @Utilizatori AS u;
 
-/* ============================== Hartă ============================== */
--- Coordonate pe canvas (px), derivate din poziția geografică reală.
 SET IDENTITY_INSERT autogara.Noduri ON;
 INSERT INTO autogara.Noduri (NodID, Tip, Nume, CoordX, CoordY) VALUES
     (1,  N'Statie',      N'Chișinău – Autogara Centrală',   892, 592),
@@ -116,31 +93,29 @@ INSERT INTO autogara.Noduri (NodID, Tip, Nume, CoordX, CoordY) VALUES
     (15, N'Intersectie', N'Intersecția Ciocîlteni (M2/R14)', 768, 388);
 SET IDENTITY_INSERT autogara.Noduri OFF;
 
--- Drumuri (distanțe rutiere aproximative), inserate în ambele sensuri
 DECLARE @Drumuri TABLE (NodA INT, NodB INT, DistantaKm DECIMAL(6, 2));
 INSERT INTO @Drumuri VALUES
-    (1,  2,   4.50),   -- Autogara Centrală – Autogara Nord
-    (2,  14, 26.00),   -- Chișinău Nord – Peresecina
-    (14, 3,  18.00),   -- Peresecina – Orhei
-    (3,  15, 22.00),   -- Orhei – Ciocîlteni
-    (15, 4,  70.00),   -- Ciocîlteni – Bălți
-    (15, 5,  85.00),   -- Ciocîlteni – Soroca
-    (4,  6,  70.00),   -- Bălți – Edineț
-    (1,  7,  24.00),   -- Chișinău – Strășeni
-    (7,  8,  30.00),   -- Strășeni – Călărași
-    (8,  9,  52.00),   -- Călărași – Ungheni
-    (1,  10, 36.00),   -- Chișinău – Hîncești
-    (1,  11, 70.00),   -- Chișinău – Cimișlia
-    (10, 11, 38.00),   -- Hîncești – Cimișlia
-    (11, 12, 30.00),   -- Cimișlia – Comrat
-    (12, 13, 75.00);   -- Comrat – Cahul
+    (1,  2,   4.50),
+    (2,  14, 26.00),
+    (14, 3,  18.00),
+    (3,  15, 22.00),
+    (15, 4,  70.00),
+    (15, 5,  85.00),
+    (4,  6,  70.00),
+    (1,  7,  24.00),
+    (7,  8,  30.00),
+    (8,  9,  52.00),
+    (1,  10, 36.00),
+    (1,  11, 70.00),
+    (10, 11, 38.00),
+    (11, 12, 30.00),
+    (12, 13, 75.00);
 
 INSERT INTO autogara.Conexiuni (NodPlecareID, NodSosireID, DistantaKm)
 SELECT NodA, NodB, DistantaKm FROM @Drumuri
 UNION ALL
 SELECT NodB, NodA, DistantaKm FROM @Drumuri;
 
-/* ============================== Stații ============================= */
 SET IDENTITY_INSERT autogara.Statii ON;
 INSERT INTO autogara.Statii (StatieID, NodID, Adresa, Peron) VALUES
     (1,  1,  N'str. Mitropolit Varlaam 58, Chișinău',     N'P3'),
@@ -158,7 +133,6 @@ INSERT INTO autogara.Statii (StatieID, NodID, Adresa, Peron) VALUES
     (13, 13, N'str. Ștefan cel Mare 2A, Cahul',           N'P3');
 SET IDENTITY_INSERT autogara.Statii OFF;
 
-/* ============================= Autobuze ============================ */
 DECLARE @Azi DATE = CAST(autogara.fn_AcumLocal() AS DATE);
 
 SET IDENTITY_INSERT autogara.Autobuze ON;
@@ -192,7 +166,6 @@ INSERT INTO autogara.MentenantaAutobuze (AutobuzID, TipLucrare, Data, Kilometraj
     (7, N'Inspecție tehnică periodică (ITP)',     DATEADD(DAY, -370, @Azi), 366020, N'Admis'),
     (8, N'Evaluare stare tehnică',                DATEADD(DAY, -140, @Azi), 689500, N'Caroserie corodată, reparație neeconomică — propus pentru casare');
 
-/* ============================== Șoferi ============================= */
 SET IDENTITY_INSERT autogara.Soferi ON;
 INSERT INTO autogara.Soferi (SoferID, Nume, Prenume, NrPermis, Telefon, Activ) VALUES
     (1, N'Țurcanu',  N'Vasile',     N'PC 0391254', N'+373 69 402 118', 1),
@@ -205,7 +178,6 @@ INSERT INTO autogara.Soferi (SoferID, Nume, Prenume, NrPermis, Telefon, Activ) V
     (8, N'Guțu',     N'Dumitru',    N'PC 0197630', N'+373 79 540 286', 0);
 SET IDENTITY_INSERT autogara.Soferi OFF;
 
-/* ============================== Trasee ============================= */
 SET IDENTITY_INSERT autogara.Trasee ON;
 INSERT INTO autogara.Trasee (TraseuID, Denumire, Activ) VALUES
     (1,  N'Chișinău (Nord) – Orhei – Bălți',                 1),
@@ -220,7 +192,7 @@ INSERT INTO autogara.Trasee (TraseuID, Denumire, Activ) VALUES
     (10, N'Edineț – Bălți',                                  1),
     (11, N'Chișinău – Hîncești',                             1),
     (12, N'Hîncești – Chișinău',                             1),
-    (13, N'Chișinău – Hîncești – Cimișlia',                  0);   -- suspendat
+    (13, N'Chișinău – Hîncești – Cimișlia',                  0);
 SET IDENTITY_INSERT autogara.Trasee OFF;
 
 INSERT INTO autogara.TraseuOpriri (TraseuID, StatieID, Ordine) VALUES
@@ -238,7 +210,6 @@ INSERT INTO autogara.TraseuOpriri (TraseuID, StatieID, Ordine) VALUES
     (12, 10, 1), (12, 1, 2),
     (13, 1, 1), (13, 10, 2), (13, 11, 3);
 
-/* ========================= Tipuri reducere ========================= */
 SET IDENTITY_INSERT autogara.TipuriReducere ON;
 INSERT INTO autogara.TipuriReducere (TipReducereID, Denumire, ProcentReducere, Activ) VALUES
     (1, N'Elev',       50.00, 1),
@@ -246,28 +217,26 @@ INSERT INTO autogara.TipuriReducere (TipReducereID, Denumire, ProcentReducere, A
     (3, N'Abonament',  20.00, 1);
 SET IDENTITY_INSERT autogara.TipuriReducere OFF;
 
-/* ======================= Curse (orar zilnic) ======================= */
--- Același orar în fiecare zi, pe intervalul azi − 7 … azi + 7.
 DECLARE @Orar TABLE
 (
     TraseuID INT, AutobuzID INT, SoferID INT,
     OraPlecare TIME(0), OraSosire TIME(0), Pret DECIMAL(10, 2)
 );
 INSERT INTO @Orar VALUES
-    (12, 3, 7, '06:50', '07:45',  38.00),   -- Hîncești → Chișinău
-    (5,  5, 4, '06:45', '10:20', 155.00),   -- Chișinău → Cahul
-    (1,  4, 1, '07:30', '10:05', 120.00),   -- Chișinău → Bălți
-    (3,  3, 3, '08:15', '10:10',  85.00),   -- Chișinău → Ungheni
-    (7,  6, 5, '09:00', '11:55', 140.00),   -- Chișinău → Soroca
-    (9,  2, 6, '11:00', '12:25',  60.00),   -- Bălți → Edineț
-    (1,  1, 2, '12:10', '14:40', 120.00),   -- Chișinău → Bălți
-    (10, 2, 6, '13:30', '14:55',  60.00),   -- Edineț → Bălți
-    (4,  3, 3, '13:30', '15:25',  85.00),   -- Ungheni → Chișinău
-    (6,  5, 4, '14:00', '17:35', 155.00),   -- Cahul → Chișinău
-    (2,  4, 1, '15:00', '17:35', 120.00),   -- Bălți → Chișinău
-    (8,  6, 5, '15:30', '18:25', 140.00),   -- Soroca → Chișinău
-    (2,  1, 2, '17:50', '20:20', 120.00),   -- Bălți → Chișinău
-    (11, 3, 7, '18:10', '19:05',  38.00);   -- Chișinău → Hîncești
+    (12, 3, 7, '06:50', '07:45',  38.00),
+    (5,  5, 4, '06:45', '10:20', 155.00),
+    (1,  4, 1, '07:30', '10:05', 120.00),
+    (3,  3, 3, '08:15', '10:10',  85.00),
+    (7,  6, 5, '09:00', '11:55', 140.00),
+    (9,  2, 6, '11:00', '12:25',  60.00),
+    (1,  1, 2, '12:10', '14:40', 120.00),
+    (10, 2, 6, '13:30', '14:55',  60.00),
+    (4,  3, 3, '13:30', '15:25',  85.00),
+    (6,  5, 4, '14:00', '17:35', 155.00),
+    (2,  4, 1, '15:00', '17:35', 120.00),
+    (8,  6, 5, '15:30', '18:25', 140.00),
+    (2,  1, 2, '17:50', '20:20', 120.00),
+    (11, 3, 7, '18:10', '19:05',  38.00);
 
 DECLARE @Acum DATETIME2(0) = autogara.fn_AcumLocal();
 
@@ -281,7 +250,6 @@ INSERT INTO autogara.Curse
 SELECT
     o.TraseuID, o.AutobuzID, o.SoferID, z.DataCursa, o.OraPlecare, o.OraSosire, o.Pret,
     CASE
-        -- defecțiune: cursele Bălți ↔ Edineț de acum 3 zile au fost anulate
         WHEN z.DataCursa = DATEADD(DAY, -3, @Azi) AND o.TraseuID IN (9, 10)      THEN N'Anulata'
         WHEN autogara.fn_MomentCursa(z.DataCursa, o.OraSosire)  <= @Acum          THEN N'Finalizata'
         WHEN autogara.fn_MomentCursa(z.DataCursa, o.OraPlecare) <= @Acum          THEN N'In desfasurare'
@@ -292,7 +260,6 @@ FROM Zile AS z
 CROSS JOIN @Orar AS o
 ORDER BY z.DataCursa, o.OraPlecare;
 
-/* ============================== Locuri ============================= */
 DECLARE @CursaID INT;
 DECLARE curse CURSOR LOCAL FAST_FORWARD FOR SELECT CursaID FROM autogara.Curse ORDER BY CursaID;
 OPEN curse;
@@ -305,7 +272,6 @@ END
 CLOSE curse;
 DEALLOCATE curse;
 
-/* ========================= Bilete și plăți ========================= */
 DECLARE @Prenume TABLE (Id INT IDENTITY(0, 1), Prenume NVARCHAR(50));
 INSERT INTO @Prenume (Prenume) VALUES
     (N'Ion'), (N'Maria'), (N'Vasile'), (N'Elena'), (N'Gheorghe'), (N'Ana'), (N'Nicolae'), (N'Tatiana'),
@@ -329,9 +295,8 @@ WHERE NumeUtilizator IN (N'tatiana.rusu', N'victoria.ceban', N'ion.munteanu', N'
 ORDER BY NumeUtilizator;
 
 DECLARE @NrCasieri INT = (SELECT COUNT(*) FROM @Casieri);
-DECLARE @PrefixeMobil NCHAR(12) = N'606268697879';   -- 60, 62, 68, 69, 78, 79
+DECLARE @PrefixeMobil NCHAR(12) = N'606268697879';
 
--- Pas 1: alegem locurile vândute (determinist, pe baza unui hash al LocID)
 IF OBJECT_ID('tempdb..#Vanzari') IS NOT NULL DROP TABLE #Vanzari;
 
 WITH Candidati AS
@@ -352,7 +317,6 @@ WITH Candidati AS
 )
 SELECT
     k.*,
-    -- procentul de ocupare țintit al cursei
     CASE
         WHEN k.StatusCursa = N'Anulata'                            THEN 35
         WHEN k.StatusCursa IN (N'Finalizata', N'In desfasurare')   THEN 55 + k.HCursa % 40
@@ -365,7 +329,6 @@ FROM Candidati AS k;
 
 DELETE FROM #Vanzari WHERE H1 % 100 >= ProcentOcupare;
 
--- Pas 2: atribute bilet
 ALTER TABLE #Vanzari ADD
     BiletID UNIQUEIDENTIFIER NULL, CodBilet NVARCHAR(20) NULL, NumePasager NVARCHAR(200) NULL,
     TelefonPasager NVARCHAR(20) NULL, TipReducereID INT NULL, VanzutDe UNIQUEIDENTIFIER NULL,
@@ -374,7 +337,6 @@ ALTER TABLE #Vanzari ADD
 
 UPDATE v
 SET BiletID        = NEWID(),
-    -- același format ca în sp_ConfirmaVanzareBilet; multiplicarea Knuth face sufixul unic per loc
     CodBilet       = CONCAT(N'AG', CONVERT(CHAR(6), v.DataCursa, 12), N'-',
                             CONVERT(VARCHAR(8), CONVERT(BINARY(4), CAST(v.LocID AS BIGINT) * CAST(2654435761 AS BIGINT) % CAST(4294967296 AS BIGINT)), 2)),
     NumePasager    = CONCAT(p.Prenume, N' ', n.Nume),
@@ -387,7 +349,6 @@ SET BiletID        = NEWID(),
                           WHEN v.H3 % 100 < 25 THEN 3 END,
     VanzutDe       = cs.UtilizatorID,
     MetodaPlata    = CASE WHEN v.H2 % 100 < 38 THEN N'Card' ELSE N'Numerar' END,
-    -- biletul se vinde între 5 zile și 20 de minute înainte de plecare, dar nu în viitor
     DataEmitereLocal = CASE
         WHEN DATEADD(MINUTE, -(20 + v.H1 % 7200), v.Plecare) <= @Acum
             THEN DATEADD(MINUTE, -(20 + v.H1 % 7200), v.Plecare)
@@ -402,9 +363,9 @@ UPDATE #Vanzari
 SET Pret = autogara.fn_CalculeazaPret(PretBaza, TipReducereID),
     StatusBilet = CASE
         WHEN StatusCursa = N'Anulata'   THEN N'Rambursat'
-        WHEN H4 % 100 IN (0, 1, 2)      THEN N'Rambursat'   -- anulat de pasager din timp
+        WHEN H4 % 100 IN (0, 1, 2)      THEN N'Rambursat'
         WHEN H4 % 100 = 3
-             AND StatusCursa <> N'Planificata' THEN N'Anulat' -- anulat cu < 2 h înainte, fără rambursare
+             AND StatusCursa <> N'Planificata' THEN N'Anulat'
         ELSE N'Activ'
     END;
 
@@ -416,7 +377,6 @@ SET ProcentRambursare = CASE
         ELSE 100
     END;
 
--- Pas 3: inserări
 INSERT INTO autogara.Bilete
     (BiletID, CodBilet, CursaID, LocID, NumePasager, TelefonPasager, TipReducereID,
      VanzutDeUtilizatorID, DataEmitere, Pret, Status, ModificatLa)
@@ -428,7 +388,6 @@ SELECT
                   CASE WHEN Plecare < @Acum THEN Plecare ELSE @Acum END) / 2, DataEmitereLocal)) END
 FROM #Vanzari;
 
--- încasări (bon fiscal numerotat pe zi)
 INSERT INTO autogara.Plati (BiletID, Suma, MetodaPlata, DataPlata, Status, NumarBonFiscal)
 SELECT
     BiletID, Pret, MetodaPlata, autogara.fn_LocalLaUtc(DataEmitereLocal), N'Finalizata',
@@ -436,7 +395,6 @@ SELECT
            RIGHT(CONCAT(N'0000', ROW_NUMBER() OVER (PARTITION BY CAST(DataEmitereLocal AS DATE) ORDER BY DataEmitereLocal, LocID)), 4))
 FROM #Vanzari;
 
--- rambursări
 INSERT INTO autogara.Plati (BiletID, Suma, MetodaPlata, DataPlata, Status, NumarBonFiscal)
 SELECT
     v.BiletID, ROUND(v.Pret * v.ProcentRambursare / 100, 2), v.MetodaPlata, b.ModificatLa, N'Rambursata',
@@ -446,7 +404,6 @@ FROM #Vanzari AS v
 JOIN autogara.Bilete AS b ON b.BiletID = v.BiletID
 WHERE v.StatusBilet = N'Rambursat';
 
--- locurile cu bilet activ devin ocupate
 UPDATE l
 SET l.Status = N'Ocupat'
 FROM autogara.Locuri AS l
@@ -455,9 +412,6 @@ WHERE b.Status = N'Activ';
 
 DROP TABLE #Vanzari;
 
-/* ====================== Rezervări provizorii ======================= */
--- Pe prima cursă Chișinău → Bălți de mâine: 3 rezervări în curs (casier la ghișeu)
--- și 1 rezervare deja expirată (pentru testarea Job_ElibereazaRezervariExpirate).
 DECLARE @CursaMaine INT =
     (SELECT TOP (1) CursaID FROM autogara.Curse
      WHERE TraseuID = 1 AND DataCursa = DATEADD(DAY, 1, @Azi) AND Status = N'Planificata'
@@ -483,7 +437,6 @@ UPDATE l SET l.Status = N'Rezervat'
 FROM autogara.Locuri AS l
 JOIN @LocuriRezervate AS r ON r.LocID = l.LocID;
 
-/* ============================ Log audit ============================ */
 DECLARE @Admin  UNIQUEIDENTIFIER = (SELECT UtilizatorID FROM autogara.Utilizatori WHERE NumeUtilizator = N'gheorghe.lungu');
 DECLARE @Rodica UNIQUEIDENTIFIER = (SELECT UtilizatorID FROM autogara.Utilizatori WHERE NumeUtilizator = N'rodica.cazacu');
 DECLARE @Olga   UNIQUEIDENTIFIER = (SELECT UtilizatorID FROM autogara.Utilizatori WHERE NumeUtilizator = N'olga.cojocaru');
@@ -505,7 +458,6 @@ INSERT INTO autogara.LogAudit (UtilizatorID, Actiune, Entitate, EntitateID, Data
 COMMIT TRANSACTION;
 GO
 
-/* ============================ Rezumat ============================== */
 SELECT N'Roluri' AS Tabel, COUNT(*) AS Randuri FROM autogara.Roluri
 UNION ALL SELECT N'Utilizatori',         COUNT(*) FROM autogara.Utilizatori
 UNION ALL SELECT N'Noduri',              COUNT(*) FROM autogara.Noduri
