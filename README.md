@@ -1,8 +1,16 @@
+<div align="center">
+
 # Autogara — Aplicație de Gestionare a Autogării
 
-Proiect de echipă la disciplina *Elemente de Proiectare a Sistemelor Informatice*.
+Proiect de echipă · Elemente de Proiectare a Sistemelor Informatice
 
-**Stack:** Microsoft SQL Server + .NET 10 WinForms (C#) · **Model de lucru:** waterfall
+![.NET](https://img.shields.io/badge/.NET_10-WinForms-512BD4?logo=dotnet&logoColor=white)
+![C#](https://img.shields.io/badge/C%23-239120?logo=csharp&logoColor=white)
+![SQL Server](https://img.shields.io/badge/Microsoft_SQL_Server-CC2927?logo=microsoftsqlserver&logoColor=white)
+![Model](https://img.shields.io/badge/model-waterfall-blue)
+![Status](https://img.shields.io/badge/etapa_curent%C4%83-Baz%C4%83_de_Date-orange)
+
+</div>
 
 ## Despre proiect
 
