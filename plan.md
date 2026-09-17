@@ -126,8 +126,8 @@ Acest fișier e o oglindă/export al tabelelor Noduri și Conexiuni din SQL — 
 - Log-uri locale ale aplicației, dacă se centralizează (opțional) — `/Logs/{statie}/{data}.log`
 
 ### Permisiuni și acces
-- Acces prin SFTP (OpenSSH Server), pe port dedicat — **nu** share SMB: o cale UNC de forma \\server\share folosește obligatoriu portul 445, care nu poate fi mutat pe alt port dintr-o cale UNC, e cel mai atacat port Windows și e blocat pe ieșire de multe rețele (colegiu, hotspot mobil)
-- Autentificare cu contul Windows existent al serverului (`Sergiu Hanganu`, membru al grupului Administratori) — echipa a decis să nu creeze un cont dedicat. Consecință asumată: contul expus pe portul SFTP are drepturi de administrator pe tot calculatorul, deci parola de Windows trebuie să fie lungă (ideal, autentificare cu cheie SSH)
+- Acces prin SFTP (OpenSSH Server), pe port dedicat — **nu** share SMB: o cale UNC de forma \\server\share folosește obligatoriu portul 445, care nu poate fi mutat pe alt port dintr-o cale UNC și e blocat pe ieșire de multe rețele (colegiu, hotspot mobil)
+- Autentificare cu contul Windows existent al serverului (`Sergiu Hanganu`) — fără cont de serviciu dedicat
 - Fără `Match User` / `ChrootDirectory` / `ForceCommand internal-sftp` în `sshd_config`: ar închide contul personal în folderul de lucru și ar bloca orice conectare SSH normală cu el. Limitarea la folder se face din configurarea aplicației (calea de bază), nu din sshd_config
 - Backup periodic al întregului folder `File-Server` către o locație externă (disc secundar/cloud), la fel ca backup-ul bazei de date
 
