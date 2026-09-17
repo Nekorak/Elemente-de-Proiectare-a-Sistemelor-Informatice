@@ -77,7 +77,7 @@ Backup complet zilnic + diferențial la câteva ore, păstrate 30 zile; backup s
 
 ## File Server
 
-Server separat de partajare fișiere, pe același computer de acasă ca MS SQL Server (hostname `PC`, IP local 192.168.1.15), expus prin **SFTP** (OpenSSH Server — deja instalat pe acel calculator, serviciul `sshd` doar de pornit) pe un port dedicat propriu, redirecționat separat pe router față de portul SQL. Aplicația nu citește niciodată fișiere din folderul local al proiectului: datele vin din baza de date, fișierele JSON vin de pe file server prin internet. Folderul `File-Server/` din repository e doar copia de referință/seed.
+Server separat de partajare fișiere, pe același computer de acasă ca MS SQL Server (hostname `PC`, IP local 192.168.1.15), expus prin **SFTP** (OpenSSH Server — deja instalat pe acel calculator, serviciul `sshd` doar de pornit) pe un port dedicat propriu, separat de portul SQL. Aplicația nu citește niciodată fișiere de pe calculatorul pe care rulează: datele vin din baza de date, fișierele JSON vin de pe file server prin internet, iar pe laptopurile echipei nu există nicio cale locală de fișiere. Pe server, folderul de lucru este chiar `File-Server/` din copia locală a repository-ului.
 
 ### Structură foldere
 Folderul rădăcină pe server se numește `File-Server` (același nume ca folderul creat local în proiect, pentru consistență):
@@ -126,9 +126,9 @@ Acest fișier e o oglindă/export al tabelelor Noduri și Conexiuni din SQL — 
 - Log-uri locale ale aplicației, dacă se centralizează (opțional) — `/Logs/{statie}/{data}.log`
 
 ### Permisiuni și acces
-- Acces prin SFTP (OpenSSH Server), pe port dedicat redirecționat pe router — **nu** share SMB: o cale UNC de forma \\server\share folosește obligatoriu portul 445, care nu poate fi mutat pe alt port dintr-o cale UNC, e cel mai atacat port Windows și e blocat pe ieșire de multe rețele (colegiu, hotspot mobil)
-- Cont Windows local dedicat `autogara_fs`, separat de contul SQL Server (nu „Everyone”, nu administrator), închis în folder prin `ChrootDirectory C:\File-Server` + `ForceCommand internal-sftp` — fără shell, fără acces la restul sistemului, fără port forwarding
-- Acces citire/scriere limitat la acest cont; fără acces anonim
+- Acces prin SFTP (OpenSSH Server), pe port dedicat — **nu** share SMB: o cale UNC de forma \\server\share folosește obligatoriu portul 445, care nu poate fi mutat pe alt port dintr-o cale UNC, e cel mai atacat port Windows și e blocat pe ieșire de multe rețele (colegiu, hotspot mobil)
+- Autentificare cu contul Windows existent al serverului (`Sergiu Hanganu`, membru al grupului Administratori) — echipa a decis să nu creeze un cont dedicat. Consecință asumată: contul expus pe portul SFTP are drepturi de administrator pe tot calculatorul, deci parola de Windows trebuie să fie lungă (ideal, autentificare cu cheie SSH)
+- Fără `Match User` / `ChrootDirectory` / `ForceCommand internal-sftp` în `sshd_config`: ar închide contul personal în folderul de lucru și ar bloca orice conectare SSH normală cu el. Limitarea la folder se face din configurarea aplicației (calea de bază), nu din sshd_config
 - Backup periodic al întregului folder `File-Server` către o locație externă (disc secundar/cloud), la fel ca backup-ul bazei de date
 
 ## Backend (C# .NET 10) — Hanganu Sergiu
@@ -160,7 +160,7 @@ Autogara.sln
 ### Autogara.FileServer
 - `JsonAutobuzRepository`: `ReadAsync(caleFisier)`, `WriteAsync(caleFisier, structura)` — validează schema JSON înainte de scriere, retry pe erori de rețea
 - `JsonHartaRepository`: `ReadAsync()`, `WriteAsync(hartaDto)` — citește/scrie `harta.json`
-- `SftpFileClient` — conexiune SFTP (SSH.NET) către `sftp://<server>:44545`, cont `autogara_fs`; host, port, utilizator și parolă citite din configurarea locală, separat de connection string-ul SQL
+- `SftpFileClient` — conexiune SFTP (SSH.NET) către `sftp://<server>:44545`, cu contul Windows al serverului; host, port, utilizator, parolă și calea de bază citite din configurarea locală, separat de connection string-ul SQL. Numele contului conține un spațiu, deci se trece ca string, nu concatenat în comenzi
 - Fără nicio cale locală în cod: orice citire/scriere de fișier trece prin acest client
 
 ### Autogara.Business — servicii (cu metodele lor principale)
