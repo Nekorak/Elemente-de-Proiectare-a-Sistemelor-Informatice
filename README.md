@@ -96,9 +96,11 @@ Credentials.txt         credențialele proiectului (repo privat)
 
 ## Rularea bazei de date
 
-Deschide `SQL Code/00_RunAll.sql` în SSMS și activează **Query → SQLCMD Mode**. Completează variabilele de la începutul fișierului, apoi rulează cu F5.
+Deschide `SQL Code/00_RunAll.sql` în SSMS și activează **Query → SQLCMD Mode**. Setează `ScriptsPath` la calea absolută a folderului, apoi rulează cu F5.
 
-Datele de test acoperă intervalul de la 7 zile în urmă până la 7 zile înainte față de ziua rulării. Conturile din seed au parola temporară `Autogara#2026`.
+Datele de test acoperă intervalul de la 7 zile în urmă până la 7 zile înainte față de ziua rulării.
+
+Parolele se pun în `SQL Code/Parole.local.sql` (copie după `Parole.example.sql`, nu se urcă în Git). Login-urile și parolele echipei sunt în `Credentials.txt`.
 
 ## Reguli de lucru
 

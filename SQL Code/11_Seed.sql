@@ -14,6 +14,7 @@
    (PBKDF2/BCrypt din backend) — la prima pornire backend-ul trebuie să
    reseteze parolele conturilor de seed sau să accepte acest format o
    singură dată și să re-hash-uiască parola la prima logare.
+   Conturile personale ale echipei NU sunt aici — le creează 12_TeamAccounts.sql.
    ===================================================================== */
 USE autogara;
 GO
@@ -72,14 +73,12 @@ DECLARE @Utilizatori TABLE
 INSERT INTO @Utilizatori VALUES
     -- administratori
     (N'gheorghe.lungu',     N'Lungu',        N'Gheorghe',  N'gheorghe.lungu@autogara.local',     N'+373 69 214 377', 1, 1, 420),
-    (N'd.gojinevschii',     N'Gojinevschii', N'Dmitri',    N'd.gojinevschii@autogara.local',     N'+373 68 530 912', 1, 1, 60),
-    (N's.hanganu',          N'Hanganu',      N'Sergiu',    N's.hanganu@autogara.local',          N'+373 79 402 185', 1, 1, 60),
+    (N'rodica.cazacu',      N'Cazacu',       N'Rodica',    N'rodica.cazacu@autogara.local',      N'+373 68 530 912', 1, 1, 240),
     -- casieri
     (N'tatiana.rusu',       N'Rusu',         N'Tatiana',   N'tatiana.rusu@autogara.local',       N'+373 69 781 046', 2, 1, 380),
     (N'victoria.ceban',     N'Ceban',        N'Victoria',  N'victoria.ceban@autogara.local',     N'+373 78 115 629', 2, 1, 310),
     (N'ion.munteanu',       N'Munteanu',     N'Ion',       N'ion.munteanu@autogara.local',       N'+373 60 947 233', 2, 1, 150),
     (N'natalia.bivol',      N'Bivol',        N'Natalia',   N'natalia.bivol@autogara.local',      N'+373 69 356 804', 2, 1, 95),
-    (N'm.sopivnic',         N'Sopivnic',     N'Maxim',     N'm.sopivnic@autogara.local',         N'+373 67 208 451', 2, 1, 30),
     (N'olga.cojocaru',      N'Cojocaru',     N'Olga',      N'olga.cojocaru@autogara.local',      N'+373 79 663 170', 2, 0, 520),
     -- pasageri cu cont
     (N'ana.popa',           N'Popa',         N'Ana',       N'ana.popa@example.com',              N'+373 69 845 302', 3, 1, 45),
@@ -486,12 +485,12 @@ JOIN @LocuriRezervate AS r ON r.LocID = l.LocID;
 
 /* ============================ Log audit ============================ */
 DECLARE @Admin  UNIQUEIDENTIFIER = (SELECT UtilizatorID FROM autogara.Utilizatori WHERE NumeUtilizator = N'gheorghe.lungu');
-DECLARE @Dba    UNIQUEIDENTIFIER = (SELECT UtilizatorID FROM autogara.Utilizatori WHERE NumeUtilizator = N'd.gojinevschii');
+DECLARE @Rodica UNIQUEIDENTIFIER = (SELECT UtilizatorID FROM autogara.Utilizatori WHERE NumeUtilizator = N'rodica.cazacu');
 DECLARE @Olga   UNIQUEIDENTIFIER = (SELECT UtilizatorID FROM autogara.Utilizatori WHERE NumeUtilizator = N'olga.cojocaru');
 DECLARE @Victoria UNIQUEIDENTIFIER = (SELECT UtilizatorID FROM autogara.Utilizatori WHERE NumeUtilizator = N'victoria.ceban');
 
 INSERT INTO autogara.LogAudit (UtilizatorID, Actiune, Entitate, EntitateID, DataOra) VALUES
-    (@Dba,   N'Import inițial hartă: 15 noduri, 30 conexiuni',                    N'Noduri',      NULL,  DATEADD(DAY, -30, SYSUTCDATETIME())),
+    (@Rodica, N'Import inițial hartă: 15 noduri, 30 conexiuni',                    N'Noduri',      NULL,  DATEADD(DAY, -30, SYSUTCDATETIME())),
     (@Admin, N'Creare autobuz TRX 771 (MAN Lion''s Coach R07, 51 locuri)',       N'Autobuze',    N'6',  DATEADD(DAY, -28, SYSUTCDATETIME())),
     (@Admin, N'Actualizare structură locuri autobuz SMB 115',                     N'Autobuze',    N'4',  DATEADD(DAY, -26, SYSUTCDATETIME())),
     (@Admin, N'Suspendare traseu Chișinău – Hîncești – Cimișlia',                 N'Trasee',      N'13', DATEADD(DAY, -22, SYSUTCDATETIME())),

@@ -6,3 +6,6 @@ obj/
 # OS
 .DS_Store
 Thumbs.db
+
+# Parole locale SQL (nu se urca in Git)
+SQL Code/Parole.local.sql
