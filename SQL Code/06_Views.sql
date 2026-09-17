@@ -1,17 +1,9 @@
-﻿/* =====================================================================
-   06_Views.sql
-   Views pentru interogările frecvente, dashboard și rapoarte.
-   ===================================================================== */
-USE autogara;
+﻿USE autogara;
 GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
 
-/* ---------------------------------------------------------------------
-   vw_LocuriDisponibile — locurile libere pe cursele încă neplecate.
-   Folosit de FrmVanzareBilet / FrmCasier.
-   --------------------------------------------------------------------- */
 CREATE OR ALTER VIEW autogara.vw_LocuriDisponibile
 AS
 SELECT
@@ -36,10 +28,6 @@ WHERE l.Status = N'Liber'
   AND autogara.fn_MomentCursa(c.DataCursa, c.OraPlecare) > autogara.fn_AcumLocal();
 GO
 
-/* ---------------------------------------------------------------------
-   vw_CurseActive — cursele planificate / în desfășurare de azi încolo,
-   cu stația de plecare/sosire, autobuz, șofer și situația locurilor.
-   --------------------------------------------------------------------- */
 CREATE OR ALTER VIEW autogara.vw_CurseActive
 AS
 SELECT
@@ -99,10 +87,6 @@ WHERE c.Status IN (N'Planificata', N'In desfasurare')
   AND c.DataCursa >= CAST(autogara.fn_AcumLocal() AS DATE);
 GO
 
-/* ---------------------------------------------------------------------
-   vw_VanzariZilnice — încasări și rambursări pe zi (ora locală) și
-   metodă de plată.
-   --------------------------------------------------------------------- */
 CREATE OR ALTER VIEW autogara.vw_VanzariZilnice
 AS
 SELECT
@@ -117,9 +101,6 @@ FROM autogara.Plati AS p
 GROUP BY CAST(autogara.fn_UtcLaLocal(p.DataPlata) AS DATE), p.MetodaPlata;
 GO
 
-/* ---------------------------------------------------------------------
-   vw_OcupareCurse — gradul de ocupare și încasările pe fiecare cursă.
-   --------------------------------------------------------------------- */
 CREATE OR ALTER VIEW autogara.vw_OcupareCurse
 AS
 SELECT
@@ -160,10 +141,6 @@ OUTER APPLY (
 ) AS bc;
 GO
 
-/* ---------------------------------------------------------------------
-   vw_RapoarteComparative — indicatori lunari pe traseu, comparați cu
-   luna precedentă (curse, bilete, încasări, ocupare medie).
-   --------------------------------------------------------------------- */
 CREATE OR ALTER VIEW autogara.vw_RapoarteComparative
 AS
 WITH Lunar AS

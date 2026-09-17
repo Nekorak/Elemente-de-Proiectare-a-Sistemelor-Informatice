@@ -1,16 +1,9 @@
-﻿/* =====================================================================
-   05_Functions.sql
-   Funcții scalare ajutătoare, folosite de views și proceduri stocate.
-   Fus orar: serverul stochează momentele în UTC; cursele (dată + oră)
-   sunt în ora locală a Chișinăului ('E. Europe Standard Time').
-   ===================================================================== */
-USE autogara;
+﻿USE autogara;
 GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
 
--- Momentul curent în ora locală (Chișinău), indiferent de fusul orar al serverului.
 CREATE OR ALTER FUNCTION autogara.fn_AcumLocal()
 RETURNS DATETIME2(0)
 AS
@@ -19,7 +12,6 @@ BEGIN
 END;
 GO
 
--- Conversie UTC -> ora locală (pentru DataEmitere, DataPlata, DataOra etc.).
 CREATE OR ALTER FUNCTION autogara.fn_UtcLaLocal(@MomentUtc DATETIME2(3))
 RETURNS DATETIME2(3)
 AS
@@ -28,7 +20,6 @@ BEGIN
 END;
 GO
 
--- Conversie ora locală -> UTC.
 CREATE OR ALTER FUNCTION autogara.fn_LocalLaUtc(@MomentLocal DATETIME2(3))
 RETURNS DATETIME2(3)
 AS
@@ -37,7 +28,6 @@ BEGIN
 END;
 GO
 
--- Combină DataCursa + OraPlecare într-un singur DATETIME2 (ora locală).
 CREATE OR ALTER FUNCTION autogara.fn_MomentCursa(@Data DATE, @Ora TIME(0))
 RETURNS DATETIME2(0)
 AS
@@ -46,7 +36,6 @@ BEGIN
 END;
 GO
 
--- Prețul final după reducere (reducerile inactive sunt ignorate).
 CREATE OR ALTER FUNCTION autogara.fn_CalculeazaPret(@PretBaza DECIMAL(10, 2), @TipReducereID INT)
 RETURNS DECIMAL(10, 2)
 AS
@@ -62,10 +51,6 @@ BEGIN
 END;
 GO
 
-/* Politica de rambursare la anularea de către pasager:
-     >= 24 h înainte de plecare  -> 100%
-     >= 2 h  înainte de plecare  -> 50%
-     <  2 h  înainte de plecare  -> 0% (biletul se anulează fără rambursare) */
 CREATE OR ALTER FUNCTION autogara.fn_ProcentRambursare(@PlecareLocal DATETIME2(0), @MomentLocal DATETIME2(0))
 RETURNS DECIMAL(5, 2)
 AS

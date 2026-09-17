@@ -1,23 +1,9 @@
-﻿/* =====================================================================
-   07_StoredProcedures.sql
-   Proceduri stocate pentru operațiile critice (rezervare, vânzare,
-   anulare), rapoarte, utilizatori și audit.
-
-   Coduri de eroare (THROW):
-     5001x  curse / locuri          5002x  rezervări
-     5003x  vânzare bilet           5004x  anulare bilet
-     5005x  rapoarte                5006x  utilizatori
-   Toate operațiile critice rulează într-o singură tranzacție.
-   ===================================================================== */
-USE autogara;
+﻿USE autogara;
 GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
 
-/* ---------------------------------------------------------------------
-   sp_InregistreazaLogAudit
-   --------------------------------------------------------------------- */
 CREATE OR ALTER PROCEDURE autogara.sp_InregistreazaLogAudit
     @UtilizatorID UNIQUEIDENTIFIER = NULL,
     @Actiune      NVARCHAR(200),
@@ -32,10 +18,6 @@ BEGIN
 END;
 GO
 
-/* ---------------------------------------------------------------------
-   sp_CreeazaLocuriPentruCursa — generează locurile 1..CapacitateLocuri
-   pentru o cursă (idempotent: nu dublează locurile existente).
-   --------------------------------------------------------------------- */
 CREATE OR ALTER PROCEDURE autogara.sp_CreeazaLocuriPentruCursa
     @CursaID      INT,
     @LocuriCreate INT = NULL OUTPUT
@@ -68,9 +50,6 @@ BEGIN
 END;
 GO
 
-/* ---------------------------------------------------------------------
-   sp_ElibereazaRezervariExpirate — rulat de Job_ElibereazaRezervariExpirate.
-   --------------------------------------------------------------------- */
 CREATE OR ALTER PROCEDURE autogara.sp_ElibereazaRezervariExpirate
     @NrEliberate INT = NULL OUTPUT
 AS
@@ -96,7 +75,6 @@ BEGIN
 
         SET @NrEliberate = @@ROWCOUNT;
 
-        -- plasă de siguranță: locuri rămase 'Rezervat' fără rezervare
         UPDATE l
         SET l.Status = N'Liber'
         FROM autogara.Locuri AS l
@@ -121,10 +99,6 @@ BEGIN
 END;
 GO
 
-/* ---------------------------------------------------------------------
-   sp_RezervaLoc — blochează un loc liber pentru @DurataMinute minute.
-   Doi casieri pe același loc: al doilea primește eroarea 50023.
-   --------------------------------------------------------------------- */
 CREATE OR ALTER PROCEDURE autogara.sp_RezervaLoc
     @LocID        INT,
     @UtilizatorID UNIQUEIDENTIFIER = NULL,
@@ -160,7 +134,6 @@ BEGIN
         IF @Plecare <= autogara.fn_AcumLocal()
             THROW 50022, N'Nu se pot face rezervări: ora de plecare a cursei a trecut.', 1;
 
-        -- o rezervare expirată, încă neeliberată de job, nu blochează locul
         IF @StatusLoc = N'Rezervat'
            AND EXISTS (SELECT 1 FROM autogara.RezervariProvizorii WITH (UPDLOCK, HOLDLOCK)
                        WHERE LocID = @LocID AND DataExpirare <= SYSUTCDATETIME())
@@ -189,10 +162,6 @@ BEGIN
 END;
 GO
 
-/* ---------------------------------------------------------------------
-   sp_ConfirmaVanzareBilet — transformă o rezervare provizorie în bilet
-   și înregistrează plata. Prețul se calculează în baza de date.
-   --------------------------------------------------------------------- */
 CREATE OR ALTER PROCEDURE autogara.sp_ConfirmaVanzareBilet
     @RezervareID          UNIQUEIDENTIFIER,
     @NumePasager          NVARCHAR(200),
@@ -231,7 +200,6 @@ BEGIN
 
         IF @Expirare <= SYSUTCDATETIME()
         BEGIN
-            -- eliberăm locul și raportăm eroarea după COMMIT
             DELETE FROM autogara.RezervariProvizorii WHERE RezervareID = @RezervareID;
             UPDATE autogara.Locuri SET Status = N'Liber' WHERE LocID = @LocID AND Status = N'Rezervat';
             SET @Expirata = 1;
@@ -260,7 +228,6 @@ BEGIN
 
             SET @PretFinal = autogara.fn_CalculeazaPret(@PretBaza, @TipReducereID);
 
-            -- Cod bilet: AG + data cursei (aammzz) + 8 caractere hex aleatoare, ex. AG260917-3FA9C21B
             SET @CodBilet = CONCAT(N'AG', CONVERT(CHAR(6), @DataCursa, 12), N'-', CONVERT(VARCHAR(8), CRYPT_GEN_RANDOM(4), 2));
             WHILE EXISTS (SELECT 1 FROM autogara.Bilete WHERE CodBilet = @CodBilet)
                 SET @CodBilet = CONCAT(N'AG', CONVERT(CHAR(6), @DataCursa, 12), N'-', CONVERT(VARCHAR(8), CRYPT_GEN_RANDOM(4), 2));
@@ -300,11 +267,6 @@ BEGIN
 END;
 GO
 
-/* ---------------------------------------------------------------------
-   sp_AnuleazaBilet — anulează un bilet activ, eliberează locul și
-   înregistrează rambursarea conform politicii (fn_ProcentRambursare).
-   Dacă cursa a fost anulată de autogară, rambursarea este integrală.
-   --------------------------------------------------------------------- */
 CREATE OR ALTER PROCEDURE autogara.sp_AnuleazaBilet
     @BiletID               UNIQUEIDENTIFIER,
     @UtilizatorID          UNIQUEIDENTIFIER,
@@ -385,10 +347,6 @@ BEGIN
 END;
 GO
 
-/* ---------------------------------------------------------------------
-   sp_RaportVanzariZilnic — vânzări pe o zi (ora locală), pe traseu,
-   casier și metodă de plată. @Data NULL = azi.
-   --------------------------------------------------------------------- */
 CREATE OR ALTER PROCEDURE autogara.sp_RaportVanzariZilnic
     @Data DATE = NULL
 AS
@@ -422,10 +380,6 @@ BEGIN
 END;
 GO
 
-/* ---------------------------------------------------------------------
-   sp_RaportOcupareCurse — gradul de ocupare pe un interval de date,
-   opțional filtrat pe traseu.
-   --------------------------------------------------------------------- */
 CREATE OR ALTER PROCEDURE autogara.sp_RaportOcupareCurse
     @DataStart DATE,
     @DataStop  DATE,
@@ -459,10 +413,6 @@ BEGIN
 END;
 GO
 
-/* ---------------------------------------------------------------------
-   sp_AdaugaUtilizator — parola vine deja hash-uită din backend
-   (PBKDF2/BCrypt); baza de date nu vede niciodată parola în clar.
-   --------------------------------------------------------------------- */
 CREATE OR ALTER PROCEDURE autogara.sp_AdaugaUtilizator
     @NumeUtilizator      NVARCHAR(50),
     @ParolaHash          VARBINARY(256),
@@ -512,10 +462,6 @@ BEGIN
 END;
 GO
 
-/* ---------------------------------------------------------------------
-   sp_DezactiveazaUtilizator — soft-delete; nu permite dezactivarea
-   ultimului administrator activ sau a propriului cont.
-   --------------------------------------------------------------------- */
 CREATE OR ALTER PROCEDURE autogara.sp_DezactiveazaUtilizator
     @UtilizatorID             UNIQUEIDENTIFIER,
     @DezactivatDeUtilizatorID UNIQUEIDENTIFIER
@@ -554,7 +500,6 @@ BEGIN
         SET Activ = 0, ModificatLa = SYSUTCDATETIME()
         WHERE UtilizatorID = @UtilizatorID;
 
-        -- rezervările provizorii ale utilizatorului nu mai au sens
         UPDATE l
         SET l.Status = N'Liber'
         FROM autogara.Locuri AS l

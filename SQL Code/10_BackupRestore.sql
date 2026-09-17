@@ -1,38 +1,12 @@
-﻿/* =====================================================================
-   10_BackupRestore.sql
-   Backup manual + TEST DE RESTAURARE (obligatoriu înainte de lansare).
-
-   Ce face:
-     1. Backup complet cu CHECKSUM în $(BackupPath)
-     2. RESTORE VERIFYONLY pe fișierul creat
-     3. Restaurează backup-ul într-o bază separată "autogara_TestRestaurare"
-        (baza de producție NU este atinsă)
-     4. DBCC CHECKDB + comparație număr de rânduri pe tabele
-     5. Șterge baza de test
-
-   Rulare în SQLCMD mode:
-     sqlcmd -S <server>,<port> -U <dba> -i 10_BackupRestore.sql -v BackupPath="D:\Backup\autogara"
-
-   Restaurare reală după incident (manual, NU rulați automat):
-     RESTORE DATABASE autogara FROM DISK = N'...\autogara_FULL_xxx.bak' WITH NORECOVERY, REPLACE;
-     RESTORE DATABASE autogara FROM DISK = N'...\autogara_DIFF_xxx.dif' WITH RECOVERY;  -- ultimul diferențial
-   Separat: se restaurează și folderul File-Server (Autobuze/, Harta/) din backup-ul de fișiere.
-   ===================================================================== */
-
-:on error exit
-
-USE master;
+﻿USE master;
 GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
 
-IF N'$(BackupPath)' = N'' OR N'$(BackupPath)' LIKE N'<%'
-    RAISERROR (N'Completați variabila SQLCMD BackupPath înainte de rulare.', 16, 1);
-GO
+DECLARE @BackupPath NVARCHAR(260) = N'D:\Backup\autogara';
 
-/* ------------------------ 1. Backup complet ------------------------ */
-DECLARE @Fisier NVARCHAR(400) = N'$(BackupPath)\autogara_FULL_' + FORMAT(SYSDATETIME(), 'yyyyMMdd_HHmm') + N'_manual.bak';
+DECLARE @Fisier NVARCHAR(400) = @BackupPath + N'\autogara_FULL_' + FORMAT(SYSDATETIME(), 'yyyyMMdd_HHmm') + N'_manual.bak';
 DECLARE @Optiuni NVARCHAR(100) = CASE WHEN SERVERPROPERTY('EngineEdition') = 4 THEN N'' ELSE N', COMPRESSION' END;
 DECLARE @Sql NVARCHAR(MAX) =
     N'BACKUP DATABASE autogara TO DISK = @f WITH INIT, CHECKSUM, COPY_ONLY' + @Optiuni
@@ -40,10 +14,8 @@ DECLARE @Sql NVARCHAR(MAX) =
 
 EXEC sp_executesql @Sql, N'@f NVARCHAR(400)', @f = @Fisier;
 
-/* ------------------------ 2. Verificare fișier --------------------- */
 RESTORE VERIFYONLY FROM DISK = @Fisier WITH CHECKSUM;
 
-/* ------------------ 3. Restaurare într-o bază de test -------------- */
 IF DB_ID(N'autogara_TestRestaurare') IS NOT NULL
 BEGIN
     ALTER DATABASE autogara_TestRestaurare SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
@@ -74,7 +46,6 @@ SET @Sql = N'RESTORE DATABASE autogara_TestRestaurare FROM DISK = @f WITH RECOVE
 EXEC sp_executesql @Sql, N'@f NVARCHAR(400)', @f = @Fisier;
 GO
 
-/* ------------------ 4. Integritate + comparație date --------------- */
 DBCC CHECKDB (N'autogara_TestRestaurare') WITH NO_INFOMSGS;
 GO
 
@@ -96,16 +67,12 @@ SELECT
     o.Tabel,
     o.Randuri AS RanduriOriginal,
     r.Randuri AS RanduriRestaurat,
-    CASE WHEN o.Randuri = r.Randuri THEN N'OK' ELSE N'DIFERENȚĂ (tranzacții după backup?)' END AS Rezultat
+    CASE WHEN o.Randuri = r.Randuri THEN N'OK' ELSE N'DIFERENȚĂ' END AS Rezultat
 FROM Original AS o
 LEFT JOIN Restaurat AS r ON r.Tabel = o.Tabel
 ORDER BY o.Tabel;
 GO
 
-/* ------------------------ 5. Curățare bază test -------------------- */
 ALTER DATABASE autogara_TestRestaurare SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
 DROP DATABASE autogara_TestRestaurare;
-GO
-
-PRINT N'Test de restaurare finalizat cu succes.';
 GO

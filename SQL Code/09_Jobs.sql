@@ -1,34 +1,14 @@
-﻿/* =====================================================================
-   09_Jobs.sql
-   Joburi SQL Server Agent.
-
-   Cerințe: SQL Server Agent pornit (serviciul pe Automatic).
-   NOTĂ: ediția Express NU are SQL Server Agent — acolo aceleași comenzi
-   se programează din Windows Task Scheduler cu sqlcmd.
-
-   Rulare în SQLCMD mode, cu variabila BackupPath, ex.:
-     sqlcmd -S <server>,<port> -U <dba> -i 09_Jobs.sql -v BackupPath="D:\Backup\autogara"
-   Folderul BackupPath trebuie să existe și contul serviciului SQL Server
-   trebuie să aibă drept de scriere în el.
-   ===================================================================== */
-
-:on error exit
-
-USE msdb;
+﻿USE msdb;
 GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
 
-IF N'$(BackupPath)' = N'' OR N'$(BackupPath)' LIKE N'<%'
-    RAISERROR (N'Completați variabila SQLCMD BackupPath înainte de rulare.', 16, 1);
-GO
+DECLARE @BackupPath NVARCHAR(260) = N'D:\Backup\autogara';
 
 IF NOT EXISTS (SELECT 1 FROM msdb.dbo.syscategories WHERE name = N'Autogara' AND category_class = 1)
     EXEC msdb.dbo.sp_add_category @class = N'JOB', @type = N'LOCAL', @name = N'Autogara';
-GO
 
-/* Șterge joburile existente cu același nume, ca scriptul să poată fi rulat din nou */
 DECLARE @Job SYSNAME;
 DECLARE jobs CURSOR LOCAL FAST_FORWARD FOR
     SELECT name FROM msdb.dbo.sysjobs
@@ -43,11 +23,9 @@ BEGIN
 END
 CLOSE jobs;
 DEALLOCATE jobs;
-GO
 
-/* =====================================================================
-   1. Job_ElibereazaRezervariExpirate — la fiecare minut
-   ===================================================================== */
+DECLARE @Comanda NVARCHAR(MAX);
+
 EXEC msdb.dbo.sp_add_job
      @job_name = N'Job_ElibereazaRezervariExpirate',
      @description = N'Eliberează locurile cu rezervare provizorie expirată.',
@@ -66,45 +44,45 @@ EXEC msdb.dbo.sp_add_jobstep
 EXEC msdb.dbo.sp_add_jobschedule
      @job_name = N'Job_ElibereazaRezervariExpirate',
      @name = N'Autogara - la fiecare minut',
-     @freq_type = 4, @freq_interval = 1,          -- zilnic
-     @freq_subday_type = 4, @freq_subday_interval = 1,   -- la 1 minut
+     @freq_type = 4, @freq_interval = 1,
+     @freq_subday_type = 4, @freq_subday_interval = 1,
      @active_start_time = 000000, @active_end_time = 235959;
 
 EXEC msdb.dbo.sp_add_jobserver @job_name = N'Job_ElibereazaRezervariExpirate', @server_name = N'(local)';
-GO
 
-/* =====================================================================
-   2. Job_BackupComplet — zilnic la 02:00, păstrare 30 de zile
-   ===================================================================== */
 EXEC msdb.dbo.sp_add_job
      @job_name = N'Job_BackupComplet',
      @description = N'Backup complet zilnic al bazei autogara, cu verificare și ștergerea fișierelor mai vechi de 30 de zile.',
      @category_name = N'Autogara',
      @owner_login_name = N'sa';
 
+SET @Comanda = REPLACE(N'
+DECLARE @Fisier NVARCHAR(400) = N''{BackupPath}\autogara_FULL_'' + FORMAT(SYSDATETIME(), ''yyyyMMdd_HHmm'') + N''.bak'';
+DECLARE @Optiuni NVARCHAR(100) = CASE WHEN SERVERPROPERTY(''EngineEdition'') = 4 THEN N'''' ELSE N'', COMPRESSION'' END;
+DECLARE @Sql NVARCHAR(MAX) = N''BACKUP DATABASE autogara TO DISK = @f WITH INIT, CHECKSUM'' + @Optiuni
+                           + N'', NAME = N''''autogara - backup complet'''';'';
+EXEC sp_executesql @Sql, N''@f NVARCHAR(400)'', @f = @Fisier;
+RESTORE VERIFYONLY FROM DISK = @Fisier WITH CHECKSUM;', N'{BackupPath}', @BackupPath);
+
 EXEC msdb.dbo.sp_add_jobstep
      @job_name = N'Job_BackupComplet',
      @step_name = N'Backup complet',
      @subsystem = N'TSQL',
      @database_name = N'master',
-     @on_success_action = 3,   -- următorul pas
-     @command = N'
-DECLARE @Fisier NVARCHAR(400) = N''$(BackupPath)\autogara_FULL_'' + FORMAT(SYSDATETIME(), ''yyyyMMdd_HHmm'') + N''.bak'';
-DECLARE @Optiuni NVARCHAR(100) = CASE WHEN SERVERPROPERTY(''EngineEdition'') = 4 THEN N'''' ELSE N'', COMPRESSION'' END;
-DECLARE @Sql NVARCHAR(MAX) = N''BACKUP DATABASE autogara TO DISK = @f WITH INIT, CHECKSUM'' + @Optiuni
-                           + N'', NAME = N''''autogara - backup complet'''';'';
-EXEC sp_executesql @Sql, N''@f NVARCHAR(400)'', @f = @Fisier;
-RESTORE VERIFYONLY FROM DISK = @Fisier WITH CHECKSUM;';
+     @on_success_action = 3,
+     @command = @Comanda;
+
+SET @Comanda = REPLACE(N'
+DECLARE @Limita DATETIME = DATEADD(DAY, -30, GETDATE());
+EXECUTE master.dbo.xp_delete_file 0, N''{BackupPath}'', N''bak'', @Limita, 0;
+EXECUTE master.dbo.xp_delete_file 0, N''{BackupPath}'', N''dif'', @Limita, 0;', N'{BackupPath}', @BackupPath);
 
 EXEC msdb.dbo.sp_add_jobstep
      @job_name = N'Job_BackupComplet',
      @step_name = N'Stergere backup-uri mai vechi de 30 zile',
      @subsystem = N'TSQL',
      @database_name = N'master',
-     @command = N'
-DECLARE @Limita DATETIME = DATEADD(DAY, -30, GETDATE());
-EXECUTE master.dbo.xp_delete_file 0, N''$(BackupPath)'', N''bak'', @Limita, 0;
-EXECUTE master.dbo.xp_delete_file 0, N''$(BackupPath)'', N''dif'', @Limita, 0;';
+     @command = @Comanda;
 
 EXEC msdb.dbo.sp_add_jobschedule
      @job_name = N'Job_BackupComplet',
@@ -113,46 +91,40 @@ EXEC msdb.dbo.sp_add_jobschedule
      @active_start_time = 020000;
 
 EXEC msdb.dbo.sp_add_jobserver @job_name = N'Job_BackupComplet', @server_name = N'(local)';
-GO
 
-/* =====================================================================
-   3. Job_BackupDiferential — la 4 ore, între 06:00 și 22:00
-   ===================================================================== */
 EXEC msdb.dbo.sp_add_job
      @job_name = N'Job_BackupDiferential',
      @description = N'Backup diferențial al bazei autogara în timpul programului autogării.',
      @category_name = N'Autogara',
      @owner_login_name = N'sa';
 
+SET @Comanda = REPLACE(N'
+DECLARE @Fisier NVARCHAR(400) = N''{BackupPath}\autogara_DIFF_'' + FORMAT(SYSDATETIME(), ''yyyyMMdd_HHmm'') + N''.dif'';
+DECLARE @Optiuni NVARCHAR(100) = CASE WHEN SERVERPROPERTY(''EngineEdition'') = 4 THEN N'''' ELSE N'', COMPRESSION'' END;
+DECLARE @Sql NVARCHAR(MAX) = N''BACKUP DATABASE autogara TO DISK = @f WITH DIFFERENTIAL, INIT, CHECKSUM'' + @Optiuni
+                           + N'', NAME = N''''autogara - backup diferential'''';'';
+EXEC sp_executesql @Sql, N''@f NVARCHAR(400)'', @f = @Fisier;
+RESTORE VERIFYONLY FROM DISK = @Fisier WITH CHECKSUM;', N'{BackupPath}', @BackupPath);
+
 EXEC msdb.dbo.sp_add_jobstep
      @job_name = N'Job_BackupDiferential',
      @step_name = N'Backup diferential',
      @subsystem = N'TSQL',
      @database_name = N'master',
-     @command = N'
-DECLARE @Fisier NVARCHAR(400) = N''$(BackupPath)\autogara_DIFF_'' + FORMAT(SYSDATETIME(), ''yyyyMMdd_HHmm'') + N''.dif'';
-DECLARE @Optiuni NVARCHAR(100) = CASE WHEN SERVERPROPERTY(''EngineEdition'') = 4 THEN N'''' ELSE N'', COMPRESSION'' END;
-DECLARE @Sql NVARCHAR(MAX) = N''BACKUP DATABASE autogara TO DISK = @f WITH DIFFERENTIAL, INIT, CHECKSUM'' + @Optiuni
-                           + N'', NAME = N''''autogara - backup diferential'''';'';
-EXEC sp_executesql @Sql, N''@f NVARCHAR(400)'', @f = @Fisier;
-RESTORE VERIFYONLY FROM DISK = @Fisier WITH CHECKSUM;';
+     @command = @Comanda;
 
 EXEC msdb.dbo.sp_add_jobschedule
      @job_name = N'Job_BackupDiferential',
      @name = N'Autogara - la 4 ore (06-22)',
      @freq_type = 4, @freq_interval = 1,
-     @freq_subday_type = 8, @freq_subday_interval = 4,   -- la 4 ore
+     @freq_subday_type = 8, @freq_subday_interval = 4,
      @active_start_time = 060000, @active_end_time = 220000;
 
 EXEC msdb.dbo.sp_add_jobserver @job_name = N'Job_BackupDiferential', @server_name = N'(local)';
-GO
 
-/* =====================================================================
-   4. Job_CurataLogAudit — lunar (ziua 1, 03:30), păstrează 12 luni
-   ===================================================================== */
 EXEC msdb.dbo.sp_add_job
      @job_name = N'Job_CurataLogAudit',
-     @description = N'Șterge înregistrările din LogAudit mai vechi de 12 luni (în loturi, fără blocări lungi).',
+     @description = N'Șterge înregistrările din LogAudit mai vechi de 12 luni.',
      @category_name = N'Autogara',
      @owner_login_name = N'sa';
 
@@ -180,14 +152,7 @@ EXEC msdb.dbo.sp_add_jobschedule
      @active_start_time = 033000;
 
 EXEC msdb.dbo.sp_add_jobserver @job_name = N'Job_CurataLogAudit', @server_name = N'(local)';
-GO
 
-/* =====================================================================
-   5. Job_VerificaExpirareITP — zilnic la 07:00
-      Autobuzele cu ITP expirat sau care expiră în următoarele 14 zile
-      sunt scrise în LogAudit (vizibile în aplicație) și în error log-ul
-      SQL Server (pentru alerte). Autobuzele cu ITP expirat trec în Service.
-   ===================================================================== */
 EXEC msdb.dbo.sp_add_job
      @job_name = N'Job_VerificaExpirareITP',
      @description = N'Alertă pentru autobuzele cu ITP expirat sau care expiră în 14 zile.',
@@ -202,7 +167,6 @@ EXEC msdb.dbo.sp_add_jobstep
      @command = N'
 DECLARE @Azi DATE = CAST(autogara.fn_AcumLocal() AS DATE);
 
--- ITP expirat: autobuzul nu mai poate fi folosit
 UPDATE autogara.Autobuze
 SET Status = N''Service'', ModificatLa = SYSUTCDATETIME()
 WHERE Activ = 1 AND Status = N''Activ'' AND DataExpirareITP < @Azi;
@@ -231,13 +195,7 @@ EXEC msdb.dbo.sp_add_jobschedule
      @active_start_time = 070000;
 
 EXEC msdb.dbo.sp_add_jobserver @job_name = N'Job_VerificaExpirareITP', @server_name = N'(local)';
-GO
 
-/* =====================================================================
-   6. Job_VerificaSpatiuDisc — la 6 ore
-      Jobul eșuează (și apare în istoricul Agent / error log) dacă pe
-      un volum cu fișiere ale bazei sau backup-uri rămâne < 10% sau < 5 GB.
-   ===================================================================== */
 EXEC msdb.dbo.sp_add_job
      @job_name = N'Job_VerificaSpatiuDisc',
      @description = N'Verifică spațiul liber pe discurile cu fișierele bazei de date autogara.',
@@ -281,7 +239,6 @@ EXEC msdb.dbo.sp_add_jobschedule
 EXEC msdb.dbo.sp_add_jobserver @job_name = N'Job_VerificaSpatiuDisc', @server_name = N'(local)';
 GO
 
-/* Verificare */
 SELECT j.name AS Job, j.enabled AS Activ, s.name AS Program
 FROM msdb.dbo.sysjobs AS j
 JOIN msdb.dbo.sysjobschedules AS js ON js.job_id = j.job_id

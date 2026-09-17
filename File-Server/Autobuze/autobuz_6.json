@@ -1,0 +1,263 @@
+{
+  "autobuzId": 6,
+  "randuri": 13,
+  "coloane": 4,
+  "culoarDupaColoana": 2,
+  "locuri": [
+    {
+      "numarLoc": 1,
+      "rand": 1,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 2,
+      "rand": 1,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 3,
+      "rand": 1,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 4,
+      "rand": 1,
+      "coloana": 4
+    },
+    {
+      "numarLoc": 5,
+      "rand": 2,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 6,
+      "rand": 2,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 7,
+      "rand": 2,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 8,
+      "rand": 2,
+      "coloana": 4
+    },
+    {
+      "numarLoc": 9,
+      "rand": 3,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 10,
+      "rand": 3,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 11,
+      "rand": 3,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 12,
+      "rand": 3,
+      "coloana": 4
+    },
+    {
+      "numarLoc": 13,
+      "rand": 4,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 14,
+      "rand": 4,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 15,
+      "rand": 4,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 16,
+      "rand": 4,
+      "coloana": 4
+    },
+    {
+      "numarLoc": 17,
+      "rand": 5,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 18,
+      "rand": 5,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 19,
+      "rand": 5,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 20,
+      "rand": 5,
+      "coloana": 4
+    },
+    {
+      "numarLoc": 21,
+      "rand": 6,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 22,
+      "rand": 6,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 23,
+      "rand": 6,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 24,
+      "rand": 6,
+      "coloana": 4
+    },
+    {
+      "numarLoc": 25,
+      "rand": 7,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 26,
+      "rand": 7,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 27,
+      "rand": 7,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 28,
+      "rand": 7,
+      "coloana": 4
+    },
+    {
+      "numarLoc": 29,
+      "rand": 8,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 30,
+      "rand": 8,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 31,
+      "rand": 8,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 32,
+      "rand": 8,
+      "coloana": 4
+    },
+    {
+      "numarLoc": 33,
+      "rand": 9,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 34,
+      "rand": 9,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 35,
+      "rand": 9,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 36,
+      "rand": 9,
+      "coloana": 4
+    },
+    {
+      "numarLoc": 37,
+      "rand": 10,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 38,
+      "rand": 10,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 39,
+      "rand": 10,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 40,
+      "rand": 10,
+      "coloana": 4
+    },
+    {
+      "numarLoc": 41,
+      "rand": 11,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 42,
+      "rand": 11,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 43,
+      "rand": 11,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 44,
+      "rand": 11,
+      "coloana": 4
+    },
+    {
+      "numarLoc": 45,
+      "rand": 12,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 46,
+      "rand": 12,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 47,
+      "rand": 12,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 48,
+      "rand": 12,
+      "coloana": 4
+    },
+    {
+      "numarLoc": 49,
+      "rand": 13,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 50,
+      "rand": 13,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 51,
+      "rand": 13,
+      "coloana": 3
+    }
+  ]
+}

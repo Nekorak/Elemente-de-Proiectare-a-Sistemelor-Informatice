@@ -1,0 +1,108 @@
+{
+  "autobuzId": 2,
+  "randuri": 7,
+  "coloane": 3,
+  "culoarDupaColoana": 2,
+  "locuri": [
+    {
+      "numarLoc": 1,
+      "rand": 1,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 2,
+      "rand": 1,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 3,
+      "rand": 1,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 4,
+      "rand": 2,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 5,
+      "rand": 2,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 6,
+      "rand": 2,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 7,
+      "rand": 3,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 8,
+      "rand": 3,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 9,
+      "rand": 3,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 10,
+      "rand": 4,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 11,
+      "rand": 4,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 12,
+      "rand": 4,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 13,
+      "rand": 5,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 14,
+      "rand": 5,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 15,
+      "rand": 5,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 16,
+      "rand": 6,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 17,
+      "rand": 6,
+      "coloana": 2
+    },
+    {
+      "numarLoc": 18,
+      "rand": 6,
+      "coloana": 3
+    },
+    {
+      "numarLoc": 19,
+      "rand": 7,
+      "coloana": 1
+    },
+    {
+      "numarLoc": 20,
+      "rand": 7,
+      "coloana": 2
+    }
+  ]
+}

@@ -1,25 +1,9 @@
-﻿/* =====================================================================
-   03_Tables.sql
-   Toate tabelele schemei autogara, cu chei, relații și constrângeri.
-
-   Convenții:
-   - PascalCase, tabele la plural
-   - INT IDENTITY pentru entități interne; UNIQUEIDENTIFIER pentru
-     Utilizatori, Bilete, RezervariProvizorii (cache local / offline)
-   - CreatLa (DATETIME2, UTC) / ModificatLa (NULL) pentru audit
-   - Soft-delete prin Activ (BIT) pe entitățile de referință
-   - ROWVERSION pe Locuri, Bilete, Utilizatori (concurență optimistă)
-   - Status-uri prin CHECK constraints cu valori fixe
-
-   ATENȚIE: scriptul ȘTERGE și recreează tabelele (inclusiv datele).
-   ===================================================================== */
-USE autogara;
+﻿USE autogara;
 GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
 
-/* ---------- Ștergere în ordinea inversă a dependențelor ---------- */
 DROP TABLE IF EXISTS
     autogara.LogAudit,
     autogara.Plati,
@@ -39,8 +23,6 @@ DROP TABLE IF EXISTS
     autogara.Utilizatori,
     autogara.Roluri;
 GO
-
-/* =========================== Utilizatori ========================== */
 
 CREATE TABLE autogara.Roluri
 (
@@ -76,8 +58,6 @@ CREATE TABLE autogara.Utilizatori
 );
 GO
 
-/* ============================== Hartă ============================= */
-
 CREATE TABLE autogara.Noduri
 (
     NodID       INT IDENTITY(1, 1)  NOT NULL,
@@ -94,7 +74,6 @@ CREATE TABLE autogara.Noduri
 );
 GO
 
--- Conexiunile sunt orientate: pentru drum în ambele sensuri există două rânduri.
 CREATE TABLE autogara.Conexiuni
 (
     ConexiuneID INT IDENTITY(1, 1)  NOT NULL,
@@ -127,8 +106,6 @@ CREATE TABLE autogara.Statii
 );
 GO
 
-/* ======================== Autobuze și șoferi ====================== */
-
 CREATE TABLE autogara.Autobuze
 (
     AutobuzID        INT IDENTITY(1, 1) NOT NULL,
@@ -136,7 +113,7 @@ CREATE TABLE autogara.Autobuze
     Model            NVARCHAR(100)      NOT NULL,
     CapacitateLocuri SMALLINT           NOT NULL,
     Status           NVARCHAR(20)       NOT NULL CONSTRAINT DF_Autobuze_Status DEFAULT N'Activ',
-    CaleFisierJSON   NVARCHAR(260)      NULL,   -- cale relativă la rădăcina File-Server
+    CaleFisierJSON   NVARCHAR(260)      NULL,
     DataExpirareITP  DATE               NULL,
     Activ            BIT                NOT NULL CONSTRAINT DF_Autobuze_Activ DEFAULT 1,
     CreatLa          DATETIME2(3)       NOT NULL CONSTRAINT DF_Autobuze_CreatLa DEFAULT SYSUTCDATETIME(),
@@ -181,8 +158,6 @@ CREATE TABLE autogara.Soferi
 );
 GO
 
-/* ============================= Trasee ============================= */
-
 CREATE TABLE autogara.Trasee
 (
     TraseuID    INT IDENTITY(1, 1)  NOT NULL,
@@ -212,8 +187,6 @@ CREATE TABLE autogara.TraseuOpriri
 );
 GO
 
-/* ============================ Vânzare ============================= */
-
 CREATE TABLE autogara.TipuriReducere
 (
     TipReducereID   INT IDENTITY(1, 1)  NOT NULL,
@@ -227,7 +200,6 @@ CREATE TABLE autogara.TipuriReducere
 );
 GO
 
--- DataCursa + OraPlecare/OraSosireEstimata sunt în ora locală (Chișinău).
 CREATE TABLE autogara.Curse
 (
     CursaID           INT IDENTITY(1, 1) NOT NULL,
@@ -263,14 +235,12 @@ CREATE TABLE autogara.Locuri
     CONSTRAINT PK_Locuri PRIMARY KEY (LocID),
     CONSTRAINT FK_Locuri_Curse FOREIGN KEY (CursaID) REFERENCES autogara.Curse (CursaID),
     CONSTRAINT UQ_Locuri_CursaNumar UNIQUE (CursaID, NumarLoc),
-    -- țintă pentru FK compus din Bilete (garantează că locul aparține cursei biletului)
     CONSTRAINT UQ_Locuri_LocCursa UNIQUE (LocID, CursaID),
     CONSTRAINT CK_Locuri_NumarLoc CHECK (NumarLoc > 0),
     CONSTRAINT CK_Locuri_Status CHECK (Status IN (N'Liber', N'Rezervat', N'Ocupat'))
 );
 GO
 
--- Datele de timp sunt în UTC.
 CREATE TABLE autogara.RezervariProvizorii
 (
     RezervareID  UNIQUEIDENTIFIER NOT NULL CONSTRAINT DF_RezervariProvizorii_RezervareID DEFAULT NEWID(),
@@ -287,11 +257,6 @@ CREATE TABLE autogara.RezervariProvizorii
 );
 GO
 
-/* Bilete:
-   - Unicitatea CodBilet este dată de indexul unic IX_Bilete_CodBilet (04_Indexes.sql).
-   - "LocID UNIQUE" din plan este implementat ca index unic FILTRAT pe biletele
-     cu Status = 'Activ' (UX_Bilete_LocID_Activ, 04_Indexes.sql), altfel un loc
-     eliberat prin anulare n-ar mai putea fi revândut. */
 CREATE TABLE autogara.Bilete
 (
     BiletID              UNIQUEIDENTIFIER NOT NULL CONSTRAINT DF_Bilete_BiletID DEFAULT NEWID(),
@@ -318,7 +283,6 @@ CREATE TABLE autogara.Bilete
 );
 GO
 
--- O plată 'Finalizata' = încasare; o plată 'Rambursata' = suma returnată pasagerului.
 CREATE TABLE autogara.Plati
 (
     PlataID        BIGINT IDENTITY(1, 1) NOT NULL,
@@ -337,15 +301,13 @@ CREATE TABLE autogara.Plati
 );
 GO
 
-/* ============================= Audit ============================== */
-
 CREATE TABLE autogara.LogAudit
 (
     LogID        BIGINT IDENTITY(1, 1) NOT NULL,
-    UtilizatorID UNIQUEIDENTIFIER      NULL,   -- NULL = acțiune de sistem (job)
+    UtilizatorID UNIQUEIDENTIFIER      NULL,
     Actiune      NVARCHAR(200)         NOT NULL,
     Entitate     NVARCHAR(100)         NULL,
-    EntitateID   NVARCHAR(50)          NULL,   -- text: poate fi INT sau GUID
+    EntitateID   NVARCHAR(50)          NULL,
     DataOra      DATETIME2(3)          NOT NULL CONSTRAINT DF_LogAudit_DataOra DEFAULT SYSUTCDATETIME(),
 
     CONSTRAINT PK_LogAudit PRIMARY KEY (LogID),

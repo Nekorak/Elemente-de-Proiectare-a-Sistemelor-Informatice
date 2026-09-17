@@ -1,0 +1,261 @@
+{
+  "noduri": [
+    {
+      "id": 1,
+      "tip": "Statie",
+      "nume": "Chișinău – Autogara Centrală",
+      "x": 892,
+      "y": 592
+    },
+    {
+      "id": 2,
+      "tip": "Statie",
+      "nume": "Chișinău – Autogara Nord",
+      "x": 880,
+      "y": 568
+    },
+    {
+      "id": 3,
+      "tip": "Statie",
+      "nume": "Orhei",
+      "x": 888,
+      "y": 448
+    },
+    {
+      "id": 4,
+      "tip": "Statie",
+      "nume": "Bălți",
+      "x": 532,
+      "y": 296
+    },
+    {
+      "id": 5,
+      "tip": "Statie",
+      "nume": "Soroca",
+      "x": 680,
+      "y": 136
+    },
+    {
+      "id": 6,
+      "tip": "Statie",
+      "nume": "Edineț",
+      "x": 284,
+      "y": 132
+    },
+    {
+      "id": 7,
+      "tip": "Statie",
+      "nume": "Strășeni",
+      "x": 804,
+      "y": 544
+    },
+    {
+      "id": 8,
+      "tip": "Statie",
+      "nume": "Călărași",
+      "x": 684,
+      "y": 496
+    },
+    {
+      "id": 9,
+      "tip": "Statie",
+      "nume": "Ungheni",
+      "x": 480,
+      "y": 516
+    },
+    {
+      "id": 10,
+      "tip": "Statie",
+      "nume": "Hîncești",
+      "x": 796,
+      "y": 668
+    },
+    {
+      "id": 11,
+      "tip": "Statie",
+      "nume": "Cimișlia",
+      "x": 872,
+      "y": 792
+    },
+    {
+      "id": 12,
+      "tip": "Statie",
+      "nume": "Comrat",
+      "x": 824,
+      "y": 880
+    },
+    {
+      "id": 13,
+      "tip": "Statie",
+      "nume": "Cahul",
+      "x": 636,
+      "y": 1040
+    },
+    {
+      "id": 14,
+      "tip": "Intersectie",
+      "nume": "Intersecția Peresecina (M2)",
+      "x": 868,
+      "y": 500
+    },
+    {
+      "id": 15,
+      "tip": "Intersectie",
+      "nume": "Intersecția Ciocîlteni (M2/R14)",
+      "x": 768,
+      "y": 388
+    }
+  ],
+  "conexiuni": [
+    {
+      "nodPlecareId": 1,
+      "nodSosireId": 2,
+      "distantaKm": 4.5
+    },
+    {
+      "nodPlecareId": 2,
+      "nodSosireId": 14,
+      "distantaKm": 26
+    },
+    {
+      "nodPlecareId": 14,
+      "nodSosireId": 3,
+      "distantaKm": 18
+    },
+    {
+      "nodPlecareId": 3,
+      "nodSosireId": 15,
+      "distantaKm": 22
+    },
+    {
+      "nodPlecareId": 15,
+      "nodSosireId": 4,
+      "distantaKm": 70
+    },
+    {
+      "nodPlecareId": 15,
+      "nodSosireId": 5,
+      "distantaKm": 85
+    },
+    {
+      "nodPlecareId": 4,
+      "nodSosireId": 6,
+      "distantaKm": 70
+    },
+    {
+      "nodPlecareId": 1,
+      "nodSosireId": 7,
+      "distantaKm": 24
+    },
+    {
+      "nodPlecareId": 7,
+      "nodSosireId": 8,
+      "distantaKm": 30
+    },
+    {
+      "nodPlecareId": 8,
+      "nodSosireId": 9,
+      "distantaKm": 52
+    },
+    {
+      "nodPlecareId": 1,
+      "nodSosireId": 10,
+      "distantaKm": 36
+    },
+    {
+      "nodPlecareId": 1,
+      "nodSosireId": 11,
+      "distantaKm": 70
+    },
+    {
+      "nodPlecareId": 10,
+      "nodSosireId": 11,
+      "distantaKm": 38
+    },
+    {
+      "nodPlecareId": 11,
+      "nodSosireId": 12,
+      "distantaKm": 30
+    },
+    {
+      "nodPlecareId": 12,
+      "nodSosireId": 13,
+      "distantaKm": 75
+    },
+    {
+      "nodPlecareId": 2,
+      "nodSosireId": 1,
+      "distantaKm": 4.5
+    },
+    {
+      "nodPlecareId": 14,
+      "nodSosireId": 2,
+      "distantaKm": 26
+    },
+    {
+      "nodPlecareId": 3,
+      "nodSosireId": 14,
+      "distantaKm": 18
+    },
+    {
+      "nodPlecareId": 15,
+      "nodSosireId": 3,
+      "distantaKm": 22
+    },
+    {
+      "nodPlecareId": 4,
+      "nodSosireId": 15,
+      "distantaKm": 70
+    },
+    {
+      "nodPlecareId": 5,
+      "nodSosireId": 15,
+      "distantaKm": 85
+    },
+    {
+      "nodPlecareId": 6,
+      "nodSosireId": 4,
+      "distantaKm": 70
+    },
+    {
+      "nodPlecareId": 7,
+      "nodSosireId": 1,
+      "distantaKm": 24
+    },
+    {
+      "nodPlecareId": 8,
+      "nodSosireId": 7,
+      "distantaKm": 30
+    },
+    {
+      "nodPlecareId": 9,
+      "nodSosireId": 8,
+      "distantaKm": 52
+    },
+    {
+      "nodPlecareId": 10,
+      "nodSosireId": 1,
+      "distantaKm": 36
+    },
+    {
+      "nodPlecareId": 11,
+      "nodSosireId": 1,
+      "distantaKm": 70
+    },
+    {
+      "nodPlecareId": 11,
+      "nodSosireId": 10,
+      "distantaKm": 38
+    },
+    {
+      "nodPlecareId": 12,
+      "nodSosireId": 11,
+      "distantaKm": 30
+    },
+    {
+      "nodPlecareId": 13,
+      "nodSosireId": 12,
+      "distantaKm": 75
+    }
+  ]
+}

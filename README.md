@@ -88,7 +88,7 @@ Aplicația rulează pe laptop (client). Computerul de acasă este serverul: pe e
 ```
 App/                    soluția .NET (Backend + Frontend)
 File-Server/            structura folderelor de pe file server
-SQL Code/               scripturile bazei de date (00_RunAll.sql le rulează în ordine)
+SQL Code/               scripturile bazei de date, numerotate în ordinea rulării
 Sarcina Tehnica.docx    sarcina tehnică, aprobată de colegiu
 plan.md                 planul tehnic detaliat al proiectului
 Credentials.txt         credențialele proiectului (repo privat)
@@ -96,11 +96,11 @@ Credentials.txt         credențialele proiectului (repo privat)
 
 ## Rularea bazei de date
 
-Deschide `SQL Code/00_RunAll.sql` în SSMS și activează **Query → SQLCMD Mode**. Setează `ScriptsPath` la calea absolută a folderului, apoi rulează cu F5.
+Scripturile din `SQL Code` se rulează manual în SSMS, în ordinea numerelor (`01` → `11`). `10_BackupRestore.sql` se rulează doar la testul de restaurare. În `09_Jobs.sql` și `10_BackupRestore.sql`, verifică `@BackupPath` de la începutul scriptului.
 
 Datele de test acoperă intervalul de la 7 zile în urmă până la 7 zile înainte față de ziua rulării.
 
-Parolele se pun în `SQL Code/Parole.local.sql` (copie după `Parole.example.sql`, nu se urcă în Git). Login-urile și parolele echipei sunt în `Credentials.txt`.
+Login-urile SQL și conturile din aplicație sunt în `Credentials.txt`.
 
 ## Reguli de lucru
 
