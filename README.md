@@ -8,7 +8,7 @@ Proiect de echipă · Elemente de Proiectare a Sistemelor Informatice
 ![C#](https://img.shields.io/badge/C%23-239120?logo=csharp&logoColor=white)
 ![SQL Server](https://img.shields.io/badge/Microsoft_SQL_Server-CC2927?logo=microsoftsqlserver&logoColor=white)
 ![Model](https://img.shields.io/badge/model-waterfall-blue)
-![Status](https://img.shields.io/badge/etapa_curent%C4%83-Baz%C4%83_de_Date-orange)
+![Status](https://img.shields.io/badge/etapa_curent%C4%83-Backend-orange)
 
 </div>
 
@@ -51,16 +51,16 @@ Aplicația rulează pe laptop (client). Computerul de acasă este serverul: pe e
 - [ ] Dicționarul de date
 
 ### Backend — Hanganu Sergiu
-- [ ] Stratul de acces la date și conexiunea la distanță
-- [ ] Autentificarea, rolurile și recuperarea parolei
-- [ ] Serviciile pentru hartă
-- [ ] Parsarea și validarea JSON-urilor autobuzelor
-- [ ] Rezervarea, vânzarea, anularea și rambursarea biletelor
-- [ ] Calculul prețurilor și al reducerilor
+- [x] Stratul de acces la date și conexiunea la distanță
+- [x] Autentificarea, rolurile și recuperarea parolei
+- [x] Serviciile pentru hartă
+- [x] Parsarea și validarea JSON-urilor autobuzelor
+- [x] Rezervarea, vânzarea, anularea și rambursarea biletelor
+- [x] Calculul prețurilor și al reducerilor
 - [ ] Integrarea cu casa de marcat fiscală (dacă e necesară)
-- [ ] Rapoartele și datele pentru dashboard
-- [ ] Cache-ul local și modul offline
-- [ ] Logarea erorilor, tranzacțiile, limitarea brute-force
+- [x] Rapoartele și datele pentru dashboard
+- [x] Cache-ul local și modul offline
+- [x] Logarea erorilor, tranzacțiile, limitarea brute-force
 
 ### Frontend — Crivenco Alexandr
 - [ ] Wizard-ul de configurare și login-ul
@@ -101,6 +101,39 @@ Scripturile din `SQL Code` se rulează manual în SSMS, în ordinea numerelor (`
 Datele de test acoperă intervalul de la 7 zile în urmă până la 7 zile înainte față de ziua rulării.
 
 Login-urile SQL și conturile din aplicație sunt în `Credentials.txt`.
+
+## Backend (soluția `App/Autogara.slnx`)
+
+| Proiect | Ce conține |
+|---|---|
+| `Autogara.Domain` | entitățile (1:1 cu tabelele) și enum-urile de status |
+| `Autogara.Common` | configurarea stației (parole criptate DPAPI), excepțiile, log-ul, ora Moldovei |
+| `Autogara.DataAccess` | `AutogaraDbContext` (EF Core), apelurile procedurilor stocate, traducerea erorilor SQL |
+| `Autogara.FileServer` | clientul SFTP și citirea/scrierea JSON-urilor de autobuz și a hărții, cu validare |
+| `Autogara.Business` | serviciile folosite de formulare, reunite în `AutogaraBackend` |
+| `Autogara.Tests` | teste unitare (`dotnet test App/Autogara.slnx`) |
+
+Frontend-ul folosește doar `AutogaraBackend`:
+
+```csharp
+var store = new AppSettingsStore();              // %LocalAppData%\Autogara\appsettings.local.json
+if (!store.Exista)
+{
+    // FrmSetupWizard: precompletează cu AppSettings.Implicite(), testează cu
+    // AutogaraBackend.TesteazaConfigurareaAsync(setari), apoi store.Salveaza(setari).
+}
+
+using var backend = AutogaraBackend.Creeaza(store.Citeste());
+await backend.Auth.AutentificaAsync(utilizator, parola);          // backend.Sesiune.Utilizator.Rol → meniul
+var curse = await backend.Curse.CautaCurseAsync(statiePlecare, statieSosire, data);
+var locuri = await backend.Curse.HartaLocuriAsync(cursaId);       // pentru AutobuzSeatMapControl
+var rezervare = await backend.Rezervari.RezervaLocAsync(locId);   // cronometru: rezervare.SecundeRamase
+var bilet = await backend.Bilete.ConfirmaVanzareAsync(rezervare.RezervareID, vanzare);
+```
+
+Orice eroare se afișează cu `ExceptionHandler.MesajPrietenos(ex)` — mesajele sunt deja în română. `ValidareException.Erori` are lista completă, pentru `ErrorProvider`. Evenimentul `backend.Conexiune.ConexiuneSchimbata` vine de pe alt thread: în formular se folosește `BeginInvoke`.
+
+Conturile din seed au parola în formatul vechi (SHA2_512); la prima autentificare reușită, backend-ul o transformă automat în PBKDF2. Recuperarea parolei: utilizatorul trimite o cerere din ecranul de login, iar un administrator o vede în `Auth.CereriResetareAsync()` și generează o parolă temporară cu `Auth.ReseteazaParolaAsync(...)`.
 
 ## Reguli de lucru
 

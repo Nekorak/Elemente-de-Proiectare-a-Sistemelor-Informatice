@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Autogara.Business</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Autogara.Common\Autogara.Common.csproj" />
+    <ProjectReference Include="..\Autogara.DataAccess\Autogara.DataAccess.csproj" />
+    <ProjectReference Include="..\Autogara.Domain\Autogara.Domain.csproj" />
+    <ProjectReference Include="..\Autogara.FileServer\Autogara.FileServer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Autogara.Tests" />
+  </ItemGroup>
+
+</Project>

@@ -183,6 +183,20 @@ Autogara.sln
 - `Logger` (Serilog) — fișier local per stație, cu nivel configurabil
 - `ExceptionHandler` central — traduce excepțiile tehnice (SQL, rețea) în mesaje prietenoase pentru UI
 
+### Decizii de implementare (2026-09-18)
+- Punct unic de intrare pentru UI: `AutogaraBackend.Creeaza(setari)` construiește toate serviciile; utilizatorul curent stă în `Sesiune`, iar fiecare serviciu verifică rolul (`CereAdmin`, `CerePersonal`, `CereAutentificare`) — utilizatorul nu se mai trimite ca parametru
+- Acces SQL doar prin `BazaDeDate` (`CitesteAsync` / `ScrieAsync` / `InTranzactieAsync`), cu retry EF (`EnableRetryOnFailure`) și erori traduse (`EroriSql`): THROW 500xx → `RegulaException` cu mesajul din procedură, rețea → `ConexiuneException`, RowVersion → `ConcurentaException`
+- Parole: PBKDF2-SHA256, 210 000 iterații, 53 octeți `[0x01][iterații][sare 16][hash 32]`. Hash-urile din seed (SHA2_512 peste `NumeUtilizator:Parola`, NVARCHAR) sunt acceptate și înlocuite la prima autentificare
+- Brute-force: 5 încercări eșuate în 15 minute (după ultima reușită) blochează contul; se numără în `LogAudit` (Entitate = 'Autentificare', EntitateID = numele de utilizator), deci limita e comună tuturor stațiilor
+- Recuperarea parolei fără tabel nou: cererea din login se scrie în `LogAudit`; adminul o vede și generează o parolă temporară
+- Configurarea stației: `%LocalAppData%\Autogara\appsettings.local.json`, parolele SQL și SFTP criptate DPAPI (CurrentUser)
+- Cache offline: `%LocalAppData%\Autogara\Cache` — doar date de citire (curse active, stații, reduceri, hartă, structuri de autobuz); vânzarea, rezervarea și anularea cer conexiune la SQL. La revenirea conexiunii, cache-ul se reîmprospătează automat
+- Harta: salvarea în SQL într-o tranzacție (noduri noi cu ID negativ temporar, noduri lipsă → `Activ = 0`, conexiuni înlocuite, salvate în ambele sensuri), apoi rescrierea `harta.json`; nodurile de tip Stație primesc automat rând în `Statii`
+- Anularea unei curse rambursează integral fiecare bilet activ prin `sp_AnuleazaBilet`, în aceeași tranzacție
+- Rapoartele se exportă CSV (`;`, UTF-8 cu BOM, se deschide direct în Excel) și se pot arhiva pe file server în `Rapoarte/{an}/{luna}/`
+- Auto-update: `version.json` în rădăcina `File-Server` (`versiune`, `fisier`, `note`)
+- Casa de marcat: nu e integrată; numărul bonului fiscal se transmite la vânzare (`VanzareDto.NumarBonFiscal`)
+
 ### Reguli transversale
 - Fiecare scriere pe `Locuri`/`Bilete`/`Utilizatori` verifică `RowVersion`; la conflict (`DbUpdateConcurrencyException`) operația e reîncercată sau utilizatorul e informat că altcineva a modificat între timp
 - Verificare de rol înainte de orice operație administrativă (ex. `RequireRol(RolTip.Admin)`), nu doar ascunderea butonului în UI

@@ -1,5 +1,6 @@
 using System.Net.Sockets;
 using System.Text;
+using Autogara.Common;
 using Renci.SshNet;
 using Renci.SshNet.Common;
 
@@ -113,6 +114,10 @@ public sealed class SftpFileClient : IDisposable
 
     // ---------- conexiune ----------
 
+    /// <summary>Se conecteaza si verifica existenta folderului de baza (pentru wizard-ul de configurare).</summary>
+    public Task<bool> TesteazaConexiuneAsync(CancellationToken ct = default) =>
+        ExecutaAsync(client => client.Exists(_setari.CaleBaza), ct);
+
     private async Task<T> ExecutaAsync<T>(Func<SftpClient, T> operatie, CancellationToken ct)
     {
         await _acces.WaitAsync(ct).ConfigureAwait(false);
@@ -130,6 +135,20 @@ public sealed class SftpFileClient : IDisposable
                     await Task.Delay(TimeSpan.FromSeconds(incercare), ct).ConfigureAwait(false);
                 }
             }
+        }
+        catch (SftpPathNotFoundException ex)
+        {
+            throw new NegasitException($"Fișierul nu a fost găsit pe file server ({ex.Message}).");
+        }
+        catch (SshAuthenticationException ex)
+        {
+            Inchide();
+            throw new ConexiuneException("Autentificarea la file server a eșuat. Verificați utilizatorul și parola din configurare.", ex);
+        }
+        catch (Exception ex) when (EsteEroareDeRetea(ex))
+        {
+            Inchide();
+            throw new ConexiuneException("File server-ul nu poate fi contactat. Verificați conexiunea la internet.", ex);
         }
         finally
         {

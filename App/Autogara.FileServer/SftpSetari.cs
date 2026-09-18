@@ -1,3 +1,5 @@
+using Autogara.Common.Configurare;
+
 namespace Autogara.FileServer;
 
 /// <summary>
@@ -19,4 +21,14 @@ public sealed class SftpSetari
 
     public int SecundeTimeout { get; init; } = 15;
     public int NumarReincercari { get; init; } = 3;
+
+    public static SftpSetari Din(SetariFileServer s) => new()
+    {
+        Host = s.Host,
+        Port = s.Port,
+        Utilizator = s.Utilizator,
+        Parola = s.Parola,
+        CaleBaza = s.CaleBaza.Replace('\\', '/').TrimEnd('/'),
+        SecundeTimeout = s.SecundeTimeout,
+    };
 }

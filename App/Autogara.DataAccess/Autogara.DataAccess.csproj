@@ -2,17 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <RootNamespace>Autogara.FileServer</RootNamespace>
+    <RootNamespace>Autogara.DataAccess</RootNamespace>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SSH.NET" Version="2026.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Autogara.Common\Autogara.Common.csproj" />
+    <ProjectReference Include="..\Autogara.Domain\Autogara.Domain.csproj" />
   </ItemGroup>
 
 </Project>
