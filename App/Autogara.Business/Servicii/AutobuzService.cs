@@ -149,6 +149,54 @@ public sealed class AutobuzService(BazaDeDate bd, JsonAutobuzRepository fisiere,
         };
     }
 
+    /// <summary>Numeroteaza locurile 1..n, pe randuri, de la stanga la dreapta (pentru editorul de autobuz).</summary>
+    public static void Renumeroteaza(AutobuzStructura s)
+    {
+        var nr = 1;
+        foreach (var l in s.Locuri.OrderBy(l => l.Rand).ThenBy(l => l.Coloana))
+            l.NumarLoc = nr++;
+        s.Locuri = s.Locuri.OrderBy(l => l.NumarLoc).ToList();
+    }
+
+    /// <summary>Adauga sau scoate locul de pe pozitia data, apoi renumeroteaza.</summary>
+    public static void ComutaLoc(AutobuzStructura s, int rand, int coloana)
+    {
+        if (rand < 1 || rand > s.Randuri || coloana < 1 || coloana > s.Coloane)
+            return;
+
+        var existent = s.Locuri.FirstOrDefault(l => l.Rand == rand && l.Coloana == coloana);
+        if (existent is null)
+            s.Locuri.Add(new LocStructura { Rand = rand, Coloana = coloana });
+        else
+            s.Locuri.Remove(existent);
+
+        Renumeroteaza(s);
+    }
+
+    /// <summary>
+    /// Schimba grila: locurile care ies din grila noua dispar; daca grila creste, pozitiile noi
+    /// se umplu cu locuri. Rezultatul e renumerotat.
+    /// </summary>
+    public static void Redimensioneaza(AutobuzStructura s, int randuri, int coloane, int culoarDupaColoana)
+    {
+        if (randuri < 1 || coloane < 1)
+            throw new ValidareException("Numărul de rânduri și de coloane trebuie să fie cel puțin 1.");
+
+        var randuriVechi = s.Randuri;
+        var coloaneVechi = s.Coloane;
+
+        s.Locuri = s.Locuri.Where(l => l.Rand <= randuri && l.Coloana <= coloane).ToList();
+        for (var r = 1; r <= randuri; r++)
+            for (var c = 1; c <= coloane; c++)
+                if ((r > randuriVechi || c > coloaneVechi) && !s.Locuri.Any(l => l.Rand == r && l.Coloana == c))
+                    s.Locuri.Add(new LocStructura { Rand = r, Coloana = c });
+
+        s.Randuri = randuri;
+        s.Coloane = coloane;
+        s.CuloarDupaColoana = culoarDupaColoana is > 0 && culoarDupaColoana < coloane ? culoarDupaColoana : 0;
+        Renumeroteaza(s);
+    }
+
     private static async Task<Autobuz> GasesteAsync(AutogaraDbContext db, int autobuzId) =>
         await db.Autobuze.FirstOrDefaultAsync(a => a.AutobuzID == autobuzId)
         ?? throw new NegasitException("Autobuzul nu există.");

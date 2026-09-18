@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>Autogara.WinForms</RootNamespace>
+    <AssemblyName>Autogara</AssemblyName>
+    <Nullable>annotations</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <ApplicationVisualStyles>true</ApplicationVisualStyles>
+    <ApplicationDefaultFont>Segoe UI, 9pt</ApplicationDefaultFont>
+    <Version>1.0.0</Version>
+    <Product>Autogara</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Svg" Version="3.4.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Autogara.Business\Autogara.Business.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Iconite Lucide (licenta ISC, vezi Resurse/Iconite/LICENSE-lucide.txt), desenate la rulare din SVG. -->
+    <EmbeddedResource Include="Resurse\Iconite\*.svg" LogicalName="Iconite.%(Filename).svg" />
+  </ItemGroup>
+
+</Project>

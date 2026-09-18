@@ -237,5 +237,14 @@ Regulă obligatorie pentru tot proiectul WinForms, ca Frontend-ul să rămână 
 - Scurtături de tastatură pentru casier (ex. F2 vânzare rapidă, Esc anulare pas curent), pentru viteză la ghișeu
 - Auto-update: verificare versiune la pornire (fișier `version.json` pe file server), descărcare/instalare dacă există una nouă
 
+### Decizii de implementare (2026-09-18)
+- O singură fereastră principală (`FrmMain`): meniul din stânga deschide secțiunile ca formulare încorporate (`TopLevel = false`) în zona de conținut; vânzarea, editorul de locuri și listele de pasageri sunt ferestre de dialog
+- Iconițe SVG Lucide (ISC), incluse ca resurse și desenate cu biblioteca `Svg`; nicio iconiță emoji sau imagine bitmap. `ButonIcon` primește doar numele iconiței și stilul (Primar / Secundar / Pericol / Transparent / Meniu)
+- `GridAutogara` (DataGridView cu aspectul aplicației): coloanele se definesc în Designer, cu `DataPropertyName`; statusurile, datele și sumele se afișează prin `Ui/Afisare.cs`
+- Validarea de format cu `ErrorProvider` (`VerificareFormular`), folosind aceleași reguli de telefon/email ca backend-ul (`Validari`); regulile de business rămân în backend
+- Toate apelurile la backend trec prin `Mesaje.RuleazaAsync`: cursor de așteptare, butonul dezactivat, eroarea afișată cu `ExceptionHandler.MesajPrietenos`
+- Rezervarea provizorie se face la click pe loc; închiderea ferestrei de vânzare eliberează locul imediat, nu la expirare
+- Numerotarea locurilor în editorul de autobuz și distanța propusă pentru o conexiune nouă sunt funcții din backend (`AutobuzService.ComutaLoc/Redimensioneaza`, `HartaService.EstimeazaDistantaKm`)
+
 ## Tester
 Plan pe roluri, test editor hartă, test editor autobuz, test vizualizare locuri, test conexiune la distanță, test mod offline, test acces file server, test concurență, test rezervare provizorie/expirare, test reduceri, test politică anulare, test casă de marcat, test integritate date, test securitate, test joburi SQL, test dashboard, test rapoarte, test backup/restore, test auto-update, test rezoluții ecran, urmărire bug-uri și regresie.

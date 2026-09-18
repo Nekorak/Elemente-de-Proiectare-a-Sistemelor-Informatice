@@ -5,4 +5,5 @@
   <Project Path="Autogara.Domain/Autogara.Domain.csproj" />
   <Project Path="Autogara.FileServer/Autogara.FileServer.csproj" />
   <Project Path="Autogara.Tests/Autogara.Tests.csproj" />
+  <Project Path="Autogara.WinForms/Autogara.WinForms.csproj" />
 </Solution>

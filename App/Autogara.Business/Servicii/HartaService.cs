@@ -164,6 +164,29 @@ public sealed class HartaService(BazaDeDate bd, JsonHartaRepository fisier, Cach
         return new RutaDto(drum.Noduri, drum.Noduri.Select(id => nume.GetValueOrDefault(id, $"#{id}")).ToList(), drum.DistantaKm);
     }
 
+    /// <summary>
+    /// Distanta propusa pentru o conexiune noua din editor: lungimea pe harta inmultita cu
+    /// scara medie (km pe unitate) a conexiunilor existente, rotunjita la 0,5 km.
+    /// </summary>
+    public static decimal EstimeazaDistantaKm(HartaDto harta, int nodA, int nodB)
+    {
+        var noduri = harta.Noduri.ToDictionary(n => n.NodID);
+        if (!noduri.TryGetValue(nodA, out var a) || !noduri.TryGetValue(nodB, out var b))
+            return 1;
+
+        double Lungime(NodDto x, NodDto y) => Math.Sqrt(Math.Pow(x.X - y.X, 2) + Math.Pow(x.Y - y.Y, 2));
+
+        var masurate = harta.Conexiuni
+            .Where(c => noduri.ContainsKey(c.NodPlecareID) && noduri.ContainsKey(c.NodSosireID))
+            .Select(c => (Km: (double)c.DistantaKm, Unitati: Lungime(noduri[c.NodPlecareID], noduri[c.NodSosireID])))
+            .Where(m => m.Unitati > 0)
+            .ToList();
+
+        var scara = masurate.Count > 0 ? masurate.Sum(m => m.Km) / masurate.Sum(m => m.Unitati) : 0.25;
+        var km = Math.Round(Lungime(a, b) * scara * 2, MidpointRounding.AwayFromZero) / 2;
+        return (decimal)Math.Clamp(km, 0.5, 9999);
+    }
+
     internal static IEnumerable<Rute.Muchie> Muchii(HartaDto harta) =>
         harta.Conexiuni.Select(c => new Rute.Muchie(c.NodPlecareID, c.NodSosireID, c.DistantaKm));
 

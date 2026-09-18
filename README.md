@@ -8,7 +8,7 @@ Proiect de echipă · Elemente de Proiectare a Sistemelor Informatice
 ![C#](https://img.shields.io/badge/C%23-239120?logo=csharp&logoColor=white)
 ![SQL Server](https://img.shields.io/badge/Microsoft_SQL_Server-CC2927?logo=microsoftsqlserver&logoColor=white)
 ![Model](https://img.shields.io/badge/model-waterfall-blue)
-![Status](https://img.shields.io/badge/etapa_curent%C4%83-Backend-orange)
+![Status](https://img.shields.io/badge/etapa_curent%C4%83-Testare-orange)
 
 </div>
 
@@ -63,14 +63,14 @@ Aplicația rulează pe laptop (client). Computerul de acasă este serverul: pe e
 - [x] Logarea erorilor, tranzacțiile, limitarea brute-force
 
 ### Frontend — Crivenco Alexandr
-- [ ] Wizard-ul de configurare și login-ul
-- [ ] Editorul de hartă
-- [ ] Editorul de autobuz (generează JSON)
-- [ ] Formularul de vânzare cu harta locurilor
-- [ ] Formularele Admin
-- [ ] Dashboard-ul și rapoartele
-- [ ] Validările și mesajele de eroare
-- [ ] Indicatorul online/offline și auto-update-ul
+- [x] Wizard-ul de configurare și login-ul
+- [x] Editorul de hartă
+- [x] Editorul de autobuz (generează JSON)
+- [x] Formularul de vânzare cu harta locurilor
+- [x] Formularele Admin
+- [x] Dashboard-ul și rapoartele
+- [x] Validările și mesajele de eroare
+- [x] Indicatorul online/offline și auto-update-ul
 
 ### Tester — Sopivnic Maxim
 - [ ] Planul de testare pe roluri
@@ -111,6 +111,7 @@ Login-urile SQL și conturile din aplicație sunt în `Credentials.txt`.
 | `Autogara.DataAccess` | `AutogaraDbContext` (EF Core), apelurile procedurilor stocate, traducerea erorilor SQL |
 | `Autogara.FileServer` | clientul SFTP și citirea/scrierea JSON-urilor de autobuz și a hărții, cu validare |
 | `Autogara.Business` | serviciile folosite de formulare, reunite în `AutogaraBackend` |
+| `Autogara.WinForms` | interfața (Frontend): formularele, controalele desenate și iconițele SVG |
 | `Autogara.Tests` | teste unitare (`dotnet test App/Autogara.slnx`) |
 
 Frontend-ul folosește doar `AutogaraBackend`:
@@ -134,6 +135,28 @@ var bilet = await backend.Bilete.ConfirmaVanzareAsync(rezervare.RezervareID, van
 Orice eroare se afișează cu `ExceptionHandler.MesajPrietenos(ex)` — mesajele sunt deja în română. `ValidareException.Erori` are lista completă, pentru `ErrorProvider`. Evenimentul `backend.Conexiune.ConexiuneSchimbata` vine de pe alt thread: în formular se folosește `BeginInvoke`.
 
 Conturile din seed au parola în formatul vechi (SHA2_512); la prima autentificare reușită, backend-ul o transformă automat în PBKDF2. Recuperarea parolei: utilizatorul trimite o cerere din ecranul de login, iar un administrator o vede în `Auth.CereriResetareAsync()` și generează o parolă temporară cu `Auth.ReseteazaParolaAsync(...)`.
+
+## Frontend (`App/Autogara.WinForms`)
+
+Pornirea aplicației:
+
+```bash
+dotnet run --project App/Autogara.WinForms
+```
+
+La prima pornire se deschide configurarea stației (precompletată cu serverul echipei), apoi login-ul. Fereastra principală are meniul adaptat pe rol:
+
+| Rol | Secțiuni |
+|---|---|
+| Admin | Dashboard, Vânzare, Bilete, Curse, Trasee, Stații, Harta, Autobuze, Mentenanță, Șoferi, Reduceri, Utilizatori, Rapoarte, Jurnal audit |
+| Casier | Dashboard, Vânzare, Bilete |
+| Pasager | Cumpără bilet (doar cu cardul), Biletele mele |
+
+Scurtături: **F2** deschide vânzarea (în fereastra de vânzare, F2 confirmă biletul); **Esc** închide fereastra de vânzare și eliberează locul rezervat.
+
+- Formularele: aspectul este în `*.Designer.cs`, iar în `*.cs` sunt doar evenimentele, apelurile la `AutogaraBackend` și afișarea rezultatului.
+- Controale desenate: `AutobuzSeatMapControl` (harta locurilor), `AutobuzEditorControl` (editorul de locuri), `HartaCanvasControl` (editorul hărții), `IndicatorConexiune`, `CardKpi`, `ButonIcon`.
+- Iconițele sunt SVG din setul [Lucide](https://lucide.dev) (licență ISC, în `Resurse/Iconite/LICENSE-lucide.txt`), incluse în aplicație și desenate cu biblioteca `Svg`. Culorile și fonturile comune sunt în `Ui/Tema.cs`.
 
 ## Reguli de lucru
 
