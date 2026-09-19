@@ -1,10 +1,13 @@
 using Autogara.Business.Dto;
-using Autogara.Common;
 using Autogara.Domain.Enumerari;
 using Autogara.WinForms.Ui;
 
 namespace Autogara.WinForms.Formulare
 {
+    /// <summary>
+    /// Lista autobuzelor; datele se adauga si se modifica in <see cref="FrmEditareAutobuz"/>,
+    /// locurile in <see cref="FrmEditorAutobuz"/>.
+    /// </summary>
     public partial class FrmAdminAutobuze : FormAutogara
     {
         private AutobuzRand _selectat;
@@ -15,11 +18,7 @@ namespace Autogara.WinForms.Formulare
             InitializeComponent();
         }
 
-        private async void FrmAdminAutobuze_Load(object sender, EventArgs e)
-        {
-            cmbStatus.DataSource = Enum.GetValues<StatusAutobuz>().Select(s => new ElementLista<StatusAutobuz>(s, Afisare.Text(s))).ToList();
-            await Mesaje.RuleazaAsync(btnReincarca, () => ReincarcaAsync());
-        }
+        private async void FrmAdminAutobuze_Load(object sender, EventArgs e) => await Mesaje.RuleazaAsync(btnReincarca, () => ReincarcaAsync());
 
         private async void btnReincarca_Click(object sender, EventArgs e) => await Mesaje.RuleazaAsync(btnReincarca, () => ReincarcaAsync());
 
@@ -47,62 +46,41 @@ namespace Autogara.WinForms.Formulare
                 AfiseazaSelectia();
         }
 
+        private void gridLista_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+                btnModifica.PerformClick();
+        }
+
         private void AfiseazaSelectia()
         {
             _selectat = gridLista.Selectat<AutobuzRand>();
-            var nou = _selectat is null;
-            errorProvider.Clear();
-
-            lblEditareTitlu.Text = nou ? "Autobuz nou" : "Editare autobuz";
-            txtNrInmatriculare.Text = _selectat?.NrInmatriculare ?? "";
-            txtModel.Text = _selectat?.Model ?? "";
-            numCapacitate.Value = _selectat?.CapacitateLocuri ?? 20;
-            numCapacitate.Enabled = nou;
-            cmbStatus.SelectedIndex = Array.IndexOf(Enum.GetValues<StatusAutobuz>(), _selectat?.Status ?? StatusAutobuz.Activ);
-            chkItp.Checked = nou || _selectat.DataExpirareITP is not null;
-            dtpItp.Value = (_selectat?.DataExpirareITP ?? OraLocala.Azi.AddYears(1)).ToDateTime(TimeOnly.MinValue);
-            dtpItp.Enabled = chkItp.Checked;
-            lblFisier.Text = nou ? "Structura locurilor se creează la salvare (4 pe rând, culoar la mijloc) și se poate modifica apoi."
-                                 : $"Structura locurilor: {_selectat.CaleFisierJSON ?? "nesalvată"}";
-            btnLocuri.Enabled = !nou;
+            btnModifica.Enabled = btnLocuri.Enabled = _selectat is not null;
         }
 
-        private void chkItp_CheckedChanged(object sender, EventArgs e) => dtpItp.Enabled = chkItp.Checked;
+        private async void btnAdauga_Click(object sender, EventArgs e) => await DeschideEditareaAsync(null);
 
-        private void btnNou_Click(object sender, EventArgs e)
+        private async void btnModifica_Click(object sender, EventArgs e)
         {
-            gridLista.ClearSelection();
-            gridLista.CurrentCell = null;
-            AfiseazaSelectia();
-            txtNrInmatriculare.Focus();
+            if (_selectat is not null)
+                await DeschideEditareaAsync(_selectat);
         }
 
-        private async void btnSalveaza_Click(object sender, EventArgs e)
+        private async Task DeschideEditareaAsync(AutobuzRand autobuz)
         {
-            if (!new VerificareFormular(errorProvider)
-                    .Obligatoriu(txtNrInmatriculare, "Numărul de înmatriculare")
-                    .Obligatoriu(txtModel, "Modelul")
-                    .Verifica(this))
-                return;
-
-            var date = new AutobuzEditare
+            int id;
+            StatusAutobuz status;
+            using (var f = new FrmEditareAutobuz(autobuz))
             {
-                NrInmatriculare = txtNrInmatriculare.Text,
-                Model = txtModel.Text,
-                Status = ((ElementLista<StatusAutobuz>)cmbStatus.SelectedItem).Valoare,
-                DataExpirareITP = chkItp.Checked ? DateOnly.FromDateTime(dtpItp.Value) : null,
-            };
+                if (f.ShowDialog(this) != DialogResult.OK)
+                    return;
+                (id, status) = (f.IdSalvat, f.Status);
+            }
 
-            await Mesaje.RuleazaAsync(btnSalveaza, async () =>
+            await Mesaje.RuleazaAsync(btnReincarca, async () =>
             {
-                var id = _selectat?.AutobuzID ?? 0;
-                if (_selectat is null)
-                    id = await Aplicatie.Backend.Autobuze.CreeazaAsync(date, (int)numCapacitate.Value);
-                else
-                    await Aplicatie.Backend.Autobuze.ActualizeazaAsync(id, date);
-
-                if (date.Status == StatusAutobuz.ScosDinUz && !chkInactive.Checked)
-                    chkInactive.Checked = true;
+                if (status == StatusAutobuz.ScosDinUz && !chkInactive.Checked)
+                    chkInactive.Checked = true; // ca sa ramana vizibil in lista
                 else
                     await ReincarcaAsync(id);
             });

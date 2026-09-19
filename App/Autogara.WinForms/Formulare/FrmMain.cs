@@ -103,7 +103,7 @@ namespace Autogara.WinForms.Formulare
 
             foreach (var b in flpMeniu.Controls.OfType<ButonIcon>())
                 b.Activ = b == buton;
-            lblSectiune.Text = titlu;
+            lblSectiune.Text = titlu.ToUpperInvariant();
         }
 
         private void btnDashboard_Click(object sender, EventArgs e) => Deschide(btnDashboard, "Dashboard", () => new FrmDashboard());

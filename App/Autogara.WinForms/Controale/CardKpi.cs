@@ -1,10 +1,12 @@
 using System.ComponentModel;
-using System.Drawing.Drawing2D;
 using Autogara.WinForms.Ui;
 
 namespace Autogara.WinForms.Controale
 {
-    /// <summary>Cartonas de dashboard: iconita, titlu si o valoare mare.</summary>
+    /// <summary>
+    /// Cartonas de dashboard, desenat ca o tablita de peron: banda colorata in stanga,
+    /// eticheta scurta cu majuscule si cifra mare in Bahnschrift.
+    /// </summary>
     public class CardKpi : Control
     {
         private string _titlu = "Titlu";
@@ -40,36 +42,33 @@ namespace Autogara.WinForms.Controale
         {
             base.OnPaint(e);
             var g = e.Graphics;
-            g.SmoothingMode = SmoothingMode.AntiAlias;
+            var w = ClientSize.Width;
+            var h = ClientSize.Height;
 
-            var r = new RectangleF(0.5f, 0.5f, ClientSize.Width - 1.5f, ClientSize.Height - 1.5f);
-            using (var cale = Desen.Dreptunghi(r, LogicalToDeviceUnits(8)))
             using (var fundal = new SolidBrush(Tema.Suprafata))
+                g.FillRectangle(fundal, 0, 0, w, h);
             using (var bordura = new Pen(Tema.Bordura))
-            {
-                g.FillPath(fundal, cale);
-                g.DrawPath(bordura, cale);
-            }
+                g.DrawRectangle(bordura, 0, 0, w - 1, h - 1);
 
-            var pad = LogicalToDeviceUnits(16);
-            var cerc = LogicalToDeviceUnits(40);
-            var yCerc = (ClientSize.Height - cerc) / 2;
-            using (var fundalIcon = new SolidBrush(Color.FromArgb(28, _accent)))
-                g.FillEllipse(fundalIcon, pad, yCerc, cerc, cerc);
+            var banda = LogicalToDeviceUnits(6);
+            using (var accent = new SolidBrush(_accent))
+                g.FillRectangle(accent, 0, 0, banda, h);
+
+            var pad = LogicalToDeviceUnits(14);
+            var x = banda + pad;
+            var latime = w - x - pad;
+
+            // Eticheta sus, iconita mica in dreapta ei.
+            var mi = LogicalToDeviceUnits(16);
             if (Iconite.Exista(_icon))
-            {
-                var mi = LogicalToDeviceUnits(20);
-                g.DrawImage(Iconite.Deseneaza(_icon, mi, _accent), pad + (cerc - mi) / 2, yCerc + (cerc - mi) / 2, mi, mi);
-            }
+                g.DrawImage(Iconite.Deseneaza(_icon, mi, Tema.TextSecundar), w - pad - mi, pad, mi, mi);
 
-            var x = pad * 2 + cerc - LogicalToDeviceUnits(4);
-            var latime = ClientSize.Width - x - pad / 2;
-            using var fontTitlu = Tema.FontNormal(9f);
-            using var fontValoare = Tema.FontIngrosat(17f);
-            TextRenderer.DrawText(g, _titlu, fontTitlu, new Rectangle(x, pad - 2, latime, ClientSize.Height / 2 - pad + 4),
-                Tema.TextSecundar, TextFormatFlags.Left | TextFormatFlags.Bottom | TextFormatFlags.EndEllipsis);
-            TextRenderer.DrawText(g, _valoare, fontValoare, new Rectangle(x, ClientSize.Height / 2, latime, ClientSize.Height / 2 - pad / 2),
-                Tema.Text, TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.EndEllipsis);
+            using var fontTitlu = Tema.FontIndicator(8.5f);
+            using var fontValoare = Tema.FontIngrosat(22f);
+            TextRenderer.DrawText(g, _titlu.ToUpperInvariant(), fontTitlu, new Rectangle(x, pad, latime - mi - 4, mi + 2),
+                Tema.TextSecundar, TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
+            TextRenderer.DrawText(g, _valoare, fontValoare, new Rectangle(x, pad + mi, latime, h - pad * 2 - mi),
+                Tema.Text, TextFormatFlags.Left | TextFormatFlags.Bottom | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
         }
     }
 }

@@ -56,7 +56,7 @@ namespace Autogara.WinForms.Formulare
             // 
             pnlUrmatoare.Controls.Add(gridCurse);
             pnlUrmatoare.Controls.Add(pnlUrmatoareAntet);
-            pnlUrmatoare.BackColor = Color.White;
+            pnlUrmatoare.BackColor = Color.FromArgb(250, 249, 246);
             pnlUrmatoare.Dock = DockStyle.Fill;
             pnlUrmatoare.Name = "pnlUrmatoare";
             pnlUrmatoare.Padding = new Padding(12, 0, 12, 12);
@@ -164,8 +164,8 @@ namespace Autogara.WinForms.Formulare
             // lblUrmatoare
             // 
             lblUrmatoare.AutoSize = true;
-            lblUrmatoare.Font = new Font("Segoe UI Semibold", 11F);
-            lblUrmatoare.ForeColor = Color.FromArgb(31, 41, 55);
+            lblUrmatoare.Font = new Font("Bahnschrift SemiBold", 11F);
+            lblUrmatoare.ForeColor = Color.FromArgb(34, 34, 31);
             lblUrmatoare.Location = new Point(4, 16);
             lblUrmatoare.Name = "lblUrmatoare";
             lblUrmatoare.Text = "Următoarele curse";
@@ -173,7 +173,7 @@ namespace Autogara.WinForms.Formulare
             // lblActualizat
             // 
             lblActualizat.AutoSize = true;
-            lblActualizat.ForeColor = Color.FromArgb(107, 114, 128);
+            lblActualizat.ForeColor = Color.FromArgb(110, 106, 96);
             lblActualizat.Location = new Point(170, 19);
             lblActualizat.Name = "lblActualizat";
             lblActualizat.Text = "";
@@ -243,7 +243,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // cardAnulate
             // 
-            cardAnulate.Accent = Color.FromArgb(220, 38, 38);
+            cardAnulate.Accent = Color.FromArgb(179, 38, 30);
             cardAnulate.Icon = "ticket-x";
             cardAnulate.Margin = new Padding(0, 0, 16, 16);
             cardAnulate.Name = "cardAnulate";
@@ -252,7 +252,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // cardIncasari
             // 
-            cardIncasari.Accent = Color.FromArgb(22, 163, 74);
+            cardIncasari.Accent = Color.FromArgb(46, 125, 50);
             cardIncasari.Icon = "banknote";
             cardIncasari.Margin = new Padding(0, 0, 16, 16);
             cardIncasari.Name = "cardIncasari";
@@ -261,7 +261,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // cardRezervari
             // 
-            cardRezervari.Accent = Color.FromArgb(217, 119, 6);
+            cardRezervari.Accent = Color.FromArgb(183, 121, 31);
             cardRezervari.Icon = "armchair";
             cardRezervari.Margin = new Padding(0, 0, 16, 16);
             cardRezervari.Name = "cardRezervari";
@@ -270,7 +270,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // cardItp
             // 
-            cardItp.Accent = Color.FromArgb(217, 119, 6);
+            cardItp.Accent = Color.FromArgb(183, 121, 31);
             cardItp.Icon = "triangle-alert";
             cardItp.Margin = new Padding(0, 0, 16, 16);
             cardItp.Name = "cardItp";
@@ -286,7 +286,7 @@ namespace Autogara.WinForms.Formulare
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(245, 247, 250);
+            BackColor = Color.FromArgb(238, 236, 230);
             ClientSize = new Size(1008, 680);
             Controls.Add(pnlUrmatoare);
             Controls.Add(pnlSpatiu);

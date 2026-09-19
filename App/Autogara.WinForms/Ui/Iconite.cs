@@ -30,7 +30,7 @@ namespace Autogara.WinForms.Ui
 
         public static bool Exista(string nume) => !string.IsNullOrEmpty(nume) && CitesteSvg(nume) is not null;
 
-        /// <summary>Iconita ferestrelor: autobuzul, pe fundal albastru rotunjit.</summary>
+        /// <summary>Iconita ferestrelor: autobuzul pe o tablita verde, cu banda galbena jos.</summary>
         public static Icon IconAplicatie
         {
             get
@@ -43,9 +43,11 @@ namespace Autogara.WinForms.Ui
                 {
                     g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                     using var fundal = new SolidBrush(Tema.Primar);
-                    using var cale = Desen.Dreptunghi(new RectangleF(0, 0, 63, 63), 14);
+                    using var semnal = new SolidBrush(Tema.Semnal);
+                    using var cale = Desen.Dreptunghi(new RectangleF(0, 0, 63, 63), 4);
                     g.FillPath(fundal, cale);
-                    g.DrawImage(Deseneaza("bus-front", 44, Color.White), 10, 10);
+                    g.FillRectangle(semnal, 0, 52, 64, 12);
+                    g.DrawImage(Deseneaza("bus-front", 40, Color.White), 12, 8);
                 }
 
                 _iconAplicatie = Icon.FromHandle(bmp.GetHicon());

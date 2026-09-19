@@ -3,7 +3,10 @@ using Autogara.WinForms.Ui;
 
 namespace Autogara.WinForms.Formulare
 {
-    /// <summary>Adresa si peronul statiilor. Statiile noi se adauga pe harta.</summary>
+    /// <summary>
+    /// Lista statiilor; adresa si peronul se modifica in <see cref="FrmEditareStatie"/>.
+    /// Statiile noi se adauga pe harta.
+    /// </summary>
     public partial class FrmAdminStatii : FormAutogara
     {
         private StatieRand _selectat;
@@ -42,26 +45,30 @@ namespace Autogara.WinForms.Formulare
                 AfiseazaSelectia();
         }
 
+        private void gridLista_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+                btnModifica.PerformClick();
+        }
+
         private void AfiseazaSelectia()
         {
             _selectat = gridLista.Selectat<StatieRand>();
-            txtNume.Text = _selectat?.Nume ?? "";
-            txtAdresa.Text = _selectat?.Adresa ?? "";
-            txtPeron.Text = _selectat?.Peron ?? "";
-            txtAdresa.Enabled = txtPeron.Enabled = btnSalveaza.Enabled = _selectat is not null;
+            btnModifica.Enabled = _selectat is not null;
         }
 
-        private async void btnSalveaza_Click(object sender, EventArgs e)
+        private async void btnModifica_Click(object sender, EventArgs e)
         {
             if (_selectat is null)
                 return;
 
             var id = _selectat.StatieID;
-            await Mesaje.RuleazaAsync(btnSalveaza, async () =>
+            using (var f = new FrmEditareStatie(_selectat))
             {
-                await Aplicatie.Backend.Statii.ActualizeazaAsync(id, txtAdresa.Text, txtPeron.Text);
-                await ReincarcaAsync(id);
-            });
+                if (f.ShowDialog(this) != DialogResult.OK)
+                    return;
+            }
+            await Mesaje.RuleazaAsync(btnReincarca, () => ReincarcaAsync(id));
         }
     }
 }

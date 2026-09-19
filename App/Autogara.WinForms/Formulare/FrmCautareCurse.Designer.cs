@@ -53,7 +53,7 @@ namespace Autogara.WinForms.Formulare
             // 
             pnlRezultate.Controls.Add(gridCurse);
             pnlRezultate.Controls.Add(pnlRezultateAntet);
-            pnlRezultate.BackColor = Color.White;
+            pnlRezultate.BackColor = Color.FromArgb(250, 249, 246);
             pnlRezultate.Dock = DockStyle.Fill;
             pnlRezultate.Name = "pnlRezultate";
             pnlRezultate.Padding = new Padding(12, 0, 12, 12);
@@ -164,8 +164,8 @@ namespace Autogara.WinForms.Formulare
             // lblRezultate
             // 
             lblRezultate.AutoSize = true;
-            lblRezultate.Font = new Font("Segoe UI Semibold", 11F);
-            lblRezultate.ForeColor = Color.FromArgb(31, 41, 55);
+            lblRezultate.Font = new Font("Bahnschrift SemiBold", 11F);
+            lblRezultate.ForeColor = Color.FromArgb(34, 34, 31);
             lblRezultate.Location = new Point(4, 16);
             lblRezultate.Name = "lblRezultate";
             lblRezultate.Text = "Curse găsite";
@@ -173,7 +173,7 @@ namespace Autogara.WinForms.Formulare
             // lblNumar
             // 
             lblNumar.AutoSize = true;
-            lblNumar.ForeColor = Color.FromArgb(107, 114, 128);
+            lblNumar.ForeColor = Color.FromArgb(110, 106, 96);
             lblNumar.Location = new Point(112, 19);
             lblNumar.Name = "lblNumar";
             lblNumar.Text = "";
@@ -205,7 +205,7 @@ namespace Autogara.WinForms.Formulare
             pnlFiltre.Controls.Add(lblData);
             pnlFiltre.Controls.Add(dtpData);
             pnlFiltre.Controls.Add(btnCauta);
-            pnlFiltre.BackColor = Color.White;
+            pnlFiltre.BackColor = Color.FromArgb(250, 249, 246);
             pnlFiltre.Dock = DockStyle.Top;
             pnlFiltre.Name = "pnlFiltre";
             pnlFiltre.Size = new Size(1008, 76);
@@ -273,7 +273,7 @@ namespace Autogara.WinForms.Formulare
             AcceptButton = btnCauta;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(245, 247, 250);
+            BackColor = Color.FromArgb(238, 236, 230);
             ClientSize = new Size(1008, 680);
             Controls.Add(pnlRezultate);
             Controls.Add(pnlSpatiu);

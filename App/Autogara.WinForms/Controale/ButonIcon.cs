@@ -97,6 +97,25 @@ namespace Autogara.WinForms.Controale
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override Cursor Cursor { get => base.Cursor; set => base.Cursor = value; }
 
+        protected override void OnPaint(PaintEventArgs pevent)
+        {
+            base.OnPaint(pevent);
+
+            // Sectiunea deschisa: bara galbena in stanga, ca marcajul de peron.
+            if (_stil == StilButon.Meniu && _activ)
+            {
+                using var bara = new SolidBrush(Tema.Semnal);
+                pevent.Graphics.FillRectangle(bara, 0, 0, LogicalToDeviceUnits(4), Height);
+            }
+            // Butonul principal: o linie mai inchisa jos, ca sa para apasabil fara umbre.
+            else if (_stil == StilButon.Primar && Enabled)
+            {
+                using var linie = new SolidBrush(Tema.PrimarInchis);
+                var h = LogicalToDeviceUnits(3);
+                pevent.Graphics.FillRectangle(linie, 0, Height - h, Width, h);
+            }
+        }
+
         protected override void OnEnabledChanged(EventArgs e)
         {
             base.OnEnabledChanged(e);
@@ -114,13 +133,13 @@ namespace Autogara.WinForms.Controale
             var (fundal, text, bordura, hover) = _stil switch
             {
                 StilButon.Primar => (Tema.Primar, Color.White, Tema.Primar, Tema.PrimarInchis),
-                StilButon.Pericol => (Color.White, Tema.Eroare, Tema.Eroare, Color.FromArgb(254, 242, 242)),
+                StilButon.Pericol => (Tema.Suprafata, Tema.Eroare, Tema.Eroare, Color.FromArgb(248, 234, 231)),
                 // WinForms nu accepta culori transparente pe butoanele Flat: fundalul e cel al cardurilor.
                 StilButon.Transparent => (Tema.Suprafata, Tema.Text, Tema.Suprafata, Tema.Fundal),
                 StilButon.Meniu => _activ
                     ? (Tema.MeniuActiv, Color.White, Tema.MeniuActiv, Tema.MeniuActiv)
                     : (Tema.Meniu, Tema.MeniuText, Tema.Meniu, Tema.MeniuActiv),
-                _ => (Color.White, Tema.Text, Tema.Bordura, Tema.Fundal),
+                _ => (Tema.Suprafata, Tema.Text, Tema.Bordura, Tema.Fundal),
             };
 
             if (!Enabled)

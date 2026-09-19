@@ -5,7 +5,10 @@ using Autogara.WinForms.Ui;
 
 namespace Autogara.WinForms.Formulare
 {
-    /// <summary>Planificarea curselor: creare, modificare, plecare/sosire, anulare cu rambursare.</summary>
+    /// <summary>
+    /// Planificarea curselor: lista pe interval, plecare/sosire, anulare cu rambursare.
+    /// Cursele se creeaza si se modifica in <see cref="FrmEditareCursa"/>.
+    /// </summary>
     public partial class FrmAdminCurse : FormAutogara
     {
         private CursaRand _selectat;
@@ -25,21 +28,9 @@ namespace Autogara.WinForms.Formulare
             await Mesaje.RuleazaAsync(btnAfiseaza, async () =>
             {
                 var trasee = await Aplicatie.Backend.Trasee.ListeazaAsync();
-                var autobuze = await Aplicatie.Backend.Autobuze.ListeazaAsync();
-                var soferi = await Aplicatie.Backend.Soferi.ListeazaAsync();
-
-                _seIncarca = true;
                 var filtru = trasee.Select(t => new ElementLista<int?>(t.TraseuID, t.Denumire)).ToList();
                 filtru.Insert(0, new ElementLista<int?>(null, "(toate traseele)"));
                 cmbFiltruTraseu.DataSource = filtru;
-                cmbTraseu.DataSource = trasee.Select(t => new ElementLista<int>(t.TraseuID, t.Denumire)).ToList();
-                cmbAutobuz.DataSource = autobuze
-                    .Where(a => a.Status == StatusAutobuz.Activ)
-                    .Select(a => new ElementLista<int>(a.AutobuzID, $"{a.NrInmatriculare} — {a.Model} ({a.CapacitateLocuri} locuri)"))
-                    .ToList();
-                cmbSofer.DataSource = soferi.Select(s => new ElementLista<int>(s.SoferID, s.NumeComplet)).ToList();
-                _seIncarca = false;
-
                 await ReincarcaAsync();
             });
         }
@@ -71,91 +62,50 @@ namespace Autogara.WinForms.Formulare
                 AfiseazaSelectia();
         }
 
+        private void gridLista_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && btnModifica.Enabled)
+                btnModifica.PerformClick();
+        }
+
         private void AfiseazaSelectia()
         {
             _selectat = gridLista.Selectat<CursaRand>();
             var c = _selectat;
-            errorProvider.Clear();
 
-            lblEditareTitlu.Text = c is null ? "Cursă nouă" : $"Cursa #{c.CursaID} · {Afisare.Text(c.Status)}";
-            if (c is not null)
-            {
-                Selecteaza(cmbTraseu, c.TraseuID);
-                Selecteaza(cmbAutobuz, c.AutobuzID);
-                Selecteaza(cmbSofer, c.SoferID);
-                dtpData.Value = c.DataCursa.ToDateTime(TimeOnly.MinValue);
-                dtpPlecare.Value = DateTime.Today.Add(c.OraPlecare.ToTimeSpan());
-                dtpSosire.Value = DateTime.Today.Add(c.OraSosireEstimata.ToTimeSpan());
-                numPret.Value = c.Pret;
-            }
-            else
-            {
-                dtpData.Value = OraLocala.Azi.AddDays(1).ToDateTime(TimeOnly.MinValue);
-            }
-
-            var planificata = c is null || c.Status == StatusCursa.Planificata;
-            pnlCampuri.Enabled = btnSalveaza.Enabled = planificata;
-            pnlStare.Visible = c is not null;
+            // Doar cursele planificate se mai pot modifica.
+            btnModifica.Enabled = c?.Status == StatusCursa.Planificata;
             btnPlecata.Enabled = c?.Status == StatusCursa.Planificata;
             btnFinalizata.Enabled = c?.Status == StatusCursa.InDesfasurare;
             btnAnuleaza.Enabled = c?.Status == StatusCursa.Planificata;
+            btnBilete.Enabled = c is not null;
         }
 
-        private static void Selecteaza(ComboBox cmb, int id)
+        private async void btnAdauga_Click(object sender, EventArgs e) => await DeschideEditareaAsync(null);
+
+        private async void btnModifica_Click(object sender, EventArgs e)
         {
-            foreach (ElementLista<int> e in cmb.Items)
+            if (_selectat?.Status == StatusCursa.Planificata)
+                await DeschideEditareaAsync(_selectat);
+        }
+
+        private async Task DeschideEditareaAsync(CursaRand cursa)
+        {
+            int id;
+            DateOnly data;
+            using (var f = new FrmEditareCursa(cursa))
             {
-                if (e.Valoare == id)
-                {
-                    cmb.SelectedItem = e;
+                if (f.ShowDialog(this) != DialogResult.OK)
                     return;
-                }
+                (id, data) = (f.IdSalvat, f.DataSalvata);
             }
-            cmb.SelectedIndex = -1; // ex. autobuz scos din circulatie intre timp
-        }
 
-        private void btnNou_Click(object sender, EventArgs e)
-        {
-            gridLista.ClearSelection();
-            gridLista.CurrentCell = null;
-            AfiseazaSelectia();
-            cmbTraseu.Focus();
-        }
-
-        private async void btnSalveaza_Click(object sender, EventArgs e)
-        {
-            if (!new VerificareFormular(errorProvider)
-                    .Conditie(cmbTraseu.SelectedItem is not null, cmbTraseu, "Alegeți traseul.")
-                    .Conditie(cmbAutobuz.SelectedItem is not null, cmbAutobuz, "Alegeți un autobuz în circulație.")
-                    .Conditie(cmbSofer.SelectedItem is not null, cmbSofer, "Alegeți șoferul.")
-                    .Conditie(dtpSosire.Value.TimeOfDay > dtpPlecare.Value.TimeOfDay, dtpSosire, "Ora de sosire trebuie să fie după ora de plecare.")
-                    .Verifica(this))
-                return;
-
-            var date = new CursaEditare
-            {
-                TraseuID = ((ElementLista<int>)cmbTraseu.SelectedItem).Valoare,
-                AutobuzID = ((ElementLista<int>)cmbAutobuz.SelectedItem).Valoare,
-                SoferID = ((ElementLista<int>)cmbSofer.SelectedItem).Valoare,
-                DataCursa = DateOnly.FromDateTime(dtpData.Value),
-                OraPlecare = new TimeOnly(dtpPlecare.Value.Hour, dtpPlecare.Value.Minute),
-                OraSosireEstimata = new TimeOnly(dtpSosire.Value.Hour, dtpSosire.Value.Minute),
-                Pret = numPret.Value,
-            };
-
-            await Mesaje.RuleazaAsync(btnSalveaza, async () =>
-            {
-                var id = _selectat?.CursaID ?? 0;
-                if (_selectat is null)
-                    id = await Aplicatie.Backend.Curse.CreeazaCursaAsync(date);
-                else
-                    await Aplicatie.Backend.Curse.ActualizeazaCursaAsync(id, date);
-
-                // cursa noua poate cadea in afara intervalului afisat
-                if (date.DataCursa < DateOnly.FromDateTime(dtpDeLa.Value) || date.DataCursa > DateOnly.FromDateTime(dtpPanaLa.Value))
-                    dtpPanaLa.Value = date.DataCursa.ToDateTime(TimeOnly.MinValue);
-                await ReincarcaAsync(id);
-            });
+            // cursa poate cadea in afara intervalului afisat
+            if (data < DateOnly.FromDateTime(dtpDeLa.Value))
+                dtpDeLa.Value = data.ToDateTime(TimeOnly.MinValue);
+            if (data > DateOnly.FromDateTime(dtpPanaLa.Value))
+                dtpPanaLa.Value = data.ToDateTime(TimeOnly.MinValue);
+            await Mesaje.RuleazaAsync(btnAfiseaza, () => ReincarcaAsync(id));
         }
 
         private async void btnPlecata_Click(object sender, EventArgs e) => await SchimbaStatusAsync(btnPlecata, StatusCursa.InDesfasurare);

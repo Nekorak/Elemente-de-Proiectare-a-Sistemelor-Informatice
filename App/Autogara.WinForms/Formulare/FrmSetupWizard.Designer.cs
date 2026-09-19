@@ -67,7 +67,7 @@ namespace Autogara.WinForms.Formulare
             //
             // pnlAntet
             //
-            pnlAntet.BackColor = Color.White;
+            pnlAntet.BackColor = Color.FromArgb(250, 249, 246);
             pnlAntet.Controls.Add(iconAntet);
             pnlAntet.Controls.Add(lblTitlu);
             pnlAntet.Controls.Add(lblSubtitlu);
@@ -87,8 +87,8 @@ namespace Autogara.WinForms.Formulare
             // lblTitlu
             //
             lblTitlu.AutoSize = true;
-            lblTitlu.Font = new Font("Segoe UI Semibold", 13F);
-            lblTitlu.ForeColor = Color.FromArgb(31, 41, 55);
+            lblTitlu.Font = new Font("Bahnschrift SemiBold", 13F);
+            lblTitlu.ForeColor = Color.FromArgb(34, 34, 31);
             lblTitlu.Location = new Point(64, 12);
             lblTitlu.Name = "lblTitlu";
             lblTitlu.Text = "Configurarea stației de lucru";
@@ -96,7 +96,7 @@ namespace Autogara.WinForms.Formulare
             // lblSubtitlu
             //
             lblSubtitlu.AutoSize = true;
-            lblSubtitlu.ForeColor = Color.FromArgb(107, 114, 128);
+            lblSubtitlu.ForeColor = Color.FromArgb(110, 106, 96);
             lblSubtitlu.Location = new Point(66, 44);
             lblSubtitlu.Name = "lblSubtitlu";
             lblSubtitlu.Text = "Datele de conectare la serverul autogării. Se salvează doar pe acest calculator, cu parolele criptate.";
@@ -315,7 +315,7 @@ namespace Autogara.WinForms.Formulare
             //
             // iconSql
             //
-            iconSql.Culoare = Color.FromArgb(107, 114, 128);
+            iconSql.Culoare = Color.FromArgb(110, 106, 96);
             iconSql.Icon = "database";
             iconSql.Location = new Point(20, 474);
             iconSql.Name = "iconSql";
@@ -330,7 +330,7 @@ namespace Autogara.WinForms.Formulare
             //
             // iconSftp
             //
-            iconSftp.Culoare = Color.FromArgb(107, 114, 128);
+            iconSftp.Culoare = Color.FromArgb(110, 106, 96);
             iconSftp.Icon = "server";
             iconSftp.Location = new Point(20, 500);
             iconSftp.Name = "iconSftp";
@@ -345,7 +345,7 @@ namespace Autogara.WinForms.Formulare
             //
             // pnlButoane
             //
-            pnlButoane.BackColor = Color.White;
+            pnlButoane.BackColor = Color.FromArgb(250, 249, 246);
             pnlButoane.Controls.Add(btnImplicite);
             pnlButoane.Controls.Add(btnTesteaza);
             pnlButoane.Controls.Add(btnSalveaza);
@@ -401,7 +401,7 @@ namespace Autogara.WinForms.Formulare
             //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(245, 247, 250);
+            BackColor = Color.FromArgb(238, 236, 230);
             CancelButton = btnRenunta;
             ClientSize = new Size(640, 600);
             Controls.Add(grpSql);

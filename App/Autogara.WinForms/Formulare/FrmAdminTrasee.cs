@@ -3,7 +3,7 @@ using Autogara.WinForms.Ui;
 
 namespace Autogara.WinForms.Formulare
 {
-    /// <summary>Traseele: denumirea si statiile, in ordinea opririlor.</summary>
+    /// <summary>Lista traseelor; adaugarea si modificarea se fac in <see cref="FrmEditareTraseu"/>.</summary>
     public partial class FrmAdminTrasee : FormAutogara
     {
         private TraseuRand _selectat;
@@ -14,13 +14,7 @@ namespace Autogara.WinForms.Formulare
             InitializeComponent();
         }
 
-        private async void FrmAdminTrasee_Load(object sender, EventArgs e) =>
-            await Mesaje.RuleazaAsync(btnReincarca, async () =>
-            {
-                var statii = await Aplicatie.Backend.Statii.ListeazaAsync();
-                cmbStatie.DataSource = statii.Select(s => new ElementLista<int>(s.StatieID, s.Nume)).ToList();
-                await ReincarcaAsync();
-            });
+        private async void FrmAdminTrasee_Load(object sender, EventArgs e) => await Mesaje.RuleazaAsync(btnReincarca, () => ReincarcaAsync());
 
         private async void btnReincarca_Click(object sender, EventArgs e) => await Mesaje.RuleazaAsync(btnReincarca, () => ReincarcaAsync());
 
@@ -39,96 +33,47 @@ namespace Autogara.WinForms.Formulare
             {
                 _seIncarca = false;
             }
-            await AfiseazaSelectiaAsync();
+            AfiseazaSelectia();
         }
 
-        private async void gridLista_SelectionChanged(object sender, EventArgs e)
+        private void gridLista_SelectionChanged(object sender, EventArgs e)
         {
             if (!_seIncarca)
-                await Mesaje.RuleazaAsync(gridLista, AfiseazaSelectiaAsync);
+                AfiseazaSelectia();
         }
 
-        private async Task AfiseazaSelectiaAsync()
+        private void gridLista_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+                btnModifica.PerformClick();
+        }
+
+        private void AfiseazaSelectia()
         {
             _selectat = gridLista.Selectat<TraseuRand>();
-            errorProvider.Clear();
-            lblEditareTitlu.Text = _selectat is null ? "Traseu nou" : "Editare traseu";
-            txtDenumire.Text = _selectat?.Denumire ?? "";
-            lstOpriri.Items.Clear();
-            lblDistanta.Text = "";
-            btnActiv.Visible = _selectat is not null;
+            btnModifica.Enabled = btnActiv.Enabled = _selectat is not null;
             btnActiv.Text = _selectat?.Activ == false ? " Reactivează" : " Dezactivează";
-
-            if (_selectat is null)
-                return;
-
-            var detalii = await Aplicatie.Backend.Trasee.DetaliiAsync(_selectat.TraseuID);
-            foreach (var o in detalii.Opriri)
-                lstOpriri.Items.Add(new ElementLista<int>(o.StatieID, o.DistantaDePrecedentaKm is { } km ? $"{o.Statie}   (+{km:0.##} km)" : o.Statie));
-            lblDistanta.Text = detalii.DistantaTotalaKm is { } total ? $"Distanța totală pe hartă: {total:0.##} km" : "";
+            btnActiv.Icon = _selectat?.Activ == false ? "check" : "ban";
         }
 
-        private void btnNou_Click(object sender, EventArgs e)
+        private async void btnAdauga_Click(object sender, EventArgs e) => await DeschideEditareaAsync(null);
+
+        private async void btnModifica_Click(object sender, EventArgs e)
         {
-            gridLista.ClearSelection();
-            gridLista.CurrentCell = null;
-            _ = AfiseazaSelectiaAsync();
-            txtDenumire.Focus();
+            if (_selectat is not null)
+                await DeschideEditareaAsync(_selectat);
         }
 
-        private void btnAdaugaOprire_Click(object sender, EventArgs e)
+        private async Task DeschideEditareaAsync(TraseuRand traseu)
         {
-            if (cmbStatie.SelectedItem is not ElementLista<int> statie)
-                return;
-            if (lstOpriri.Items.Cast<ElementLista<int>>().Any(o => o.Valoare == statie.Valoare))
+            int id;
+            using (var f = new FrmEditareTraseu(traseu))
             {
-                Mesaje.Atentie(this, "Stația este deja în traseu.");
-                return;
+                if (f.ShowDialog(this) != DialogResult.OK)
+                    return;
+                id = f.IdSalvat;
             }
-            lstOpriri.Items.Add(new ElementLista<int>(statie.Valoare, statie.Text));
-            lblDistanta.Text = "Distanța se recalculează după salvare.";
-        }
-
-        private void btnScoate_Click(object sender, EventArgs e)
-        {
-            if (lstOpriri.SelectedIndex >= 0)
-                lstOpriri.Items.RemoveAt(lstOpriri.SelectedIndex);
-        }
-
-        private void btnSus_Click(object sender, EventArgs e) => Muta(-1);
-
-        private void btnJos_Click(object sender, EventArgs e) => Muta(1);
-
-        private void Muta(int directie)
-        {
-            var i = lstOpriri.SelectedIndex;
-            var j = i + directie;
-            if (i < 0 || j < 0 || j >= lstOpriri.Items.Count)
-                return;
-            var element = lstOpriri.Items[i];
-            lstOpriri.Items.RemoveAt(i);
-            lstOpriri.Items.Insert(j, element);
-            lstOpriri.SelectedIndex = j;
-        }
-
-        private async void btnSalveaza_Click(object sender, EventArgs e)
-        {
-            if (!new VerificareFormular(errorProvider)
-                    .Obligatoriu(txtDenumire, "Denumirea traseului")
-                    .Conditie(lstOpriri.Items.Count >= 2, lstOpriri, "Traseul trebuie să aibă cel puțin două stații.")
-                    .Verifica(this))
-                return;
-
-            var statii = lstOpriri.Items.Cast<ElementLista<int>>().Select(o => o.Valoare).ToList();
-            await Mesaje.RuleazaAsync(btnSalveaza, async () =>
-            {
-                var id = _selectat?.TraseuID ?? 0;
-                if (_selectat is null)
-                    id = await Aplicatie.Backend.Trasee.CreeazaAsync(txtDenumire.Text, statii);
-                else
-                    await Aplicatie.Backend.Trasee.ActualizeazaAsync(id, txtDenumire.Text, statii);
-                await ReincarcaAsync(id);
-            });
+            await Mesaje.RuleazaAsync(btnReincarca, () => ReincarcaAsync(id));
         }
 
         private async void btnActiv_Click(object sender, EventArgs e)

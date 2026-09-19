@@ -43,7 +43,7 @@ namespace Autogara.WinForms.Formulare
             // pnlLista
             // 
             pnlLista.Controls.Add(gridBilete);
-            pnlLista.BackColor = Color.White;
+            pnlLista.BackColor = Color.FromArgb(250, 249, 246);
             pnlLista.Dock = DockStyle.Fill;
             pnlLista.Name = "pnlLista";
             pnlLista.Padding = new Padding(12, 12, 12, 12);
@@ -134,7 +134,7 @@ namespace Autogara.WinForms.Formulare
             pnlAntet.Controls.Add(iconTitlu);
             pnlAntet.Controls.Add(lblTitlu);
             pnlAntet.Controls.Add(lblSumar);
-            pnlAntet.BackColor = Color.White;
+            pnlAntet.BackColor = Color.FromArgb(250, 249, 246);
             pnlAntet.Dock = DockStyle.Top;
             pnlAntet.Name = "pnlAntet";
             pnlAntet.Size = new Size(900, 64);
@@ -149,8 +149,8 @@ namespace Autogara.WinForms.Formulare
             // lblTitlu
             // 
             lblTitlu.AutoSize = true;
-            lblTitlu.Font = new Font("Segoe UI Semibold", 12F);
-            lblTitlu.ForeColor = Color.FromArgb(31, 41, 55);
+            lblTitlu.Font = new Font("Bahnschrift SemiBold", 12F);
+            lblTitlu.ForeColor = Color.FromArgb(34, 34, 31);
             lblTitlu.Location = new Point(54, 10);
             lblTitlu.Name = "lblTitlu";
             lblTitlu.Text = "Cursa";
@@ -158,7 +158,7 @@ namespace Autogara.WinForms.Formulare
             // lblSumar
             // 
             lblSumar.AutoSize = true;
-            lblSumar.ForeColor = Color.FromArgb(107, 114, 128);
+            lblSumar.ForeColor = Color.FromArgb(110, 106, 96);
             lblSumar.Location = new Point(56, 38);
             lblSumar.Name = "lblSumar";
             lblSumar.Text = "";
@@ -166,7 +166,7 @@ namespace Autogara.WinForms.Formulare
             // pnlButoane
             // 
             pnlButoane.Controls.Add(btnInchide);
-            pnlButoane.BackColor = Color.White;
+            pnlButoane.BackColor = Color.FromArgb(250, 249, 246);
             pnlButoane.Dock = DockStyle.Bottom;
             pnlButoane.Name = "pnlButoane";
             pnlButoane.Size = new Size(900, 56);
@@ -186,7 +186,7 @@ namespace Autogara.WinForms.Formulare
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(245, 247, 250);
+            BackColor = Color.FromArgb(238, 236, 230);
             CancelButton = btnInchide;
             ClientSize = new Size(900, 560);
             Controls.Add(pnlLista);

@@ -79,7 +79,7 @@ namespace Autogara.WinForms.Formulare
             AcceptButton = btnOk;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.White;
+            BackColor = Color.FromArgb(250, 249, 246);
             CancelButton = btnRenunta;
             ClientSize = new Size(460, 190);
             Controls.Add(iconIntrebare);

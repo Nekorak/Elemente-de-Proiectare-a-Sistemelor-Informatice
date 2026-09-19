@@ -43,14 +43,14 @@ namespace Autogara.WinForms.Formulare
             // lblTitlu
             //
             lblTitlu.AutoSize = true;
-            lblTitlu.Font = new Font("Segoe UI Semibold", 13F);
+            lblTitlu.Font = new Font("Bahnschrift SemiBold", 13F);
             lblTitlu.Location = new Point(58, 20);
             lblTitlu.Name = "lblTitlu";
             lblTitlu.Text = "Schimbarea parolei";
             //
             // lblReguli
             //
-            lblReguli.ForeColor = Color.FromArgb(107, 114, 128);
+            lblReguli.ForeColor = Color.FromArgb(110, 106, 96);
             lblReguli.Location = new Point(24, 58);
             lblReguli.Name = "lblReguli";
             lblReguli.Size = new Size(352, 36);
@@ -131,7 +131,7 @@ namespace Autogara.WinForms.Formulare
             AcceptButton = btnSalveaza;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.White;
+            BackColor = Color.FromArgb(250, 249, 246);
             CancelButton = btnRenunta;
             ClientSize = new Size(400, 328);
             Controls.Add(iconTitlu);

@@ -47,14 +47,13 @@ namespace Autogara.WinForms.Controale
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            var d = LogicalToDeviceUnits(10);
-            var y = (ClientSize.Height - d) / 2f;
-            using (var halou = new SolidBrush(Color.FromArgb(50, culoare)))
-                g.FillEllipse(halou, 0, y - d / 4f, d * 1.5f, d * 1.5f);
+            // Un patratel plin, ca un bec de semnalizare, fara halou.
+            var d = LogicalToDeviceUnits(9);
+            var y = (ClientSize.Height - d) / 2;
             using (var punct = new SolidBrush(culoare))
-                g.FillEllipse(punct, d / 4f, y, d, d);
+                g.FillRectangle(punct, 0, y, d, d);
 
-            var x = d * 2;
+            var x = d + LogicalToDeviceUnits(8);
             TextRenderer.DrawText(g, text, Font, new Rectangle(x, 0, ClientSize.Width - x, ClientSize.Height), ForeColor,
                 TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.EndEllipsis);
         }

@@ -30,16 +30,20 @@ namespace Autogara.WinForms.Controale
             ColumnHeadersHeight = 36;
             RowTemplate.Height = 32;
 
-            ColumnHeadersDefaultCellStyle.BackColor = Tema.Fundal;
-            ColumnHeadersDefaultCellStyle.ForeColor = Tema.TextSecundar;
-            ColumnHeadersDefaultCellStyle.SelectionBackColor = Tema.Fundal;
-            ColumnHeadersDefaultCellStyle.Font = Tema.FontIngrosat();
+            // Antetul arata ca un panou de plecari: fond inchis, text deschis.
+            ColumnHeadersDefaultCellStyle.BackColor = Tema.Meniu;
+            ColumnHeadersDefaultCellStyle.ForeColor = Tema.MeniuText;
+            ColumnHeadersDefaultCellStyle.SelectionBackColor = Tema.Meniu;
+            ColumnHeadersDefaultCellStyle.SelectionForeColor = Tema.MeniuText;
+            ColumnHeadersDefaultCellStyle.Font = Tema.FontIngrosat(9.5f);
             ColumnHeadersDefaultCellStyle.Padding = new Padding(6, 0, 6, 0);
 
+            DefaultCellStyle.BackColor = Tema.Suprafata;
             DefaultCellStyle.ForeColor = Tema.Text;
-            DefaultCellStyle.SelectionBackColor = Tema.PrimarDeschis;
+            DefaultCellStyle.SelectionBackColor = Tema.SemnalDeschis;
             DefaultCellStyle.SelectionForeColor = Tema.Text;
             DefaultCellStyle.Padding = new Padding(6, 0, 6, 0);
+            AlternatingRowsDefaultCellStyle.BackColor = Tema.Fundal;
         }
 
         // Aspectul vine din constructor; Designer-ul salveaza doar coloanele.
@@ -48,6 +52,9 @@ namespace Autogara.WinForms.Controale
 
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new DataGridViewCellStyle DefaultCellStyle => base.DefaultCellStyle;
+
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public new DataGridViewCellStyle AlternatingRowsDefaultCellStyle => base.AlternatingRowsDefaultCellStyle;
 
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new DataGridViewRow RowTemplate => base.RowTemplate;

@@ -28,6 +28,7 @@ namespace Autogara.WinForms.Formulare
             btnAutentificare = new Controale.ButonIcon();
             lnkAmUitat = new LinkLabel();
             pnlSubsol = new Panel();
+            pnlBanda = new Panel();
             indicatorConexiune = new Controale.IndicatorConexiune();
             lnkConfigurare = new LinkLabel();
             lblVersiune = new Label();
@@ -46,17 +47,17 @@ namespace Autogara.WinForms.Formulare
             //
             // lblTitlu
             //
-            lblTitlu.Font = new Font("Segoe UI Semibold", 18F);
-            lblTitlu.ForeColor = Color.FromArgb(31, 41, 55);
+            lblTitlu.Font = new Font("Bahnschrift SemiBold", 18F);
+            lblTitlu.ForeColor = Color.FromArgb(34, 34, 31);
             lblTitlu.Location = new Point(0, 100);
             lblTitlu.Name = "lblTitlu";
             lblTitlu.Size = new Size(400, 40);
-            lblTitlu.Text = "Autogara";
+            lblTitlu.Text = "AUTOGARA";
             lblTitlu.TextAlign = ContentAlignment.MiddleCenter;
             //
             // lblSubtitlu
             //
-            lblSubtitlu.ForeColor = Color.FromArgb(107, 114, 128);
+            lblSubtitlu.ForeColor = Color.FromArgb(110, 106, 96);
             lblSubtitlu.Location = new Point(0, 140);
             lblSubtitlu.Name = "lblSubtitlu";
             lblSubtitlu.Size = new Size(400, 22);
@@ -96,7 +97,7 @@ namespace Autogara.WinForms.Formulare
             //
             // btnAutentificare
             //
-            btnAutentificare.Font = new Font("Segoe UI Semibold", 10F);
+            btnAutentificare.Font = new Font("Bahnschrift SemiBold", 10F);
             btnAutentificare.Icon = "log-in";
             btnAutentificare.Location = new Point(48, 316);
             btnAutentificare.Name = "btnAutentificare";
@@ -108,8 +109,8 @@ namespace Autogara.WinForms.Formulare
             //
             // lnkAmUitat
             //
-            lnkAmUitat.ActiveLinkColor = Color.FromArgb(29, 78, 216);
-            lnkAmUitat.LinkColor = Color.FromArgb(37, 99, 235);
+            lnkAmUitat.ActiveLinkColor = Color.FromArgb(21, 69, 53);
+            lnkAmUitat.LinkColor = Color.FromArgb(30, 91, 70);
             lnkAmUitat.Location = new Point(48, 368);
             lnkAmUitat.Name = "lnkAmUitat";
             lnkAmUitat.Size = new Size(304, 20);
@@ -119,9 +120,16 @@ namespace Autogara.WinForms.Formulare
             lnkAmUitat.TextAlign = ContentAlignment.MiddleCenter;
             lnkAmUitat.LinkClicked += lnkAmUitat_LinkClicked;
             //
+            // pnlBanda
+            //
+            pnlBanda.BackColor = Color.FromArgb(232, 163, 23);
+            pnlBanda.Dock = DockStyle.Top;
+            pnlBanda.Name = "pnlBanda";
+            pnlBanda.Size = new Size(400, 6);
+            //
             // pnlSubsol
             //
-            pnlSubsol.BackColor = Color.FromArgb(245, 247, 250);
+            pnlSubsol.BackColor = Color.FromArgb(238, 236, 230);
             pnlSubsol.Controls.Add(indicatorConexiune);
             pnlSubsol.Controls.Add(lnkConfigurare);
             pnlSubsol.Controls.Add(lblVersiune);
@@ -133,16 +141,16 @@ namespace Autogara.WinForms.Formulare
             //
             // indicatorConexiune
             //
-            indicatorConexiune.ForeColor = Color.FromArgb(75, 85, 99);
+            indicatorConexiune.ForeColor = Color.FromArgb(84, 81, 74);
             indicatorConexiune.Location = new Point(14, 10);
             indicatorConexiune.Name = "indicatorConexiune";
             indicatorConexiune.Size = new Size(170, 24);
             //
             // lnkConfigurare
             //
-            lnkConfigurare.ActiveLinkColor = Color.FromArgb(29, 78, 216);
+            lnkConfigurare.ActiveLinkColor = Color.FromArgb(21, 69, 53);
             lnkConfigurare.AutoSize = true;
-            lnkConfigurare.LinkColor = Color.FromArgb(37, 99, 235);
+            lnkConfigurare.LinkColor = Color.FromArgb(30, 91, 70);
             lnkConfigurare.Location = new Point(236, 14);
             lnkConfigurare.Name = "lnkConfigurare";
             lnkConfigurare.TabIndex = 0;
@@ -153,7 +161,7 @@ namespace Autogara.WinForms.Formulare
             // lblVersiune
             //
             lblVersiune.AutoSize = true;
-            lblVersiune.ForeColor = Color.FromArgb(107, 114, 128);
+            lblVersiune.ForeColor = Color.FromArgb(110, 106, 96);
             lblVersiune.Location = new Point(350, 14);
             lblVersiune.Name = "lblVersiune";
             lblVersiune.Text = "v1.0.0";
@@ -168,7 +176,7 @@ namespace Autogara.WinForms.Formulare
             AcceptButton = btnAutentificare;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.White;
+            BackColor = Color.FromArgb(250, 249, 246);
             ClientSize = new Size(400, 480);
             Controls.Add(iconLogo);
             Controls.Add(lblTitlu);
@@ -180,6 +188,7 @@ namespace Autogara.WinForms.Formulare
             Controls.Add(btnAutentificare);
             Controls.Add(lnkAmUitat);
             Controls.Add(pnlSubsol);
+            Controls.Add(pnlBanda);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             Name = "FrmLogin";
@@ -207,6 +216,7 @@ namespace Autogara.WinForms.Formulare
         private Controale.ButonIcon btnAutentificare;
         private LinkLabel lnkAmUitat;
         private Panel pnlSubsol;
+        private Panel pnlBanda;
         private Controale.IndicatorConexiune indicatorConexiune;
         private LinkLabel lnkConfigurare;
         private Label lblVersiune;

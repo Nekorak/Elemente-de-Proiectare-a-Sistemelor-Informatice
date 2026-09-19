@@ -1,10 +1,12 @@
 using Autogara.Business.Dto;
-using Autogara.Domain.Enumerari;
 using Autogara.WinForms.Ui;
 
 namespace Autogara.WinForms.Formulare
 {
-    /// <summary>Conturile aplicatiei, cererile de resetare a parolei si parolele temporare.</summary>
+    /// <summary>
+    /// Conturile aplicatiei, cererile de resetare a parolei si parolele temporare.
+    /// Conturile se adauga si se modifica in <see cref="FrmEditareUtilizator"/>.
+    /// </summary>
     public partial class FrmAdminUtilizatori : FormAutogara
     {
         private UtilizatorRand _selectat;
@@ -15,11 +17,7 @@ namespace Autogara.WinForms.Formulare
             InitializeComponent();
         }
 
-        private async void FrmAdminUtilizatori_Load(object sender, EventArgs e)
-        {
-            cmbRol.DataSource = Enum.GetValues<RolTip>().Select(r => new ElementLista<RolTip>(r, r.ToString())).ToList();
-            await Mesaje.RuleazaAsync(btnReincarca, () => ReincarcaAsync());
-        }
+        private async void FrmAdminUtilizatori_Load(object sender, EventArgs e) => await Mesaje.RuleazaAsync(btnReincarca, () => ReincarcaAsync());
 
         private async void btnReincarca_Click(object sender, EventArgs e) => await Mesaje.RuleazaAsync(btnReincarca, () => ReincarcaAsync());
 
@@ -52,69 +50,39 @@ namespace Autogara.WinForms.Formulare
                 AfiseazaSelectia();
         }
 
+        private void gridLista_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+                btnModifica.PerformClick();
+        }
+
         private void AfiseazaSelectia()
         {
             _selectat = gridLista.Selectat<UtilizatorRand>();
-            var nou = _selectat is null;
-            errorProvider.Clear();
-
-            lblEditareTitlu.Text = nou ? "Utilizator nou" : "Editare utilizator";
-            txtNumeUtilizator.Text = _selectat?.NumeUtilizator ?? "";
-            txtNume.Text = _selectat?.Nume ?? "";
-            txtPrenume.Text = _selectat?.Prenume ?? "";
-            txtEmail.Text = _selectat?.Email ?? "";
-            txtTelefon.Text = _selectat?.Telefon ?? "";
-            cmbRol.SelectedIndex = Array.IndexOf(Enum.GetValues<RolTip>(), _selectat?.Rol ?? RolTip.Casier);
-            txtParola.Text = "";
-            lblParola.Visible = txtParola.Visible = nou;
-
-            btnActiv.Visible = btnReseteaza.Visible = !nou;
+            btnModifica.Enabled = btnActiv.Enabled = btnReseteaza.Enabled = _selectat is not null;
             btnActiv.Text = _selectat?.Activ == false ? " Reactivează" : " Dezactivează";
             btnActiv.Icon = _selectat?.Activ == false ? "user-check" : "user-x";
         }
 
-        private void btnNou_Click(object sender, EventArgs e)
+        private async void btnAdauga_Click(object sender, EventArgs e) => await DeschideEditareaAsync(null);
+
+        private async void btnModifica_Click(object sender, EventArgs e)
         {
-            tabLista.SelectedTab = tpUtilizatori;
-            gridLista.ClearSelection();
-            gridLista.CurrentCell = null;
-            AfiseazaSelectia();
-            txtNumeUtilizator.Focus();
+            if (_selectat is not null)
+                await DeschideEditareaAsync(_selectat);
         }
 
-        private async void btnSalveaza_Click(object sender, EventArgs e)
+        private async Task DeschideEditareaAsync(UtilizatorRand utilizator)
         {
-            var nou = _selectat is null;
-            var verificare = new VerificareFormular(errorProvider)
-                .Obligatoriu(txtNumeUtilizator, "Numele de utilizator")
-                .Obligatoriu(txtNume, "Numele")
-                .Obligatoriu(txtPrenume, "Prenumele")
-                .Email(txtEmail)
-                .Telefon(txtTelefon);
-            if (nou)
-                verificare.Obligatoriu(txtParola, "Parola inițială");
-            if (!verificare.Verifica(this))
-                return;
-
-            var date = new UtilizatorEditare
+            Guid id;
+            using (var f = new FrmEditareUtilizator(utilizator))
             {
-                NumeUtilizator = txtNumeUtilizator.Text,
-                Nume = txtNume.Text,
-                Prenume = txtPrenume.Text,
-                Email = txtEmail.Text,
-                Telefon = txtTelefon.Text,
-                Rol = ((ElementLista<RolTip>)cmbRol.SelectedItem).Valoare,
-            };
-
-            await Mesaje.RuleazaAsync(btnSalveaza, async () =>
-            {
-                var id = _selectat?.UtilizatorID ?? Guid.Empty;
-                if (nou)
-                    id = await Aplicatie.Backend.Utilizatori.AdaugaAsync(date, txtParola.Text);
-                else
-                    await Aplicatie.Backend.Utilizatori.ActualizeazaAsync(id, date, _selectat.RowVersion);
-                await ReincarcaAsync(id);
-            });
+                if (f.ShowDialog(this) != DialogResult.OK)
+                    return;
+                id = f.IdSalvat;
+            }
+            tabLista.SelectedTab = tpUtilizatori;
+            await Mesaje.RuleazaAsync(btnReincarca, () => ReincarcaAsync(id));
         }
 
         private async void btnActiv_Click(object sender, EventArgs e)

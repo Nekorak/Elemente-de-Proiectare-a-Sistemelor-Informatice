@@ -74,7 +74,7 @@ namespace Autogara.WinForms.Formulare
             // 
             pnlHarta.Controls.Add(canvas);
             pnlHarta.Controls.Add(pnlStareHarta);
-            pnlHarta.BackColor = Color.White;
+            pnlHarta.BackColor = Color.FromArgb(250, 249, 246);
             pnlHarta.Dock = DockStyle.Fill;
             pnlHarta.Name = "pnlHarta";
             pnlHarta.Padding = new Padding(1, 1, 1, 1);
@@ -92,7 +92,7 @@ namespace Autogara.WinForms.Formulare
             pnlStareHarta.Controls.Add(lblStare);
             pnlStareHarta.Controls.Add(lblNumarare);
             pnlStareHarta.Controls.Add(lblSugestie);
-            pnlStareHarta.BackColor = Color.FromArgb(245, 247, 250);
+            pnlStareHarta.BackColor = Color.FromArgb(238, 236, 230);
             pnlStareHarta.Dock = DockStyle.Bottom;
             pnlStareHarta.Name = "pnlStareHarta";
             pnlStareHarta.Size = new Size(700, 30);
@@ -100,7 +100,7 @@ namespace Autogara.WinForms.Formulare
             // lblStare
             // 
             lblStare.AutoSize = true;
-            lblStare.Font = new Font("Segoe UI Semibold", 9F);
+            lblStare.Font = new Font("Bahnschrift SemiBold", 9F);
             lblStare.Location = new Point(10, 7);
             lblStare.Name = "lblStare";
             lblStare.Text = "Harta este salvată";
@@ -108,7 +108,7 @@ namespace Autogara.WinForms.Formulare
             // lblNumarare
             // 
             lblNumarare.AutoSize = true;
-            lblNumarare.ForeColor = Color.FromArgb(107, 114, 128);
+            lblNumarare.ForeColor = Color.FromArgb(110, 106, 96);
             lblNumarare.Location = new Point(170, 7);
             lblNumarare.Name = "lblNumarare";
             lblNumarare.Text = "";
@@ -116,7 +116,7 @@ namespace Autogara.WinForms.Formulare
             // lblSugestie
             // 
             lblSugestie.Dock = DockStyle.Right;
-            lblSugestie.ForeColor = Color.FromArgb(107, 114, 128);
+            lblSugestie.ForeColor = Color.FromArgb(110, 106, 96);
             lblSugestie.Name = "lblSugestie";
             lblSugestie.Padding = new Padding(0, 0, 10, 0);
             lblSugestie.Size = new Size(420, 30);
@@ -139,7 +139,7 @@ namespace Autogara.WinForms.Formulare
             pnlProprietati.Controls.Add(pnlLinie);
             pnlProprietati.Controls.Add(lblAjutorTitlu);
             pnlProprietati.Controls.Add(lblAjutor);
-            pnlProprietati.BackColor = Color.White;
+            pnlProprietati.BackColor = Color.FromArgb(250, 249, 246);
             pnlProprietati.Dock = DockStyle.Right;
             pnlProprietati.Name = "pnlProprietati";
             pnlProprietati.Size = new Size(300, 588);
@@ -147,15 +147,15 @@ namespace Autogara.WinForms.Formulare
             // lblProprietatiTitlu
             // 
             lblProprietatiTitlu.AutoSize = true;
-            lblProprietatiTitlu.Font = new Font("Segoe UI Semibold", 11F);
-            lblProprietatiTitlu.ForeColor = Color.FromArgb(31, 41, 55);
+            lblProprietatiTitlu.Font = new Font("Bahnschrift SemiBold", 11F);
+            lblProprietatiTitlu.ForeColor = Color.FromArgb(34, 34, 31);
             lblProprietatiTitlu.Location = new Point(20, 18);
             lblProprietatiTitlu.Name = "lblProprietatiTitlu";
             lblProprietatiTitlu.Text = "Proprietăți";
             // 
             // lblFaraSelectie
             // 
-            lblFaraSelectie.ForeColor = Color.FromArgb(107, 114, 128);
+            lblFaraSelectie.ForeColor = Color.FromArgb(110, 106, 96);
             lblFaraSelectie.Location = new Point(20, 52);
             lblFaraSelectie.Name = "lblFaraSelectie";
             lblFaraSelectie.Size = new Size(260, 44);
@@ -208,7 +208,7 @@ namespace Autogara.WinForms.Formulare
             // lblPozitie
             // 
             lblPozitie.AutoSize = true;
-            lblPozitie.ForeColor = Color.FromArgb(107, 114, 128);
+            lblPozitie.ForeColor = Color.FromArgb(110, 106, 96);
             lblPozitie.Location = new Point(20, 110);
             lblPozitie.Name = "lblPozitie";
             lblPozitie.Text = "";
@@ -237,7 +237,7 @@ namespace Autogara.WinForms.Formulare
             // lblCapete
             // 
             lblCapete.AutoSize = true;
-            lblCapete.Font = new Font("Segoe UI Semibold", 9.5F);
+            lblCapete.Font = new Font("Bahnschrift SemiBold", 9.5F);
             lblCapete.Location = new Point(20, 4);
             lblCapete.Name = "lblCapete";
             lblCapete.Text = "A\n↔ B";
@@ -285,7 +285,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // pnlLinie
             // 
-            pnlLinie.BackColor = Color.FromArgb(217, 222, 229);
+            pnlLinie.BackColor = Color.FromArgb(212, 208, 198);
             pnlLinie.Location = new Point(20, 306);
             pnlLinie.Name = "pnlLinie";
             pnlLinie.Size = new Size(260, 1);
@@ -293,15 +293,15 @@ namespace Autogara.WinForms.Formulare
             // lblAjutorTitlu
             // 
             lblAjutorTitlu.AutoSize = true;
-            lblAjutorTitlu.Font = new Font("Segoe UI Semibold", 10F);
-            lblAjutorTitlu.ForeColor = Color.FromArgb(31, 41, 55);
+            lblAjutorTitlu.Font = new Font("Bahnschrift SemiBold", 10F);
+            lblAjutorTitlu.ForeColor = Color.FromArgb(34, 34, 31);
             lblAjutorTitlu.Location = new Point(20, 318);
             lblAjutorTitlu.Name = "lblAjutorTitlu";
             lblAjutorTitlu.Text = "Cum se folosește";
             // 
             // lblAjutor
             // 
-            lblAjutor.ForeColor = Color.FromArgb(107, 114, 128);
+            lblAjutor.ForeColor = Color.FromArgb(110, 106, 96);
             lblAjutor.Location = new Point(20, 344);
             lblAjutor.Name = "lblAjutor";
             lblAjutor.Size = new Size(260, 200);
@@ -324,7 +324,7 @@ namespace Autogara.WinForms.Formulare
             pnlUnelte.Controls.Add(btnPotriveste);
             pnlUnelte.Controls.Add(btnReincarca);
             pnlUnelte.Controls.Add(btnSalveaza);
-            pnlUnelte.BackColor = Color.White;
+            pnlUnelte.BackColor = Color.FromArgb(250, 249, 246);
             pnlUnelte.Dock = DockStyle.Top;
             pnlUnelte.Name = "pnlUnelte";
             pnlUnelte.Size = new Size(1008, 60);
@@ -381,7 +381,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // pnlSeparator
             // 
-            pnlSeparator.BackColor = Color.FromArgb(217, 222, 229);
+            pnlSeparator.BackColor = Color.FromArgb(212, 208, 198);
             pnlSeparator.Location = new Point(590, 16);
             pnlSeparator.Name = "pnlSeparator";
             pnlSeparator.Size = new Size(1, 28);
@@ -427,7 +427,7 @@ namespace Autogara.WinForms.Formulare
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(245, 247, 250);
+            BackColor = Color.FromArgb(238, 236, 230);
             ClientSize = new Size(1008, 680);
             Controls.Add(pnlHarta);
             Controls.Add(pnlSpatiuDreapta);

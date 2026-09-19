@@ -240,7 +240,7 @@ namespace Autogara.WinForms.Controale
                 var marime = TextRenderer.MeasureText(text, fontMic);
                 var mijloc = new PointF((pa.X + pb.X) / 2, (pa.Y + pb.Y) / 2);
                 var eticheta = new RectangleF(mijloc.X - marime.Width / 2f - 3, mijloc.Y - marime.Height / 2f, marime.Width + 6, marime.Height);
-                using (var cale = Desen.Dreptunghi(eticheta, eticheta.Height / 2))
+                using (var cale = Desen.Dreptunghi(eticheta, LogicalToDeviceUnits(Tema.Raza)))
                 using (var b2 = new SolidBrush(Color.FromArgb(235, Tema.Suprafata)))
                 using (var p2 = new Pen(selectata ? Tema.Selectie : Tema.Bordura))
                 {

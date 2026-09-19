@@ -65,7 +65,7 @@ namespace Autogara.WinForms.Controale
 
                     if (locuri.TryGetValue((r, c), out var loc))
                     {
-                        using var b = new SolidBrush(subMouse ? Color.FromArgb(254, 226, 226) : Tema.PrimarDeschis);
+                        using var b = new SolidBrush(subMouse ? Color.FromArgb(244, 222, 218) : Tema.PrimarDeschis);
                         using var p = new Pen(subMouse ? Tema.Eroare : Tema.Primar, LogicalToDeviceUnits(1));
                         g.FillPath(b, cale);
                         g.DrawPath(p, cale);

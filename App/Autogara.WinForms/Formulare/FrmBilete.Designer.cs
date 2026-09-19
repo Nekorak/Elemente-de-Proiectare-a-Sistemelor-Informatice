@@ -66,7 +66,7 @@ namespace Autogara.WinForms.Formulare
             // 
             pnlLista.Controls.Add(gridBilete);
             pnlLista.Controls.Add(pnlListaAntet);
-            pnlLista.BackColor = Color.White;
+            pnlLista.BackColor = Color.FromArgb(250, 249, 246);
             pnlLista.Dock = DockStyle.Fill;
             pnlLista.Name = "pnlLista";
             pnlLista.Padding = new Padding(12, 0, 12, 12);
@@ -158,8 +158,8 @@ namespace Autogara.WinForms.Formulare
             // lblLista
             // 
             lblLista.AutoSize = true;
-            lblLista.Font = new Font("Segoe UI Semibold", 11F);
-            lblLista.ForeColor = Color.FromArgb(31, 41, 55);
+            lblLista.Font = new Font("Bahnschrift SemiBold", 11F);
+            lblLista.ForeColor = Color.FromArgb(34, 34, 31);
             lblLista.Location = new Point(4, 16);
             lblLista.Name = "lblLista";
             lblLista.Text = "Bilete";
@@ -185,7 +185,7 @@ namespace Autogara.WinForms.Formulare
             pnlDetalii.Controls.Add(lblDetaliiTitlu);
             pnlDetalii.Controls.Add(lblFaraBilet);
             pnlDetalii.Controls.Add(pnlDetaliiContinut);
-            pnlDetalii.BackColor = Color.White;
+            pnlDetalii.BackColor = Color.FromArgb(250, 249, 246);
             pnlDetalii.Dock = DockStyle.Right;
             pnlDetalii.Name = "pnlDetalii";
             pnlDetalii.Size = new Size(392, 588);
@@ -193,15 +193,15 @@ namespace Autogara.WinForms.Formulare
             // lblDetaliiTitlu
             // 
             lblDetaliiTitlu.AutoSize = true;
-            lblDetaliiTitlu.Font = new Font("Segoe UI Semibold", 11F);
-            lblDetaliiTitlu.ForeColor = Color.FromArgb(31, 41, 55);
+            lblDetaliiTitlu.Font = new Font("Bahnschrift SemiBold", 11F);
+            lblDetaliiTitlu.ForeColor = Color.FromArgb(34, 34, 31);
             lblDetaliiTitlu.Location = new Point(20, 18);
             lblDetaliiTitlu.Name = "lblDetaliiTitlu";
             lblDetaliiTitlu.Text = "Detaliile biletului";
             // 
             // lblFaraBilet
             // 
-            lblFaraBilet.ForeColor = Color.FromArgb(107, 114, 128);
+            lblFaraBilet.ForeColor = Color.FromArgb(110, 106, 96);
             lblFaraBilet.Location = new Point(20, 52);
             lblFaraBilet.Name = "lblFaraBilet";
             lblFaraBilet.Size = new Size(352, 60);
@@ -224,8 +224,8 @@ namespace Autogara.WinForms.Formulare
             // lblCodBilet
             // 
             lblCodBilet.AutoSize = true;
-            lblCodBilet.Font = new Font("Segoe UI Semibold", 15F);
-            lblCodBilet.ForeColor = Color.FromArgb(31, 41, 55);
+            lblCodBilet.Font = new Font("Bahnschrift SemiBold", 15F);
+            lblCodBilet.ForeColor = Color.FromArgb(34, 34, 31);
             lblCodBilet.Location = new Point(18, 4);
             lblCodBilet.Name = "lblCodBilet";
             lblCodBilet.Text = "AG000000-00000000";
@@ -233,7 +233,7 @@ namespace Autogara.WinForms.Formulare
             // lblStatus
             // 
             lblStatus.AutoSize = true;
-            lblStatus.Font = new Font("Segoe UI Semibold", 9.5F);
+            lblStatus.Font = new Font("Bahnschrift SemiBold", 9.5F);
             lblStatus.Location = new Point(20, 38);
             lblStatus.Name = "lblStatus";
             lblStatus.Text = "Activ";
@@ -247,7 +247,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // pnlLinie
             // 
-            pnlLinie.BackColor = Color.FromArgb(217, 222, 229);
+            pnlLinie.BackColor = Color.FromArgb(212, 208, 198);
             pnlLinie.Location = new Point(20, 236);
             pnlLinie.Name = "pnlLinie";
             pnlLinie.Size = new Size(352, 1);
@@ -255,15 +255,15 @@ namespace Autogara.WinForms.Formulare
             // lblAnulareTitlu
             // 
             lblAnulareTitlu.AutoSize = true;
-            lblAnulareTitlu.Font = new Font("Segoe UI Semibold", 10F);
-            lblAnulareTitlu.ForeColor = Color.FromArgb(31, 41, 55);
+            lblAnulareTitlu.Font = new Font("Bahnschrift SemiBold", 10F);
+            lblAnulareTitlu.ForeColor = Color.FromArgb(34, 34, 31);
             lblAnulareTitlu.Location = new Point(20, 250);
             lblAnulareTitlu.Name = "lblAnulareTitlu";
             lblAnulareTitlu.Text = "Anulare";
             // 
             // lblEstimare
             // 
-            lblEstimare.ForeColor = Color.FromArgb(107, 114, 128);
+            lblEstimare.ForeColor = Color.FromArgb(110, 106, 96);
             lblEstimare.Location = new Point(20, 276);
             lblEstimare.Name = "lblEstimare";
             lblEstimare.Size = new Size(352, 56);
@@ -300,7 +300,7 @@ namespace Autogara.WinForms.Formulare
             pnlCautare.Controls.Add(lblCod);
             pnlCautare.Controls.Add(txtCod);
             pnlCautare.Controls.Add(btnCautaCod);
-            pnlCautare.BackColor = Color.White;
+            pnlCautare.BackColor = Color.FromArgb(250, 249, 246);
             pnlCautare.Dock = DockStyle.Top;
             pnlCautare.Name = "pnlCautare";
             pnlCautare.Size = new Size(1008, 76);
@@ -341,7 +341,7 @@ namespace Autogara.WinForms.Formulare
             AcceptButton = btnCautaCod;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(245, 247, 250);
+            BackColor = Color.FromArgb(238, 236, 230);
             ClientSize = new Size(1008, 680);
             Controls.Add(pnlLista);
             Controls.Add(pnlSpatiuDreapta);

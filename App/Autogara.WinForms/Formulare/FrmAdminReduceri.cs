@@ -3,6 +3,7 @@ using Autogara.WinForms.Ui;
 
 namespace Autogara.WinForms.Formulare
 {
+    /// <summary>Lista tipurilor de reducere; adaugarea si modificarea se fac in <see cref="FrmEditareReducere"/>.</summary>
     public partial class FrmAdminReduceri : FormAutogara
     {
         private TipReducereRand _selectat;
@@ -41,40 +42,41 @@ namespace Autogara.WinForms.Formulare
                 AfiseazaSelectia();
         }
 
+        private void gridLista_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+                btnModifica.PerformClick();
+        }
+
         private void AfiseazaSelectia()
         {
             _selectat = gridLista.Selectat<TipReducereRand>();
-            errorProvider.Clear();
-            lblEditareTitlu.Text = _selectat is null ? "Reducere nouă" : "Editare reducere";
-            txtDenumire.Text = _selectat?.Denumire ?? "";
-            numProcent.Value = _selectat?.ProcentReducere ?? 0;
-            chkActiv.Checked = _selectat?.Activ ?? true;
-            chkActiv.Enabled = _selectat is not null;
+            btnModifica.Enabled = _selectat is not null;
         }
 
-        private void btnNou_Click(object sender, EventArgs e)
+        private async void btnAdauga_Click(object sender, EventArgs e) => await DeschideEditareaAsync(null);
+
+        private async void btnModifica_Click(object sender, EventArgs e)
         {
-            gridLista.ClearSelection();
-            gridLista.CurrentCell = null;
-            AfiseazaSelectia();
-            txtDenumire.Focus();
+            if (_selectat is not null)
+                await DeschideEditareaAsync(_selectat);
         }
 
-        private async void btnSalveaza_Click(object sender, EventArgs e)
+        private async Task DeschideEditareaAsync(TipReducereRand reducere)
         {
-            if (!new VerificareFormular(errorProvider).Obligatoriu(txtDenumire, "Denumirea").Verifica(this))
-                return;
-
-            var date = new TipReducereEditare { Denumire = txtDenumire.Text, ProcentReducere = numProcent.Value };
-            await Mesaje.RuleazaAsync(btnSalveaza, async () =>
+            int id;
+            bool activa;
+            using (var f = new FrmEditareReducere(reducere))
             {
-                var id = _selectat?.TipReducereID ?? 0;
-                if (_selectat is null)
-                    id = await Aplicatie.Backend.Reduceri.AdaugaAsync(date);
-                else
-                    await Aplicatie.Backend.Reduceri.ActualizeazaAsync(id, date, chkActiv.Checked);
-                if (!chkActiv.Checked && !chkInactive.Checked)
-                    chkInactive.Checked = true;
+                if (f.ShowDialog(this) != DialogResult.OK)
+                    return;
+                (id, activa) = (f.IdSalvat, f.Activa);
+            }
+
+            await Mesaje.RuleazaAsync(btnReincarca, async () =>
+            {
+                if (!activa && !chkInactive.Checked)
+                    chkInactive.Checked = true; // ca sa ramana vizibila in lista
                 else
                     await ReincarcaAsync(id);
             });

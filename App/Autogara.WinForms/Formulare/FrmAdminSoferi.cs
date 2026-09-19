@@ -3,6 +3,7 @@ using Autogara.WinForms.Ui;
 
 namespace Autogara.WinForms.Formulare
 {
+    /// <summary>Lista soferilor; adaugarea si modificarea se fac in <see cref="FrmEditareSofer"/>.</summary>
     public partial class FrmAdminSoferi : FormAutogara
     {
         private SoferRand _selectat;
@@ -41,48 +42,38 @@ namespace Autogara.WinForms.Formulare
                 AfiseazaSelectia();
         }
 
+        private void gridLista_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+                btnModifica.PerformClick();
+        }
+
         private void AfiseazaSelectia()
         {
             _selectat = gridLista.Selectat<SoferRand>();
-            errorProvider.Clear();
-            lblEditareTitlu.Text = _selectat is null ? "Șofer nou" : "Editare șofer";
-            txtNume.Text = _selectat?.Nume ?? "";
-            txtPrenume.Text = _selectat?.Prenume ?? "";
-            txtNrPermis.Text = _selectat?.NrPermis ?? "";
-            txtTelefon.Text = _selectat?.Telefon ?? "";
-            btnActiv.Visible = _selectat is not null;
+            btnModifica.Enabled = btnActiv.Enabled = _selectat is not null;
             btnActiv.Text = _selectat?.Activ == false ? " Reactivează" : " Dezactivează";
             btnActiv.Icon = _selectat?.Activ == false ? "user-check" : "user-x";
         }
 
-        private void btnNou_Click(object sender, EventArgs e)
+        private async void btnAdauga_Click(object sender, EventArgs e) => await DeschideEditareaAsync(null);
+
+        private async void btnModifica_Click(object sender, EventArgs e)
         {
-            gridLista.ClearSelection();
-            gridLista.CurrentCell = null;
-            AfiseazaSelectia();
-            txtNume.Focus();
+            if (_selectat is not null)
+                await DeschideEditareaAsync(_selectat);
         }
 
-        private async void btnSalveaza_Click(object sender, EventArgs e)
+        private async Task DeschideEditareaAsync(SoferRand sofer)
         {
-            if (!new VerificareFormular(errorProvider)
-                    .Obligatoriu(txtNume, "Numele")
-                    .Obligatoriu(txtPrenume, "Prenumele")
-                    .Obligatoriu(txtNrPermis, "Numărul permisului")
-                    .Telefon(txtTelefon)
-                    .Verifica(this))
-                return;
-
-            var date = new SoferEditare { Nume = txtNume.Text, Prenume = txtPrenume.Text, NrPermis = txtNrPermis.Text, Telefon = txtTelefon.Text };
-            await Mesaje.RuleazaAsync(btnSalveaza, async () =>
+            int id;
+            using (var f = new FrmEditareSofer(sofer))
             {
-                var id = _selectat?.SoferID ?? 0;
-                if (_selectat is null)
-                    id = await Aplicatie.Backend.Soferi.AdaugaAsync(date);
-                else
-                    await Aplicatie.Backend.Soferi.ActualizeazaAsync(id, date);
-                await ReincarcaAsync(id);
-            });
+                if (f.ShowDialog(this) != DialogResult.OK)
+                    return;
+                id = f.IdSalvat;
+            }
+            await Mesaje.RuleazaAsync(btnReincarca, () => ReincarcaAsync(id));
         }
 
         private async void btnActiv_Click(object sender, EventArgs e)

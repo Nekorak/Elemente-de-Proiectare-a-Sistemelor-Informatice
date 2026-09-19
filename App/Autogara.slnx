@@ -1,9 +1,10 @@
 <Solution>
+  <!-- Primul proiect din lista e proiectul de start implicit in Visual Studio: aplicatia WinForms. -->
+  <Project Path="Autogara.WinForms/Autogara.WinForms.csproj" />
   <Project Path="Autogara.Business/Autogara.Business.csproj" />
   <Project Path="Autogara.Common/Autogara.Common.csproj" />
   <Project Path="Autogara.DataAccess/Autogara.DataAccess.csproj" />
   <Project Path="Autogara.Domain/Autogara.Domain.csproj" />
   <Project Path="Autogara.FileServer/Autogara.FileServer.csproj" />
   <Project Path="Autogara.Tests/Autogara.Tests.csproj" />
-  <Project Path="Autogara.WinForms/Autogara.WinForms.csproj" />
 </Solution>

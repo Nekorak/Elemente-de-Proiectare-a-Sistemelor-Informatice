@@ -47,7 +47,7 @@ namespace Autogara.WinForms.Formulare
             // 
             pnlRezultat.Controls.Add(gridAudit);
             pnlRezultat.Controls.Add(lblNumar);
-            pnlRezultat.BackColor = Color.White;
+            pnlRezultat.BackColor = Color.FromArgb(250, 249, 246);
             pnlRezultat.Dock = DockStyle.Fill;
             pnlRezultat.Name = "pnlRezultat";
             pnlRezultat.Padding = new Padding(12, 12, 12, 12);
@@ -104,7 +104,7 @@ namespace Autogara.WinForms.Formulare
             // lblNumar
             // 
             lblNumar.Dock = DockStyle.Bottom;
-            lblNumar.ForeColor = Color.FromArgb(107, 114, 128);
+            lblNumar.ForeColor = Color.FromArgb(110, 106, 96);
             lblNumar.Name = "lblNumar";
             lblNumar.Size = new Size(984, 30);
             lblNumar.Text = "";
@@ -127,7 +127,7 @@ namespace Autogara.WinForms.Formulare
             pnlFiltre.Controls.Add(lblMax);
             pnlFiltre.Controls.Add(numMax);
             pnlFiltre.Controls.Add(btnCauta);
-            pnlFiltre.BackColor = Color.White;
+            pnlFiltre.BackColor = Color.FromArgb(250, 249, 246);
             pnlFiltre.Dock = DockStyle.Top;
             pnlFiltre.Name = "pnlFiltre";
             pnlFiltre.Size = new Size(1008, 76);
@@ -210,7 +210,7 @@ namespace Autogara.WinForms.Formulare
             AcceptButton = btnCauta;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(245, 247, 250);
+            BackColor = Color.FromArgb(238, 236, 230);
             ClientSize = new Size(1008, 680);
             Controls.Add(pnlRezultat);
             Controls.Add(pnlSpatiu);

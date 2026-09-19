@@ -88,7 +88,7 @@ namespace Autogara.WinForms.Formulare
             pnlRezultat.Controls.Add(gridOcupare);
             pnlRezultat.Controls.Add(gridComparativ);
             pnlRezultat.Controls.Add(lblTotal);
-            pnlRezultat.BackColor = Color.White;
+            pnlRezultat.BackColor = Color.FromArgb(250, 249, 246);
             pnlRezultat.Dock = DockStyle.Fill;
             pnlRezultat.Name = "pnlRezultat";
             pnlRezultat.Padding = new Padding(12, 12, 12, 12);
@@ -401,8 +401,8 @@ namespace Autogara.WinForms.Formulare
             // lblTotal
             // 
             lblTotal.Dock = DockStyle.Bottom;
-            lblTotal.Font = new Font("Segoe UI Semibold", 9.5F);
-            lblTotal.ForeColor = Color.FromArgb(31, 41, 55);
+            lblTotal.Font = new Font("Bahnschrift SemiBold", 9.5F);
+            lblTotal.ForeColor = Color.FromArgb(34, 34, 31);
             lblTotal.Name = "lblTotal";
             lblTotal.Size = new Size(984, 36);
             lblTotal.Text = "Alegeți perioada și apăsați „Afișează”.";
@@ -427,7 +427,7 @@ namespace Autogara.WinForms.Formulare
             pnlFiltre.Controls.Add(btnAfiseaza);
             pnlFiltre.Controls.Add(btnExport);
             pnlFiltre.Controls.Add(btnArhiveaza);
-            pnlFiltre.BackColor = Color.White;
+            pnlFiltre.BackColor = Color.FromArgb(250, 249, 246);
             pnlFiltre.Dock = DockStyle.Top;
             pnlFiltre.Name = "pnlFiltre";
             pnlFiltre.Size = new Size(1008, 76);
@@ -541,7 +541,7 @@ namespace Autogara.WinForms.Formulare
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(245, 247, 250);
+            BackColor = Color.FromArgb(238, 236, 230);
             ClientSize = new Size(1008, 680);
             Controls.Add(pnlRezultat);
             Controls.Add(pnlSpatiu);

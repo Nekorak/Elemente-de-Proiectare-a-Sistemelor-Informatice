@@ -57,7 +57,7 @@ namespace Autogara.WinForms.Formulare
             //
             // pnlMeniu
             //
-            pnlMeniu.BackColor = Color.FromArgb(15, 23, 42);
+            pnlMeniu.BackColor = Color.FromArgb(28, 36, 32);
             pnlMeniu.Controls.Add(flpMeniu);
             pnlMeniu.Controls.Add(lblVersiuneMeniu);
             pnlMeniu.Controls.Add(pnlLogo);
@@ -97,7 +97,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // btnDashboard
             // 
-            btnDashboard.Font = new Font("Segoe UI", 9.75F);
+            btnDashboard.Font = new Font("Bahnschrift", 10.5F);
             btnDashboard.Icon = "layout-dashboard";
             btnDashboard.ImageAlign = ContentAlignment.MiddleLeft;
             btnDashboard.Margin = new Padding(0, 0, 0, 2);
@@ -113,7 +113,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // btnVanzare
             // 
-            btnVanzare.Font = new Font("Segoe UI", 9.75F);
+            btnVanzare.Font = new Font("Bahnschrift", 10.5F);
             btnVanzare.Icon = "ticket";
             btnVanzare.ImageAlign = ContentAlignment.MiddleLeft;
             btnVanzare.Margin = new Padding(0, 0, 0, 2);
@@ -129,7 +129,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // btnBilete
             // 
-            btnBilete.Font = new Font("Segoe UI", 9.75F);
+            btnBilete.Font = new Font("Bahnschrift", 10.5F);
             btnBilete.Icon = "ticket-check";
             btnBilete.ImageAlign = ContentAlignment.MiddleLeft;
             btnBilete.Margin = new Padding(0, 0, 0, 2);
@@ -145,8 +145,8 @@ namespace Autogara.WinForms.Formulare
             // 
             // lblGrupAdministrare
             // 
-            lblGrupAdministrare.Font = new Font("Segoe UI Semibold", 7.5F);
-            lblGrupAdministrare.ForeColor = Color.FromArgb(100, 116, 139);
+            lblGrupAdministrare.Font = new Font("Bahnschrift SemiBold", 7.5F);
+            lblGrupAdministrare.ForeColor = Color.FromArgb(127, 138, 131);
             lblGrupAdministrare.Margin = new Padding(0, 8, 0, 2);
             lblGrupAdministrare.Name = "lblGrupAdministrare";
             lblGrupAdministrare.Padding = new Padding(14, 0, 0, 0);
@@ -156,7 +156,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // btnCurse
             // 
-            btnCurse.Font = new Font("Segoe UI", 9.75F);
+            btnCurse.Font = new Font("Bahnschrift", 10.5F);
             btnCurse.Icon = "calendar";
             btnCurse.ImageAlign = ContentAlignment.MiddleLeft;
             btnCurse.Margin = new Padding(0, 0, 0, 2);
@@ -172,7 +172,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // btnTrasee
             // 
-            btnTrasee.Font = new Font("Segoe UI", 9.75F);
+            btnTrasee.Font = new Font("Bahnschrift", 10.5F);
             btnTrasee.Icon = "route";
             btnTrasee.ImageAlign = ContentAlignment.MiddleLeft;
             btnTrasee.Margin = new Padding(0, 0, 0, 2);
@@ -188,7 +188,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // btnStatii
             // 
-            btnStatii.Font = new Font("Segoe UI", 9.75F);
+            btnStatii.Font = new Font("Bahnschrift", 10.5F);
             btnStatii.Icon = "map-pin";
             btnStatii.ImageAlign = ContentAlignment.MiddleLeft;
             btnStatii.Margin = new Padding(0, 0, 0, 2);
@@ -204,7 +204,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // btnHarta
             // 
-            btnHarta.Font = new Font("Segoe UI", 9.75F);
+            btnHarta.Font = new Font("Bahnschrift", 10.5F);
             btnHarta.Icon = "map";
             btnHarta.ImageAlign = ContentAlignment.MiddleLeft;
             btnHarta.Margin = new Padding(0, 0, 0, 2);
@@ -220,7 +220,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // btnAutobuze
             // 
-            btnAutobuze.Font = new Font("Segoe UI", 9.75F);
+            btnAutobuze.Font = new Font("Bahnschrift", 10.5F);
             btnAutobuze.Icon = "bus";
             btnAutobuze.ImageAlign = ContentAlignment.MiddleLeft;
             btnAutobuze.Margin = new Padding(0, 0, 0, 2);
@@ -236,7 +236,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // btnMentenanta
             // 
-            btnMentenanta.Font = new Font("Segoe UI", 9.75F);
+            btnMentenanta.Font = new Font("Bahnschrift", 10.5F);
             btnMentenanta.Icon = "wrench";
             btnMentenanta.ImageAlign = ContentAlignment.MiddleLeft;
             btnMentenanta.Margin = new Padding(0, 0, 0, 2);
@@ -252,7 +252,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // btnSoferi
             // 
-            btnSoferi.Font = new Font("Segoe UI", 9.75F);
+            btnSoferi.Font = new Font("Bahnschrift", 10.5F);
             btnSoferi.Icon = "id-card";
             btnSoferi.ImageAlign = ContentAlignment.MiddleLeft;
             btnSoferi.Margin = new Padding(0, 0, 0, 2);
@@ -268,7 +268,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // btnReduceri
             // 
-            btnReduceri.Font = new Font("Segoe UI", 9.75F);
+            btnReduceri.Font = new Font("Bahnschrift", 10.5F);
             btnReduceri.Icon = "percent";
             btnReduceri.ImageAlign = ContentAlignment.MiddleLeft;
             btnReduceri.Margin = new Padding(0, 0, 0, 2);
@@ -284,7 +284,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // btnUtilizatori
             // 
-            btnUtilizatori.Font = new Font("Segoe UI", 9.75F);
+            btnUtilizatori.Font = new Font("Bahnschrift", 10.5F);
             btnUtilizatori.Icon = "users";
             btnUtilizatori.ImageAlign = ContentAlignment.MiddleLeft;
             btnUtilizatori.Margin = new Padding(0, 0, 0, 2);
@@ -300,8 +300,8 @@ namespace Autogara.WinForms.Formulare
             // 
             // lblGrupRapoarte
             // 
-            lblGrupRapoarte.Font = new Font("Segoe UI Semibold", 7.5F);
-            lblGrupRapoarte.ForeColor = Color.FromArgb(100, 116, 139);
+            lblGrupRapoarte.Font = new Font("Bahnschrift SemiBold", 7.5F);
+            lblGrupRapoarte.ForeColor = Color.FromArgb(127, 138, 131);
             lblGrupRapoarte.Margin = new Padding(0, 8, 0, 2);
             lblGrupRapoarte.Name = "lblGrupRapoarte";
             lblGrupRapoarte.Padding = new Padding(14, 0, 0, 0);
@@ -311,7 +311,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // btnRapoarte
             // 
-            btnRapoarte.Font = new Font("Segoe UI", 9.75F);
+            btnRapoarte.Font = new Font("Bahnschrift", 10.5F);
             btnRapoarte.Icon = "chart-column";
             btnRapoarte.ImageAlign = ContentAlignment.MiddleLeft;
             btnRapoarte.Margin = new Padding(0, 0, 0, 2);
@@ -327,7 +327,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // btnAudit
             // 
-            btnAudit.Font = new Font("Segoe UI", 9.75F);
+            btnAudit.Font = new Font("Bahnschrift", 10.5F);
             btnAudit.Icon = "scroll-text";
             btnAudit.ImageAlign = ContentAlignment.MiddleLeft;
             btnAudit.Margin = new Padding(0, 0, 0, 2);
@@ -353,7 +353,7 @@ namespace Autogara.WinForms.Formulare
             //
             // iconLogo
             //
-            iconLogo.Culoare = Color.FromArgb(96, 165, 250);
+            iconLogo.Culoare = Color.FromArgb(232, 163, 23);
             iconLogo.Icon = "bus-front";
             iconLogo.Location = new Point(22, 20);
             iconLogo.Name = "iconLogo";
@@ -362,16 +362,16 @@ namespace Autogara.WinForms.Formulare
             // lblAplicatie
             //
             lblAplicatie.AutoSize = true;
-            lblAplicatie.Font = new Font("Segoe UI Semibold", 14F);
+            lblAplicatie.Font = new Font("Bahnschrift SemiBold", 14F);
             lblAplicatie.ForeColor = Color.White;
             lblAplicatie.Location = new Point(60, 21);
             lblAplicatie.Name = "lblAplicatie";
-            lblAplicatie.Text = "Autogara";
+            lblAplicatie.Text = "AUTOGARA";
             //
             // lblVersiuneMeniu
             //
             lblVersiuneMeniu.Dock = DockStyle.Bottom;
-            lblVersiuneMeniu.ForeColor = Color.FromArgb(100, 116, 139);
+            lblVersiuneMeniu.ForeColor = Color.FromArgb(127, 138, 131);
             lblVersiuneMeniu.Location = new Point(0, 768);
             lblVersiuneMeniu.Name = "lblVersiuneMeniu";
             lblVersiuneMeniu.Padding = new Padding(22, 0, 0, 0);
@@ -381,7 +381,7 @@ namespace Autogara.WinForms.Formulare
             //
             // pnlAntet
             //
-            pnlAntet.BackColor = Color.White;
+            pnlAntet.BackColor = Color.FromArgb(250, 249, 246);
             pnlAntet.Controls.Add(lblSectiune);
             pnlAntet.Controls.Add(indicatorConexiune);
             pnlAntet.Controls.Add(lblUtilizator);
@@ -397,16 +397,16 @@ namespace Autogara.WinForms.Formulare
             // lblSectiune
             //
             lblSectiune.AutoSize = true;
-            lblSectiune.Font = new Font("Segoe UI Semibold", 15F);
-            lblSectiune.ForeColor = Color.FromArgb(31, 41, 55);
+            lblSectiune.Font = new Font("Bahnschrift SemiBold", 16F);
+            lblSectiune.ForeColor = Color.FromArgb(34, 34, 31);
             lblSectiune.Location = new Point(24, 16);
             lblSectiune.Name = "lblSectiune";
-            lblSectiune.Text = "Dashboard";
+            lblSectiune.Text = "DASHBOARD";
             //
             // indicatorConexiune
             //
             indicatorConexiune.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            indicatorConexiune.ForeColor = Color.FromArgb(75, 85, 99);
+            indicatorConexiune.ForeColor = Color.FromArgb(84, 81, 74);
             indicatorConexiune.Location = new Point(520, 20);
             indicatorConexiune.Name = "indicatorConexiune";
             indicatorConexiune.Size = new Size(160, 24);
@@ -414,7 +414,7 @@ namespace Autogara.WinForms.Formulare
             // lblUtilizator
             //
             lblUtilizator.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lblUtilizator.ForeColor = Color.FromArgb(55, 65, 81);
+            lblUtilizator.ForeColor = Color.FromArgb(60, 58, 52);
             lblUtilizator.Location = new Point(688, 12);
             lblUtilizator.Name = "lblUtilizator";
             lblUtilizator.Size = new Size(200, 40);
@@ -449,16 +449,16 @@ namespace Autogara.WinForms.Formulare
             //
             // pnlLinie
             //
-            pnlLinie.BackColor = Color.FromArgb(217, 222, 229);
+            pnlLinie.BackColor = Color.FromArgb(232, 163, 23);
             pnlLinie.Dock = DockStyle.Bottom;
-            pnlLinie.Location = new Point(0, 63);
+            pnlLinie.Location = new Point(0, 61);
             pnlLinie.Name = "pnlLinie";
-            pnlLinie.Size = new Size(1048, 1);
+            pnlLinie.Size = new Size(1048, 3);
             pnlLinie.TabIndex = 2;
             //
             // pnlContinut
             //
-            pnlContinut.BackColor = Color.FromArgb(245, 247, 250);
+            pnlContinut.BackColor = Color.FromArgb(238, 236, 230);
             pnlContinut.Dock = DockStyle.Fill;
             pnlContinut.Location = new Point(232, 64);
             pnlContinut.Name = "pnlContinut";
@@ -470,7 +470,7 @@ namespace Autogara.WinForms.Formulare
             //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(245, 247, 250);
+            BackColor = Color.FromArgb(238, 236, 230);
             ClientSize = new Size(1280, 800);
             Controls.Add(pnlContinut);
             Controls.Add(pnlAntet);

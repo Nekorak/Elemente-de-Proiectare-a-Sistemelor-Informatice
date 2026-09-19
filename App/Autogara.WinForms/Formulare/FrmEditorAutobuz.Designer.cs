@@ -81,7 +81,7 @@ namespace Autogara.WinForms.Formulare
             pnlStanga.Controls.Add(lblAjutor);
             pnlStanga.Controls.Add(btnSalveaza);
             pnlStanga.Controls.Add(btnRenunta);
-            pnlStanga.BackColor = Color.White;
+            pnlStanga.BackColor = Color.FromArgb(250, 249, 246);
             pnlStanga.Dock = DockStyle.Left;
             pnlStanga.Name = "pnlStanga";
             pnlStanga.Size = new Size(300, 640);
@@ -96,8 +96,8 @@ namespace Autogara.WinForms.Formulare
             // lblTitlu
             // 
             lblTitlu.AutoSize = true;
-            lblTitlu.Font = new Font("Segoe UI Semibold", 13F);
-            lblTitlu.ForeColor = Color.FromArgb(31, 41, 55);
+            lblTitlu.Font = new Font("Bahnschrift SemiBold", 13F);
+            lblTitlu.ForeColor = Color.FromArgb(34, 34, 31);
             lblTitlu.Location = new Point(52, 18);
             lblTitlu.Name = "lblTitlu";
             lblTitlu.Text = "Autobuz";
@@ -105,14 +105,14 @@ namespace Autogara.WinForms.Formulare
             // lblModel
             // 
             lblModel.AutoSize = true;
-            lblModel.ForeColor = Color.FromArgb(107, 114, 128);
+            lblModel.ForeColor = Color.FromArgb(110, 106, 96);
             lblModel.Location = new Point(22, 50);
             lblModel.Name = "lblModel";
             lblModel.Text = "";
             // 
             // pnlLinie
             // 
-            pnlLinie.BackColor = Color.FromArgb(217, 222, 229);
+            pnlLinie.BackColor = Color.FromArgb(212, 208, 198);
             pnlLinie.Location = new Point(20, 80);
             pnlLinie.Name = "pnlLinie";
             pnlLinie.Size = new Size(260, 1);
@@ -120,8 +120,8 @@ namespace Autogara.WinForms.Formulare
             // lblGrila
             // 
             lblGrila.AutoSize = true;
-            lblGrila.Font = new Font("Segoe UI Semibold", 10F);
-            lblGrila.ForeColor = Color.FromArgb(31, 41, 55);
+            lblGrila.Font = new Font("Bahnschrift SemiBold", 10F);
+            lblGrila.ForeColor = Color.FromArgb(34, 34, 31);
             lblGrila.Location = new Point(20, 94);
             lblGrila.Name = "lblGrila";
             lblGrila.Text = "Grila";
@@ -177,7 +177,7 @@ namespace Autogara.WinForms.Formulare
             // lblCuloarNota
             // 
             lblCuloarNota.AutoSize = true;
-            lblCuloarNota.ForeColor = Color.FromArgb(107, 114, 128);
+            lblCuloarNota.ForeColor = Color.FromArgb(110, 106, 96);
             lblCuloarNota.Location = new Point(20, 218);
             lblCuloarNota.Name = "lblCuloarNota";
             lblCuloarNota.Text = "0 = fără culoar";
@@ -195,15 +195,15 @@ namespace Autogara.WinForms.Formulare
             // lblNumar
             // 
             lblNumar.AutoSize = true;
-            lblNumar.Font = new Font("Segoe UI Semibold", 16F);
-            lblNumar.ForeColor = Color.FromArgb(31, 41, 55);
+            lblNumar.Font = new Font("Bahnschrift SemiBold", 16F);
+            lblNumar.ForeColor = Color.FromArgb(34, 34, 31);
             lblNumar.Location = new Point(18, 294);
             lblNumar.Name = "lblNumar";
             lblNumar.Text = "0 locuri";
             // 
             // lblCapacitate
             // 
-            lblCapacitate.ForeColor = Color.FromArgb(107, 114, 128);
+            lblCapacitate.ForeColor = Color.FromArgb(110, 106, 96);
             lblCapacitate.Location = new Point(20, 330);
             lblCapacitate.Name = "lblCapacitate";
             lblCapacitate.Size = new Size(260, 40);
@@ -211,7 +211,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // iconAjutor
             // 
-            iconAjutor.Culoare = Color.FromArgb(107, 114, 128);
+            iconAjutor.Culoare = Color.FromArgb(110, 106, 96);
             iconAjutor.Icon = "mouse-pointer-2";
             iconAjutor.Location = new Point(20, 384);
             iconAjutor.Name = "iconAjutor";
@@ -219,7 +219,7 @@ namespace Autogara.WinForms.Formulare
             // 
             // lblAjutor
             // 
-            lblAjutor.ForeColor = Color.FromArgb(107, 114, 128);
+            lblAjutor.ForeColor = Color.FromArgb(110, 106, 96);
             lblAjutor.Location = new Point(42, 382);
             lblAjutor.Name = "lblAjutor";
             lblAjutor.Size = new Size(238, 90);
@@ -252,7 +252,7 @@ namespace Autogara.WinForms.Formulare
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(245, 247, 250);
+            BackColor = Color.FromArgb(238, 236, 230);
             CancelButton = btnRenunta;
             ClientSize = new Size(900, 640);
             Controls.Add(pnlEditor);
