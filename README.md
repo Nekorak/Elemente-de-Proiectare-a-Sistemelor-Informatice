@@ -96,7 +96,7 @@ Credentials.txt         credențialele proiectului (repo privat)
 
 ## Rularea bazei de date
 
-Scripturile din `SQL Code` se rulează manual în SSMS, în ordinea numerelor (`01` → `11`). `10_BackupRestore.sql` se rulează doar la testul de restaurare. În `09_Jobs.sql` și `10_BackupRestore.sql`, verifică `@BackupPath` de la începutul scriptului.
+Scripturile din `SQL Code` se rulează manual în SSMS, în ordinea numerelor (`01` → `12`). `10_BackupRestore.sql` se rulează doar la testul de restaurare. `12_DateVolum.sql` adaugă peste seed ~10 000 de bilete realiste (ultimele 45 de zile și următoarele 14) și se rulează o singură dată. În `09_Jobs.sql` și `10_BackupRestore.sql`, verifică `@BackupPath` de la începutul scriptului.
 
 Datele de test acoperă intervalul de la 7 zile în urmă până la 7 zile înainte față de ziua rulării.
 
