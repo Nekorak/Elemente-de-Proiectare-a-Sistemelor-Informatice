@@ -589,7 +589,7 @@ FROM #V;
 
 INSERT INTO autogara.LogAudit (UtilizatorID, Actiune, Entitate, EntitateID, DataOra)
 SELECT v.VanzutDe,
-       CONCAT(N'Anulare bilet ', v.CodBilet, N' — rambursat ', ROUND(v.Pret * v.ProcentRambursare / 100, 2),
+       CONCAT(N'Anulare bilet ', v.CodBilet, N' — rambursat ', CAST(ROUND(v.Pret * v.ProcentRambursare / 100, 2) AS DECIMAL(10, 2)),
               N' MDL (', CAST(v.ProcentRambursare AS INT), N'%)'),
        N'Bilete', CONVERT(NVARCHAR(50), v.BiletID), autogara.fn_LocalLaUtc(v.ModificatLocal)
 FROM #V AS v

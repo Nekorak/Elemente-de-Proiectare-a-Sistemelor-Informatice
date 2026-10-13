@@ -73,15 +73,15 @@ Aplicația rulează pe laptop (client). Computerul de acasă este serverul: pe e
 - [x] Indicatorul online/offline și auto-update-ul
 
 ### Tester — Sopivnic Maxim
-- [ ] Planul de testare pe roluri
-- [ ] Testarea editorului de hartă și a celui de autobuz
-- [ ] Testarea vânzării, a rezervării provizorii și a anulării
-- [ ] Testarea concurenței și a expirării rezervărilor
+- [x] Planul de testare pe roluri
+- [x] Testarea editorului de hartă și a celui de autobuz
+- [x] Testarea vânzării, a rezervării provizorii și a anulării
+- [x] Testarea concurenței și a expirării rezervărilor
 - [ ] Testarea conexiunii la distanță și a modului offline
-- [ ] Testarea securității și a integrității datelor
-- [ ] Testarea rapoartelor, a dashboard-ului și a joburilor SQL
+- [x] Testarea securității și a integrității datelor
+- [x] Testarea rapoartelor, a dashboard-ului și a joburilor SQL
 - [ ] Testarea backup-ului și a restaurării
-- [ ] Testarea de regresie înainte de livrare
+- [x] Testarea de regresie înainte de livrare
 
 ## Structura repository-ului
 
