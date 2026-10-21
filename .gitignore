@@ -27,3 +27,7 @@ File-Server/Backup/**
 # Configurare locala per statie de lucru
 appsettings.local.json
 *.local.config
+
+# rezultatele locale ale testelor de stres
+Testare/Stres/rezultate*.md
+Testare/Stres/rezultate*.txt

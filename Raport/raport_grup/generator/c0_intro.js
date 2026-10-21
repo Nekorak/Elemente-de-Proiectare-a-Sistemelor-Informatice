@@ -11,7 +11,7 @@ module.exports = () => [
     ["1. Baza de date", "Gojinevschii Dmitri", "schema autogara: 17 tabele, indici, funcții, 5 viziuni, 10 proceduri stocate, roluri și permisiuni, 6 joburi SQL Server Agent, backup și restaurare, date de test"],
     ["2. Backend și DevOps", "Hanganu Sergiu", "soluția .NET pe straturi (Domain, Common, DataAccess, FileServer, Business), securitatea în aplicație, modul offline; serverul: SQL Server pe port propriu, OpenSSH/SFTP, firewall, redirecționarea porturilor, Git, compilare, testare și publicare"],
     ["3. Frontend", "Crivenco Alexandr", "aplicația Windows Forms: designul, cele 32 de ferestre, controalele desenate (schema locurilor, editorul hărții și al autobuzului), meniul pe roluri"],
-    ["4. Testarea", "Sopivnic Maxim", "40 de cazuri de test pe roluri, concurență, securitate, integritatea datelor și joburi; 6 defecte documentate"],
+    ["4. Testarea", "Sopivnic Maxim", "40 de cazuri funcționale; teste de concurență și încărcare cu până la 20 de stații simultane, 5 instanțe ale aplicației, securitate și recuperare, pe o copie izolată a bazei; 12 defecte documentate"],
   ], [24, 22, 54], { caption: "Compartimentele proiectului și responsabilii" }),
   P("Fiecare compartiment se încheie cu concluziile proprii, iar fiecare punct este argumentat cu capturi de ecran din mediul real de lucru: SQL Server Management Studio și consola, Visual Studio, serverul și aplicația pornită. Capturile sunt incluse direct în text, lângă explicație."),
   P("**Avantajele soluției:**"),
