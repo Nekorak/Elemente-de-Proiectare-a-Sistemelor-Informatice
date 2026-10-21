@@ -1,0 +1,21 @@
+// Sursele bibliografiei (ordinea finala = ordinea primei citari)
+module.exports = {
+  MsSql: { tag: "MsSql", type: "InternetSite", author: "Microsoft", title: "SQL Server technical documentation", site: "Microsoft Learn", year: "2025", url: "https://learn.microsoft.com/en-us/sql/sql-server/" },
+  MsSqlSecurity: { tag: "MsSqlSecurity", type: "InternetSite", author: "Microsoft", title: "Securing SQL Server", site: "Microsoft Learn", year: "2025", url: "https://learn.microsoft.com/en-us/sql/relational-databases/security/securing-sql-server" },
+  MsSqlAgent: { tag: "MsSqlAgent", type: "InternetSite", author: "Microsoft", title: "SQL Server Agent", site: "Microsoft Learn", year: "2025", url: "https://learn.microsoft.com/en-us/sql/ssms/agent/sql-server-agent" },
+  MsSqlBackup: { tag: "MsSqlBackup", type: "InternetSite", author: "Microsoft", title: "Back up and restore of SQL Server databases", site: "Microsoft Learn", year: "2025", url: "https://learn.microsoft.com/en-us/sql/relational-databases/backup-restore/back-up-and-restore-of-sql-server-databases" },
+  EfCore: { tag: "EfCore", type: "InternetSite", author: "Microsoft", title: "Entity Framework Core", site: "Microsoft Learn", year: "2025", url: "https://learn.microsoft.com/en-us/ef/core/" },
+  SshNet: { tag: "SshNet", type: "InternetSite", author: "SSH.NET contributors", title: "SSH.NET — Secure Shell library for .NET", site: "GitHub", year: "2025", url: "https://github.com/sshnet/SSH.NET" },
+  Serilog: { tag: "Serilog", type: "InternetSite", author: "Serilog contributors", title: "Serilog — simple .NET logging with fully-structured events", site: "serilog.net", year: "2025", url: "https://serilog.net/" },
+  Dpapi: { tag: "Dpapi", type: "InternetSite", author: "Microsoft", title: "ProtectedData Class (System.Security.Cryptography)", site: "Microsoft Learn", year: "2025", url: "https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.protecteddata" },
+  EfResilience: { tag: "EfResilience", type: "InternetSite", author: "Microsoft", title: "Connection Resiliency — EF Core", site: "Microsoft Learn", year: "2025", url: "https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency" },
+  Pbkdf2: { tag: "Pbkdf2", type: "InternetSite", author: "Microsoft", title: "Rfc2898DeriveBytes.Pbkdf2 Method", site: "Microsoft Learn", year: "2025", url: "https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.rfc2898derivebytes.pbkdf2" },
+  Owasp: { tag: "Owasp", type: "InternetSite", author: "OWASP Foundation", title: "Password Storage Cheat Sheet", site: "OWASP Cheat Sheet Series", year: "2025", url: "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html" },
+  Xunit: { tag: "Xunit", type: "InternetSite", author: ".NET Foundation", title: "xUnit.net — Getting Started", site: "xunit.net", year: "2025", url: "https://xunit.net/" },
+  MsSqlPort: { tag: "MsSqlPort", type: "InternetSite", author: "Microsoft", title: "Configure a Server to Listen on a Specific TCP Port", site: "Microsoft Learn", year: "2025", url: "https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/configure-a-server-to-listen-on-a-specific-tcp-port" },
+  OpenSsh: { tag: "OpenSsh", type: "InternetSite", author: "Microsoft", title: "OpenSSH for Windows overview", site: "Microsoft Learn", year: "2025", url: "https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_overview" },
+  Git: { tag: "Git", type: "InternetSite", author: "S. Chacon, B. Straub", title: "Pro Git, 2nd Edition", site: "git-scm.com", year: "2014", url: "https://git-scm.com/book/en/v2" },
+  DotnetCli: { tag: "DotnetCli", type: "InternetSite", author: "Microsoft", title: "dotnet publish command — .NET CLI", site: "Microsoft Learn", year: "2025", url: "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-publish" },
+  WinForms: { tag: "WinForms", type: "InternetSite", author: "Microsoft", title: "Desktop Guide (Windows Forms .NET)", site: "Microsoft Learn", year: "2025", url: "https://learn.microsoft.com/en-us/dotnet/desktop/winforms/" },
+  Lucide: { tag: "Lucide", type: "InternetSite", author: "Lucide contributors", title: "Lucide Icons", site: "lucide.dev", year: "2025", url: "https://lucide.dev/" },
+};
