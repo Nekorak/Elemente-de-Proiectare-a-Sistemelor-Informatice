@@ -1,4 +1,4 @@
-const { P, H, bullets, table } = require("./lib");
+const { P, H, bullets, table, fig } = require("./lib");
 
 module.exports = () => [
   H(1, "INTRODUCERE"),
@@ -13,6 +13,8 @@ module.exports = () => [
     ["3. Frontend", "Crivenco Alexandr", "aplicația Windows Forms: designul, cele 32 de ferestre, controalele desenate (schema locurilor, editorul hărții și al autobuzului), meniul pe roluri"],
     ["4. Testarea", "Sopivnic Maxim", "40 de cazuri funcționale; teste de concurență și încărcare cu până la 20 de stații simultane, 5 instanțe ale aplicației, securitate și recuperare, pe o copie izolată a bazei; 12 defecte documentate"],
   ], [24, 22, 54], { caption: "Compartimentele proiectului și responsabilii" }),
+  P("**Calendarul lucrărilor.** Diagrama Gantt de mai jos arată cine a lucrat, când și la ce element. Pe axa orizontală este timpul, pe cea verticală elementele proiectului, iar culoarea indică membrul echipei responsabil de compartiment. Perioadele sunt luate din istoricul Git: o bară începe la primul commit care a adus elementul în depozit și se termină la ultimul care l-a modificat; un element adus printr-un singur commit apare ca o bară scurtă. Axa timpului este întreruptă, deoarece commit-urile s-au grupat în trei perioade: 17–19 septembrie (baza de date, serverul, backend-ul și interfața), 13 octombrie (datele de volum și testarea funcțională) și 21–22 octombrie (testarea extinsă și raportul de grup). Ordinea barelor urmează modelul cascadă: baza de date, apoi backend-ul, interfața și testarea."),
+  ...fig("GANTT_lucrari", "Diagrama Gantt a lucrărilor: elementele proiectului, perioada și membrul echipei (după istoricul Git)", { maxW: 640 }),
   P("Fiecare compartiment se încheie cu concluziile proprii, iar fiecare punct este argumentat cu capturi de ecran din mediul real de lucru: SQL Server Management Studio și consola, Visual Studio, serverul și aplicația pornită. Capturile sunt incluse direct în text, lângă explicație."),
   P("**Avantajele soluției:**"),
   ...bullets([
