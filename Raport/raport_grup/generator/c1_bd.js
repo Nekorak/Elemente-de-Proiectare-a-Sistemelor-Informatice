@@ -38,12 +38,12 @@ const joburi = [
 ];
 
 module.exports = () => {
-  startChapter(1);
+  startChapter(2);
   return [
-    H(1, "1. BAZA DE DATE"),
+    H(1, "2. BAZA DE DATE"),
     P("Compartimentul a fost realizat de **Gojinevschii Dmitri**. Baza de date este nucleul sistemului: toate stațiile de lucru citesc și scriu aceleași date, iar regulile importante (locuri, prețuri, rambursări, drepturi) sunt verificate chiar de SQL Server, indiferent de client. Serverul este Microsoft SQL Server, instanța numită **EPSI**, pe computerul echipei [[MsSql]]. Toate obiectele au fost create prin scripturi T-SQL numerotate, păstrate în folderul `SQL Code` din depozitul Git."),
 
-    H(2, "1.1. Crearea bazei de date și convențiile"),
+    H(2, "2.1. Crearea bazei de date și convențiile"),
     P("Scriptul `01_CreateDatabase.sql` creează baza **autogara** cu collation-ul `Romanian_100_CI_AS` (sortare și comparare corecte pentru diacriticele românești, fără a ține cont de majuscule), modelul de recuperare SIMPLE, verificarea paginilor prin CHECKSUM și opțiunea READ_COMMITTED_SNAPSHOT, prin care citirile nu blochează scrierile casierilor. Scriptul `02_Schema.sql` creează schema dedicată **autogara**, în care stau toate obiectele."),
     ...code(`CREATE DATABASE autogara COLLATE Romanian_100_CI_AS;
 ALTER DATABASE autogara SET RECOVERY SIMPLE;
@@ -63,7 +63,7 @@ ALTER DATABASE autogara SET PAGE_VERIFY CHECKSUM;`),
     ...fig("BD91_scripturi_proiect", "Scripturile bazei de date din folderul SQL Code, în ordinea rulării"),
     ...fig("BD03_obiecte_pe_tipuri", "Numărul obiectelor din schema autogara, pe tipuri, și numărul de rânduri din fiecare tabel"),
 
-    H(2, "1.2. Tabelele și relațiile dintre ele"),
+    H(2, "2.2. Tabelele și relațiile dintre ele"),
     P("Schema are 17 tabele, legate prin chei externe. Ele se împart în patru grupe: utilizatorii și jurnalul (Roluri, Utilizatori, LogAudit), harta și traseele (Noduri, Conexiuni, Statii, Trasee, TraseuOpriri), flota (Autobuze, MentenantaAutobuze, Soferi) și vânzarea (Curse, Locuri, RezervariProvizorii, TipuriReducere, Bilete, Plati). Diagrama de mai jos arată cheile primare, cheile externe și direcția fiecărei relații."),
     ...fig("ER_diagrama", "Diagrama relațiilor dintre cele 17 tabele ale schemei autogara", { maxH: 760 }),
     ...fig("BD01_object_explorer_tabele", "Tabelele schemei autogara în Object Explorer (SQL Server Management Studio)"),
@@ -75,7 +75,7 @@ ALTER DATABASE autogara SET PAGE_VERIFY CHECKSUM;`),
       ...fig(cod, `Tabelul autogara.${t}: structura, constrângerile și datele`),
     ]),
 
-    H(2, "1.3. Indicii"),
+    H(2, "2.3. Indicii"),
     P("Pe lângă indicii creați automat de cheile primare și de constrângerile UNIQUE, scriptul `04_Indexes.sql` adaugă 15 indici nonclustered, aleși după interogările frecvente ale aplicației: căutarea curselor pe dată și traseu, harta locurilor unei curse, rezervările care expiră, căutarea biletului după cod, rapoartele pe zi și jurnalul pe perioadă. Mulți folosesc coloane incluse (INCLUDE), ca interogarea să fie servită complet din index."),
     P("Doi indici sunt filtrați: `UX_Bilete_LocID_Activ` este unic doar pentru biletele cu statusul Activ, deci pe un loc poate exista un singur bilet activ, dar oricâte anulate; `IX_Autobuze_DataExpirareITP` cuprinde doar autobuzele active, pentru alertele de ITP."),
     ...code(`CREATE UNIQUE INDEX UX_Bilete_LocID_Activ
@@ -88,7 +88,7 @@ CREATE INDEX IX_Curse_DataCursa_TraseuID
     ...fig("BD30_indici", "Cei 15 indici nonclustered: coloanele cheie, coloanele incluse și filtrul"),
     ...fig("BD31_index_folosit", "Planul de execuție al căutării curselor pe o zi: SQL Server folosește indexul IX_Curse_DataCursa_TraseuID (Index Seek)"),
 
-    H(2, "1.4. Funcțiile"),
+    H(2, "2.4. Funcțiile"),
     P("Scriptul `05_Functions.sql` conține 6 funcții scalare, folosite de viziuni și de proceduri, ca aceeași regulă să fie scrisă într-un singur loc:"),
     ...table(["Funcția", "Ce întoarce"], [
       ["fn_AcumLocal()", "data și ora curentă în fusul orar al Moldovei (E. Europe Standard Time)"],
@@ -109,7 +109,7 @@ BEGIN
 END;`),
     ...fig("BD35_functii", "Apelul celor 6 funcții: ora locală, prețul cu fiecare reducere și procentul de rambursare în trei situații"),
 
-    H(2, "1.5. Viziunile (views)"),
+    H(2, "2.5. Viziunile (views)"),
     P("Cele 5 viziuni din `06_Views.sql` adună datele din mai multe tabele pentru listele și rapoartele aplicației. Aplicația le citește ca pe niște tabele obișnuite (Entity Framework le mapează ca entități fără cheie), iar contul de rapoarte are acces doar la citire."),
     ...fig("BD32_object_explorer_programmability", "Viziunile, procedurile stocate și funcțiile schemei autogara în Object Explorer"),
     ...viziuni.flatMap(([v, cod, text], i) => [
@@ -120,7 +120,7 @@ END;`),
     P("Definiția unei viziuni poate fi deschisă direct din Object Explorer (Script View as → ALTER To). Viziunea vw_CurseActive, de exemplu, folosește trei OUTER APPLY: prima oprire, ultima oprire și numărarea locurilor pe status."),
     ...fig("BD45_definitie_view", "Codul viziunii vw_CurseActive deschis din Object Explorer"),
 
-    H(2, "1.6. Procedurile stocate"),
+    H(2, "2.6. Procedurile stocate"),
     P("Operațiile critice sunt scrise ca proceduri stocate în `07_StoredProcedures.sql`. Fiecare procedură de modificare folosește `SET XACT_ABORT ON`, o tranzacție cu TRY/CATCH și blocări explicite (UPDLOCK, HOLDLOCK) pe rândurile citite, deci două stații care încearcă simultan același loc nu pot trece amândouă de verificare. Erorile de business sunt aruncate cu THROW, cu coduri 50010–50066 și mesaje în română, pe care aplicația le afișează ca atare."),
     ...table(["Procedura", "Rolul"], [
       ["sp_RezervaLoc", "rezervă provizoriu un loc liber (1–60 de minute) și întoarce ID-ul rezervării și ora expirării"],
@@ -137,7 +137,7 @@ END;`),
     ...fig("BD50_proceduri_lista", "Cele 10 proceduri stocate și parametrii lor (OUTPUT marchează valorile întoarse)"),
     ...fig("BD56_definitie_procedura", "Codul procedurii sp_RezervaLoc: tranzacția, blocarea rândului și verificările"),
     P("Pentru capturile de mai jos procedurile au fost executate pe baza reală, dar în interiorul unei tranzacții închise cu ROLLBACK: se vede efectul fiecărui pas, iar la final datele rămân neschimbate."),
-    H(3, "1.6.1. Rezervarea și vânzarea biletului"),
+    H(3, "2.6.1. Rezervarea și vânzarea biletului"),
     P("`sp_RezervaLoc` verifică existența locului, starea cursei și ora plecării, eliberează o rezervare deja expirată pe același loc, apoi trece locul în starea Rezervat. `sp_ConfirmaVanzareBilet` verifică rezervarea, cursa, utilizatorul și reducerea, calculează prețul prin `fn_CalculeazaPret`, generează un cod unic, ocupă locul și scrie biletul, plata și jurnalul în aceeași tranzacție."),
     ...code(`SELECT @StatusLoc = l.Status, @StatusCursa = c.Status,
        @Plecare = autogara.fn_MomentCursa(c.DataCursa, c.OraPlecare)
@@ -148,20 +148,20 @@ WHERE l.LocID = @LocID;
 IF @StatusLoc <> N'Liber'
     THROW 50023, N'Locul nu mai este liber (a fost rezervat sau vândut între timp).', 1;`),
     ...fig("BD51_sp_RezervaLoc_ConfirmaVanzare", "sp_RezervaLoc și sp_ConfirmaVanzareBilet: locul rezervat, biletul emis cu reducerea de pensionar, plata, jurnalul, apoi ROLLBACK"),
-    H(3, "1.6.2. Anularea și rambursarea"),
+    H(3, "2.6.2. Anularea și rambursarea"),
     P("`sp_AnuleazaBilet` refuză biletele deja anulate și cursele plecate, calculează procentul cu `fn_ProcentRambursare`, schimbă statusul biletului în Rambursat (sau Anulat, dacă suma e zero), eliberează locul și adaugă plata de rambursare. A doua anulare a aceluiași bilet este respinsă cu eroarea 50041."),
     ...fig("BD52_sp_AnuleazaBilet", "sp_AnuleazaBilet: biletul înainte și după anulare, plata de rambursare și respingerea celei de-a doua anulări"),
-    H(3, "1.6.3. Crearea locurilor și eliberarea rezervărilor"),
+    H(3, "2.6.3. Crearea locurilor și eliberarea rezervărilor"),
     P("`sp_CreeazaLocuriPentruCursa` generează numerele de la 1 la capacitatea autobuzului fără bucle, dintr-un tabel de cifre, și nu dublează locurile existente. `sp_ElibereazaRezervariExpirate` șterge rezervările expirate cu indicația READPAST (nu așteaptă după rândurile blocate de casieri) și readuce locurile în starea Liber."),
     ...fig("BD53_sp_ElibereazaRezervari_CreeazaLocuri", "sp_CreeazaLocuriPentruCursa pentru o cursă nouă și sp_ElibereazaRezervariExpirate pe o rezervare expirată, apoi ROLLBACK"),
-    H(3, "1.6.4. Procedurile de raportare"),
+    H(3, "2.6.4. Procedurile de raportare"),
     P("Procedurile de raportare doar citesc. `sp_RaportVanzariZilnic` calculează intervalul zilei locale în UTC și grupează plățile pe traseu, casier și metodă; `sp_RaportOcupareCurse` filtrează viziunea vw_OcupareCurse pe un interval și validează datele primite."),
     ...fig("BD54_sp_Rapoarte", "Rezultatul procedurilor sp_RaportVanzariZilnic și sp_RaportOcupareCurse"),
-    H(3, "1.6.5. Conturile și jurnalul de audit"),
+    H(3, "2.6.5. Conturile și jurnalul de audit"),
     P("`sp_AdaugaUtilizator` primește hash-ul parolei deja calculat de aplicație și refuză un nume de utilizator existent; `sp_DezactiveazaUtilizator` eliberează și rezervările contului dezactivat și nu permite dezactivarea propriului cont sau a ultimului administrator activ. Toate trei scriu în jurnal prin `sp_InregistreazaLogAudit`."),
     ...fig("BD55_sp_Utilizatori_LogAudit", "Crearea și dezactivarea unui cont de test, înregistrările din jurnal și respingerea unui nume duplicat, apoi ROLLBACK"),
 
-    H(2, "1.7. Rolurile, utilizatorii și securitatea"),
+    H(2, "2.7. Rolurile, utilizatorii și securitatea"),
     P("Instanța EPSI acceptă autentificare mixtă și ascultă pe portul TCP **14330**, nu pe 1433, cel căutat primul din exterior. Conexiunile aplicației sunt criptate (Encrypt=True). Scriptul `08_Security.sql` creează câte un login pentru fiecare utilizare, după principiul drepturilor minime [[MsSqlSecurity]]:"),
     ...table(["Login", "Cine îl folosește", "Drepturi în baza autogara"], [
       ["autogara_app", "aplicația, pe toate stațiile", "db_datareader, db_datawriter, EXECUTE pe schemă; DENY ALTER pe schemă, DENY CREATE TABLE/VIEW/PROCEDURE/FUNCTION, DENY UPDATE/DELETE pe LogAudit"],
@@ -179,10 +179,10 @@ IF @StatusLoc <> N'Liber'
     P("Drepturile au fost verificate practic, conectând sqlcmd cu fiecare cont: autogara_app nu poate crea sau șterge tabele, iar autogara_rapoarte nu poate modifica date și nu poate executa proceduri."),
     ...fig("TC35_sql_drepturi_autogara_app", "Contul autogara_app: fără db_owner, CREATE TABLE și DROP TABLE respinse, SELECT permis"),
     ...fig("TC36_sql_drepturi_autogara_rapoarte", "Contul autogara_rapoarte: SELECT permis, UPDATE și EXECUTE respinse (eroarea 229)"),
-    P("La nivelul datelor, parolele utilizatorilor aplicației nu se păstrează niciodată în clar: în coloana ParolaHash ajunge doar hash-ul PBKDF2 calculat de aplicație (capitolul 2.6.1). Jurnalul de audit nu poate fi modificat de aplicație, iar constrângerile CHECK, FOREIGN KEY și UNIQUE opresc datele invalide chiar dacă ar veni din alt client."),
+    P("La nivelul datelor, parolele utilizatorilor aplicației nu se păstrează niciodată în clar: în coloana ParolaHash ajunge doar hash-ul PBKDF2 calculat de aplicație (capitolul 3.6.1). Jurnalul de audit nu poate fi modificat de aplicație, iar constrângerile CHECK, FOREIGN KEY și UNIQUE opresc datele invalide chiar dacă ar veni din alt client."),
     ...fig("TC37_sql_constrangeri_integritate", "Constrângerile de integritate opresc un status invalid, o cursă inexistentă, un cod duplicat, un preț negativ și orele inversate"),
 
-    H(2, "1.8. Joburile SQL Server Agent"),
+    H(2, "2.8. Joburile SQL Server Agent"),
     P("Scriptul `09_Jobs.sql` creează 6 joburi în categoria „Autogara”, cu proprietarul sa [[MsSqlAgent]]. Scriptul este reluabil: șterge mai întâi joburile cu aceleași nume, apoi le creează din nou cu pașii și programul lor."),
     ...table(["Job", "Program", "Ce face"], joburi, [30, 18, 52], { caption: "Joburile SQL Server Agent ale proiectului" }),
     ...fig("BD73_object_explorer_joburi", "Joburile proiectului în Object Explorer → SQL Server Agent → Jobs"),
@@ -195,18 +195,18 @@ IF @StatusLoc <> N'Liber'
     P("Efectul jobului de eliberare se vede în jurnalul de audit: la fiecare rulare în care găsește rezervări expirate, el scrie câte locuri a eliberat."),
     ...fig("BD72_job_eliberare_efect", "Înregistrările scrise de Job_ElibereazaRezervariExpirate în LogAudit și rezervările provizorii active"),
 
-    H(2, "1.9. Backup-ul și restaurarea"),
+    H(2, "2.9. Backup-ul și restaurarea"),
     P("Strategia de backup are două niveluri: backup complet zilnic și backup diferențial la 4 ore în timpul programului, ambele cu CHECKSUM și verificate imediat cu RESTORE VERIFYONLY; fișierele mai vechi de 30 de zile se șterg automat [[MsSqlBackup]]. Scriptul `10_BackupRestore.sql` face testul de restaurare: un backup COPY_ONLY, restaurarea lui într-o bază separată (autogara_TestRestaurare), DBCC CHECKDB și compararea numărului de rânduri din fiecare tabel cu originalul, apoi ștergerea bazei de test."),
     ...fig("BD81_script_backup", "Scriptul 10_BackupRestore.sql: backup, restaurare într-o bază separată, CHECKDB și comparare"),
     ...fig("BD80_backup_istoric", "Istoricul backup-urilor bazei autogara din msdb și modelul de recuperare"),
     P("În `msdb` sunt înregistrate doar două backup-uri complete: cel COPY_ONLY făcut de scriptul de test al restaurării (17.09, 4,7 MB, în `D:\\Backup\\autogara`) și unul făcut pe 08.10 de un program extern prin VSS. Baza are modelul de recuperare SIMPLE, deci nu se fac backup-uri ale jurnalului de tranzacții. Concluzia practică: backup-ul complet trebuie mutat într-o oră în care serverul este pornit (de exemplu 22:30) sau rulat manual după fiecare zi de lucru; până atunci, protecția datelor se bazează pe backup-urile manuale."),
-    P("La testarea din 21.10.2026 s-a mai găsit o cauză: folderul `D:\\Backup\\autogara`, în care scriu joburile și scriptul de restaurare, nu mai exista pe server, iar primul backup de test a eșuat cu eroarea de sistem 3 („calea nu a fost găsită”). Folderul a fost creat din nou, apoi backup-ul COPY_ONLY, verificarea și restaurarea într-o copie separată (autogara_test) au reușit fără erori (secțiunea 4.2). Joburile de backup trebuie urmărite după această corectare."),
+    P("La testarea din 21.10.2026 s-a mai găsit o cauză: folderul `D:\\Backup\\autogara`, în care scriu joburile și scriptul de restaurare, nu mai exista pe server, iar primul backup de test a eșuat cu eroarea de sistem 3 („calea nu a fost găsită”). Folderul a fost creat din nou, apoi backup-ul COPY_ONLY, verificarea și restaurarea într-o copie separată (autogara_test) au reușit fără erori (secțiunea 5.2). Joburile de backup trebuie urmărite după această corectare."),
 
-    H(2, "1.10. Datele de test și de volum"),
+    H(2, "2.10. Datele de test și de volum"),
     P("Scriptul `11_Seed.sql` populează baza cu date de pornire: rolurile, conturile echipei și de test, harta cu stațiile reale din nordul și centrul Moldovei, traseele, autobuzele, șoferii, reducerile și cursele pentru două săptămâni. Scriptul `12_DateVolum.sql` adaugă aproximativ 10 000 de bilete realiste pe ultimele 45 de zile și următoarele 14, cu nume generate, casieri pe ture și rambursări, ca rapoartele și indicii să fie verificate pe un volum apropiat de cel real."),
     ...fig("BD90_date_volum", "Volumul datelor: numărul de rânduri, conturile pe roluri, perioada curselor și biletele pe status"),
 
-    H(2, "1.11. Concluzii la capitolul 1"),
+    H(2, "2.11. Concluzii la capitolul 2"),
     P("Baza de date autogara respectă convențiile stabilite la început și păstrează integritatea datelor prin constrângeri, nu doar prin aplicație. Operațiile critice sunt tranzacționale și protejate la concurență, ceea ce a fost confirmat și la testare (până la 20 de stații simultane pe același loc, fără niciun bilet dublu). Securitatea se bazează pe conturi separate cu drepturi minime, iar sarcinile repetitive sunt automatizate prin SQL Server Agent. Ca puncte de îmbunătățit au rămas backup-ul complet automat, care nu a rulat niciodată pentru că serverul este oprit noaptea (și, din această cauză, backup-ul diferențial eșuează), și dicționarul de date ca document separat."),
   ];
 };

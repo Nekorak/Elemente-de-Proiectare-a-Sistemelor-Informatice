@@ -60,10 +60,12 @@ function cuprins() {
 
 const continut = [
   ...require("./c0_intro")(),
+  ...require("./c1_analiza")(),
   ...require("./c1_bd")(),
   ...require("./c2_backend")(),
   ...require("./c3_frontend")(),
   ...require("./c4_testare")(),
+  ...require("./c6_punere")(),
   ...require("./c5_final")(),
   H(1, "BIBLIOGRAFIE"),
   new Paragraph({ children: [new TextRun("⟦BIBLIOGRAFIE⟧")] }),
