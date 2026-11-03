@@ -13,8 +13,8 @@ const C = (text, o = {}) => new Paragraph({ alignment: AlignmentType.CENTER, spa
 function foaiaDeTitlu() {
   const none = { style: BorderStyle.NONE, size: 0, color: "FFFFFF" };
   const nb = { top: none, bottom: none, left: none, right: none };
-  const line = (t, bold) => new Paragraph({ spacing: { line: 360 }, children: [new TextRun({ text: t, bold, size: 28 })] });
-  const lbl = (a, b) => new Paragraph({ spacing: { line: 360 }, children: [new TextRun({ text: a, size: 28 }), new TextRun({ text: b, bold: true, size: 28 })] });
+  const line = (t, bold) => new Paragraph({ children: [new TextRun({ text: t, bold, size: 28 })] });
+  const lbl = (a, b) => new Paragraph({ children: [new TextRun({ text: a, size: 28 }), new TextRun({ text: b, bold: true, size: 28 })] });
   const colW = [4800, 4838];
   const bloc = new Table({
     width: { size: 9638, type: WidthType.DXA }, columnWidths: colW, borders: { top: none, bottom: none, left: none, right: none, insideHorizontal: none, insideVertical: none },
@@ -22,14 +22,12 @@ function foaiaDeTitlu() {
       new TableCell({ width: { size: colW[0], type: WidthType.DXA }, borders: nb, children: [
         line("Efectuat:"),
         line("Gojinevschii Dmitri", true), line("Hanganu Sergiu", true), line("Crivenco Alexandr", true), line("Sopivnic Maxim", true),
-        new Paragraph({ spacing: { line: 360, before: 120 }, children: [] }),
+        new Paragraph({ spacing: { before: 120 }, children: [] }),
         lbl("Grupa: ", "BD-423"),
       ] }),
       new TableCell({ width: { size: colW[1], type: WidthType.DXA }, borders: nb, children: [
-        new Paragraph({ alignment: AlignmentType.RIGHT, spacing: { line: 360 }, children: [new TextRun({ text: "Verificat: ", size: 28 }), new TextRun({ text: "Vieru Viorica", bold: true, size: 28 })] }),
-        new Paragraph({ spacing: { line: 360 }, children: [] }),
-        new Paragraph({ spacing: { line: 360 }, children: [] }),
-        new Paragraph({ alignment: AlignmentType.RIGHT, spacing: { line: 360 }, children: [new TextRun({ text: "Nota ________________", size: 28 })] }),
+        new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "Verificat: ", size: 28 }), new TextRun({ text: "Vieru Viorica", bold: true, size: 28 })] }),
+        new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "Nota ________________", size: 28 })] }),
       ] }),
     ] })],
   });
@@ -39,13 +37,13 @@ function foaiaDeTitlu() {
     C("RAPORT", { bold: true, size: 40, before: 2600 }),
     C("la proiectul de grup", { before: 120 }),
     C("la disciplina „Elemente de proiectare a sistemelor informatice”", { before: 60, size: 24 }),
-    new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 700, line: 360 }, children: [
+    new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 700 }, children: [
       new TextRun({ text: "TEMA: ", bold: true, size: 28 }), new TextRun({ text: "Sistem informatic pentru gestionarea unei autogări", size: 28 })] }),
-    new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 500, line: 360 }, children: [
+    new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 500 }, children: [
       new TextRun({ text: "Specialitatea: ", size: 28 }), new TextRun({ text: "61220 Administrarea bazelor de date", bold: true, size: 28 })] }),
-    new Paragraph({ alignment: AlignmentType.CENTER, spacing: { line: 360 }, children: [
+    new Paragraph({ alignment: AlignmentType.CENTER, children: [
       new TextRun({ text: "Calificarea: ", size: 28 }), new TextRun({ text: "Administrator al bazelor de date", bold: true, size: 28 })] }),
-    new Paragraph({ spacing: { before: 1300 }, children: [] }),
+    new Paragraph({ alignment: AlignmentType.CENTER, children: [] }),
     bloc,
     C("Bălţi, 2026", { before: 2000 }),
   ];
