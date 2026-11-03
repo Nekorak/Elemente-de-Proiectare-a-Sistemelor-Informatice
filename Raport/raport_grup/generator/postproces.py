@@ -52,7 +52,7 @@ paras = []
 for i, k in enumerate(ordine):
     s = surse[k]
     text = f'[{i + 1}]\t{s["author"]}, „{s["title"]}”, {s["site"]}, {s["year"]}. [Online]. Disponibil: '
-    body = f'<w:r><w:t xml:space="preserve">{escape(text)}</w:t></w:r>{hyperlink(s["url"])}<w:r><w:t xml:space="preserve">. [Accesat: 21.10.2026].</w:t></w:r>'
+    body = f'<w:r><w:t xml:space="preserve">{escape(text)}</w:t></w:r>{hyperlink(s["url"])}<w:r><w:t xml:space="preserve">. [Accesat: {s.get("accesat", "21.10.2026")}].</w:t></w:r>'
     paras.append(body)
 ppr = '<w:pPr><w:pStyle w:val="Bibliografie"/><w:tabs><w:tab w:val="left" w:pos="567"/></w:tabs></w:pPr>'
 bib = []

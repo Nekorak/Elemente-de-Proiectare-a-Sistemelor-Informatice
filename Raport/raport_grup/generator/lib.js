@@ -25,7 +25,7 @@ function runs(text, base = {}) {
     if (m.index > last) out.push(new TextRun({ text: text.slice(last, m.index), ...base }));
     const t = m[0];
     if (t.startsWith("[[")) { state.cit.push(t.slice(2, -2)); out.push(new TextRun({ text: "⟦CIT:" + t.slice(2, -2) + "⟧", ...base })); }
-    else if (t.startsWith("**")) out.push(new TextRun({ text: t.slice(2, -2), bold: true, ...base }));
+    else if (t.startsWith("**")) out.push(new TextRun({ ...base, text: t.slice(2, -2), bold: true }));
     else if (t.startsWith("`")) out.push(new TextRun({ text: t.slice(1, -1), font: MONO, size: 20, ...base }));
     else out.push(new TextRun({ text: t.slice(1, -1), italics: true, ...base }));
     last = m.index + t.length;
@@ -48,8 +48,12 @@ function startChapter(n) { state.chapter = n; state.fig = 0; state.tab = 0; }
 
 const bullets = (items) =>
   items.map((t) => new Paragraph({ children: runs(t), numbering: { reference: "puncte", level: 0 }, alignment: AlignmentType.JUSTIFIED }));
-const numbered = (items, ref = "numere") =>
-  items.map((t) => new Paragraph({ children: runs(t), numbering: { reference: ref, level: 0 }, alignment: AlignmentType.JUSTIFIED }));
+// fiecare lista numerotata incepe de la 1, cu exceptia celor marcate { continua: true }
+let numInst = 0;
+const numbered = (items, opt = {}) => {
+  const instance = opt.continua ? numInst : ++numInst;
+  return items.map((t) => new Paragraph({ children: runs(t), numbering: { reference: "numere", level: 0, instance }, alignment: AlignmentType.JUSTIFIED }));
+};
 
 function code(text) {
   return text.replace(/\n$/, "").split("\n").map((line, i, arr) => new Paragraph({

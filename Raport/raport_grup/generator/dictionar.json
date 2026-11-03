@@ -1,0 +1,1123 @@
+[
+ {
+  "tabel": "Roluri",
+  "coloane": [
+   {
+    "col": "RolID",
+    "tip": "INT IDENTITY(1, 1)",
+    "null": false,
+    "default": null,
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "Denumire",
+    "tip": "NVARCHAR(50)",
+    "null": false,
+    "default": null,
+    "chei": "UQ",
+    "check": [
+     "Denumire IN (N'Admin', N'Casier', N'Pasager')"
+    ]
+   }
+  ],
+  "uq_compuse": []
+ },
+ {
+  "tabel": "Utilizatori",
+  "coloane": [
+   {
+    "col": "UtilizatorID",
+    "tip": "UNIQUEIDENTIFIER",
+    "null": false,
+    "default": "NEWID()",
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "NumeUtilizator",
+    "tip": "NVARCHAR(50)",
+    "null": false,
+    "default": null,
+    "chei": "UQ",
+    "check": [
+     "LEN(NumeUtilizator) >= 3"
+    ]
+   },
+   {
+    "col": "ParolaHash",
+    "tip": "VARBINARY(256)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "Nume",
+    "tip": "NVARCHAR(100)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "Prenume",
+    "tip": "NVARCHAR(100)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "Email",
+    "tip": "NVARCHAR(150)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": [
+     "Email IS NULL OR Email LIKE N'%_@_%._%'"
+    ]
+   },
+   {
+    "col": "Telefon",
+    "tip": "NVARCHAR(20)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "RolID",
+    "tip": "INT",
+    "null": false,
+    "default": null,
+    "chei": "FK → Roluri",
+    "check": []
+   },
+   {
+    "col": "Activ",
+    "tip": "BIT",
+    "null": false,
+    "default": "1",
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "CreatLa",
+    "tip": "DATETIME2(3)",
+    "null": false,
+    "default": "SYSUTCDATETIME()",
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "ModificatLa",
+    "tip": "DATETIME2(3)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "RowVersion",
+    "tip": "ROWVERSION",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   }
+  ],
+  "uq_compuse": []
+ },
+ {
+  "tabel": "Noduri",
+  "coloane": [
+   {
+    "col": "NodID",
+    "tip": "INT IDENTITY(1, 1)",
+    "null": false,
+    "default": null,
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "Tip",
+    "tip": "NVARCHAR(20)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": [
+     "Tip IN (N'Statie', N'Intersectie')"
+    ]
+   },
+   {
+    "col": "Nume",
+    "tip": "NVARCHAR(100)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "CoordX",
+    "tip": "FLOAT",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "CoordY",
+    "tip": "FLOAT",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "Activ",
+    "tip": "BIT",
+    "null": false,
+    "default": "1",
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "CreatLa",
+    "tip": "DATETIME2(3)",
+    "null": false,
+    "default": "SYSUTCDATETIME()",
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "ModificatLa",
+    "tip": "DATETIME2(3)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   }
+  ],
+  "uq_compuse": []
+ },
+ {
+  "tabel": "Conexiuni",
+  "coloane": [
+   {
+    "col": "ConexiuneID",
+    "tip": "INT IDENTITY(1, 1)",
+    "null": false,
+    "default": null,
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "NodPlecareID",
+    "tip": "INT",
+    "null": false,
+    "default": null,
+    "chei": "FK → Noduri",
+    "check": [
+     "NodPlecareID <> NodSosireID"
+    ]
+   },
+   {
+    "col": "NodSosireID",
+    "tip": "INT",
+    "null": false,
+    "default": null,
+    "chei": "FK → Noduri",
+    "check": [
+     "NodPlecareID <> NodSosireID"
+    ]
+   },
+   {
+    "col": "DistantaKm",
+    "tip": "DECIMAL(6, 2)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": [
+     "DistantaKm > 0"
+    ]
+   },
+   {
+    "col": "CreatLa",
+    "tip": "DATETIME2(3)",
+    "null": false,
+    "default": "SYSUTCDATETIME()",
+    "chei": "",
+    "check": []
+   }
+  ],
+  "uq_compuse": [
+   [
+    "NodPlecareID",
+    "NodSosireID"
+   ]
+  ]
+ },
+ {
+  "tabel": "Statii",
+  "coloane": [
+   {
+    "col": "StatieID",
+    "tip": "INT IDENTITY(1, 1)",
+    "null": false,
+    "default": null,
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "NodID",
+    "tip": "INT",
+    "null": false,
+    "default": null,
+    "chei": "FK → Noduri, UQ",
+    "check": []
+   },
+   {
+    "col": "Adresa",
+    "tip": "NVARCHAR(200)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "Peron",
+    "tip": "NVARCHAR(10)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "CreatLa",
+    "tip": "DATETIME2(3)",
+    "null": false,
+    "default": "SYSUTCDATETIME()",
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "ModificatLa",
+    "tip": "DATETIME2(3)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   }
+  ],
+  "uq_compuse": []
+ },
+ {
+  "tabel": "Autobuze",
+  "coloane": [
+   {
+    "col": "AutobuzID",
+    "tip": "INT IDENTITY(1, 1)",
+    "null": false,
+    "default": null,
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "NrInmatriculare",
+    "tip": "NVARCHAR(15)",
+    "null": false,
+    "default": null,
+    "chei": "UQ",
+    "check": []
+   },
+   {
+    "col": "Model",
+    "tip": "NVARCHAR(100)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "CapacitateLocuri",
+    "tip": "SMALLINT",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": [
+     "CapacitateLocuri > 0"
+    ]
+   },
+   {
+    "col": "Status",
+    "tip": "NVARCHAR(20)",
+    "null": false,
+    "default": "N'Activ'",
+    "chei": "",
+    "check": [
+     "Status IN (N'Activ', N'Service', N'Scos din uz')"
+    ]
+   },
+   {
+    "col": "CaleFisierJSON",
+    "tip": "NVARCHAR(260)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "DataExpirareITP",
+    "tip": "DATE",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "Activ",
+    "tip": "BIT",
+    "null": false,
+    "default": "1",
+    "chei": "",
+    "check": [
+     "Status IN (N'Activ', N'Service', N'Scos din uz')"
+    ]
+   },
+   {
+    "col": "CreatLa",
+    "tip": "DATETIME2(3)",
+    "null": false,
+    "default": "SYSUTCDATETIME()",
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "ModificatLa",
+    "tip": "DATETIME2(3)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   }
+  ],
+  "uq_compuse": []
+ },
+ {
+  "tabel": "MentenantaAutobuze",
+  "coloane": [
+   {
+    "col": "MentenantaID",
+    "tip": "INT IDENTITY(1, 1)",
+    "null": false,
+    "default": null,
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "AutobuzID",
+    "tip": "INT",
+    "null": false,
+    "default": null,
+    "chei": "FK → Autobuze",
+    "check": []
+   },
+   {
+    "col": "TipLucrare",
+    "tip": "NVARCHAR(100)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "Data",
+    "tip": "DATE",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "Kilometraj",
+    "tip": "INT",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": [
+     "Kilometraj IS NULL OR Kilometraj >= 0"
+    ]
+   },
+   {
+    "col": "Observatii",
+    "tip": "NVARCHAR(500)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "CreatLa",
+    "tip": "DATETIME2(3)",
+    "null": false,
+    "default": "SYSUTCDATETIME()",
+    "chei": "",
+    "check": []
+   }
+  ],
+  "uq_compuse": []
+ },
+ {
+  "tabel": "Soferi",
+  "coloane": [
+   {
+    "col": "SoferID",
+    "tip": "INT IDENTITY(1, 1)",
+    "null": false,
+    "default": null,
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "Nume",
+    "tip": "NVARCHAR(100)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "Prenume",
+    "tip": "NVARCHAR(100)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "NrPermis",
+    "tip": "NVARCHAR(20)",
+    "null": false,
+    "default": null,
+    "chei": "UQ",
+    "check": []
+   },
+   {
+    "col": "Telefon",
+    "tip": "NVARCHAR(20)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "Activ",
+    "tip": "BIT",
+    "null": false,
+    "default": "1",
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "CreatLa",
+    "tip": "DATETIME2(3)",
+    "null": false,
+    "default": "SYSUTCDATETIME()",
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "ModificatLa",
+    "tip": "DATETIME2(3)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   }
+  ],
+  "uq_compuse": []
+ },
+ {
+  "tabel": "Trasee",
+  "coloane": [
+   {
+    "col": "TraseuID",
+    "tip": "INT IDENTITY(1, 1)",
+    "null": false,
+    "default": null,
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "Denumire",
+    "tip": "NVARCHAR(150)",
+    "null": false,
+    "default": null,
+    "chei": "UQ",
+    "check": []
+   },
+   {
+    "col": "Activ",
+    "tip": "BIT",
+    "null": false,
+    "default": "1",
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "CreatLa",
+    "tip": "DATETIME2(3)",
+    "null": false,
+    "default": "SYSUTCDATETIME()",
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "ModificatLa",
+    "tip": "DATETIME2(3)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   }
+  ],
+  "uq_compuse": []
+ },
+ {
+  "tabel": "TraseuOpriri",
+  "coloane": [
+   {
+    "col": "TraseuOprireID",
+    "tip": "INT IDENTITY(1, 1)",
+    "null": false,
+    "default": null,
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "TraseuID",
+    "tip": "INT",
+    "null": false,
+    "default": null,
+    "chei": "FK → Trasee",
+    "check": []
+   },
+   {
+    "col": "StatieID",
+    "tip": "INT",
+    "null": false,
+    "default": null,
+    "chei": "FK → Statii",
+    "check": []
+   },
+   {
+    "col": "Ordine",
+    "tip": "SMALLINT",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": [
+     "Ordine > 0"
+    ]
+   }
+  ],
+  "uq_compuse": [
+   [
+    "TraseuID",
+    "Ordine"
+   ],
+   [
+    "TraseuID",
+    "StatieID"
+   ]
+  ]
+ },
+ {
+  "tabel": "TipuriReducere",
+  "coloane": [
+   {
+    "col": "TipReducereID",
+    "tip": "INT IDENTITY(1, 1)",
+    "null": false,
+    "default": null,
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "Denumire",
+    "tip": "NVARCHAR(50)",
+    "null": false,
+    "default": null,
+    "chei": "UQ",
+    "check": []
+   },
+   {
+    "col": "ProcentReducere",
+    "tip": "DECIMAL(5, 2)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": [
+     "ProcentReducere BETWEEN 0 AND 100"
+    ]
+   },
+   {
+    "col": "Activ",
+    "tip": "BIT",
+    "null": false,
+    "default": "1",
+    "chei": "",
+    "check": []
+   }
+  ],
+  "uq_compuse": []
+ },
+ {
+  "tabel": "Curse",
+  "coloane": [
+   {
+    "col": "CursaID",
+    "tip": "INT IDENTITY(1, 1)",
+    "null": false,
+    "default": null,
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "TraseuID",
+    "tip": "INT",
+    "null": false,
+    "default": null,
+    "chei": "FK → Trasee",
+    "check": []
+   },
+   {
+    "col": "AutobuzID",
+    "tip": "INT",
+    "null": false,
+    "default": null,
+    "chei": "FK → Autobuze",
+    "check": []
+   },
+   {
+    "col": "SoferID",
+    "tip": "INT",
+    "null": false,
+    "default": null,
+    "chei": "FK → Soferi",
+    "check": []
+   },
+   {
+    "col": "DataCursa",
+    "tip": "DATE",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "OraPlecare",
+    "tip": "TIME(0)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": [
+     "OraSosireEstimata > OraPlecare"
+    ]
+   },
+   {
+    "col": "OraSosireEstimata",
+    "tip": "TIME(0)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": [
+     "OraSosireEstimata > OraPlecare"
+    ]
+   },
+   {
+    "col": "Pret",
+    "tip": "DECIMAL(10, 2)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": [
+     "Pret >= 0"
+    ]
+   },
+   {
+    "col": "Status",
+    "tip": "NVARCHAR(20)",
+    "null": false,
+    "default": "N'Planificata'",
+    "chei": "",
+    "check": [
+     "Status IN (N'Planificata', N'In desfasurare', N'Finalizata', N'Anulata')"
+    ]
+   },
+   {
+    "col": "CreatLa",
+    "tip": "DATETIME2(3)",
+    "null": false,
+    "default": "SYSUTCDATETIME()",
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "ModificatLa",
+    "tip": "DATETIME2(3)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   }
+  ],
+  "uq_compuse": []
+ },
+ {
+  "tabel": "Locuri",
+  "coloane": [
+   {
+    "col": "LocID",
+    "tip": "INT IDENTITY(1, 1)",
+    "null": false,
+    "default": null,
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "CursaID",
+    "tip": "INT",
+    "null": false,
+    "default": null,
+    "chei": "FK → Curse",
+    "check": []
+   },
+   {
+    "col": "NumarLoc",
+    "tip": "SMALLINT",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": [
+     "NumarLoc > 0"
+    ]
+   },
+   {
+    "col": "Status",
+    "tip": "NVARCHAR(20)",
+    "null": false,
+    "default": "N'Liber'",
+    "chei": "",
+    "check": [
+     "Status IN (N'Liber', N'Rezervat', N'Ocupat')"
+    ]
+   },
+   {
+    "col": "RowVersion",
+    "tip": "ROWVERSION",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   }
+  ],
+  "uq_compuse": [
+   [
+    "CursaID",
+    "NumarLoc"
+   ],
+   [
+    "LocID",
+    "CursaID"
+   ]
+  ]
+ },
+ {
+  "tabel": "RezervariProvizorii",
+  "coloane": [
+   {
+    "col": "RezervareID",
+    "tip": "UNIQUEIDENTIFIER",
+    "null": false,
+    "default": "NEWID()",
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "LocID",
+    "tip": "INT",
+    "null": false,
+    "default": null,
+    "chei": "FK → Locuri, UQ",
+    "check": []
+   },
+   {
+    "col": "UtilizatorID",
+    "tip": "UNIQUEIDENTIFIER",
+    "null": true,
+    "default": null,
+    "chei": "FK → Utilizatori",
+    "check": []
+   },
+   {
+    "col": "DataCreare",
+    "tip": "DATETIME2(3)",
+    "null": false,
+    "default": "SYSUTCDATETIME()",
+    "chei": "",
+    "check": [
+     "DataExpirare > DataCreare"
+    ]
+   },
+   {
+    "col": "DataExpirare",
+    "tip": "DATETIME2(3)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": [
+     "DataExpirare > DataCreare"
+    ]
+   }
+  ],
+  "uq_compuse": []
+ },
+ {
+  "tabel": "Bilete",
+  "coloane": [
+   {
+    "col": "BiletID",
+    "tip": "UNIQUEIDENTIFIER",
+    "null": false,
+    "default": "NEWID()",
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "CodBilet",
+    "tip": "NVARCHAR(20)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "CursaID",
+    "tip": "INT",
+    "null": false,
+    "default": null,
+    "chei": "FK → Curse, Locuri",
+    "check": []
+   },
+   {
+    "col": "LocID",
+    "tip": "INT",
+    "null": false,
+    "default": null,
+    "chei": "FK → Locuri",
+    "check": []
+   },
+   {
+    "col": "NumePasager",
+    "tip": "NVARCHAR(200)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "TelefonPasager",
+    "tip": "NVARCHAR(20)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "TipReducereID",
+    "tip": "INT",
+    "null": true,
+    "default": null,
+    "chei": "FK → TipuriReducere",
+    "check": []
+   },
+   {
+    "col": "VanzutDeUtilizatorID",
+    "tip": "UNIQUEIDENTIFIER",
+    "null": false,
+    "default": null,
+    "chei": "FK → Utilizatori",
+    "check": []
+   },
+   {
+    "col": "DataEmitere",
+    "tip": "DATETIME2(3)",
+    "null": false,
+    "default": "SYSUTCDATETIME()",
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "Pret",
+    "tip": "DECIMAL(10, 2)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": [
+     "Pret >= 0"
+    ]
+   },
+   {
+    "col": "Status",
+    "tip": "NVARCHAR(20)",
+    "null": false,
+    "default": "N'Activ'",
+    "chei": "",
+    "check": [
+     "Status IN (N'Activ', N'Anulat', N'Rambursat')"
+    ]
+   },
+   {
+    "col": "ModificatLa",
+    "tip": "DATETIME2(3)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "RowVersion",
+    "tip": "ROWVERSION",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   }
+  ],
+  "uq_compuse": []
+ },
+ {
+  "tabel": "Plati",
+  "coloane": [
+   {
+    "col": "PlataID",
+    "tip": "BIGINT IDENTITY(1, 1)",
+    "null": false,
+    "default": null,
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "BiletID",
+    "tip": "UNIQUEIDENTIFIER",
+    "null": false,
+    "default": null,
+    "chei": "FK → Bilete",
+    "check": []
+   },
+   {
+    "col": "Suma",
+    "tip": "DECIMAL(10, 2)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": [
+     "Suma >= 0"
+    ]
+   },
+   {
+    "col": "MetodaPlata",
+    "tip": "NVARCHAR(10)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": [
+     "MetodaPlata IN (N'Numerar', N'Card')"
+    ]
+   },
+   {
+    "col": "DataPlata",
+    "tip": "DATETIME2(3)",
+    "null": false,
+    "default": "SYSUTCDATETIME()",
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "Status",
+    "tip": "NVARCHAR(20)",
+    "null": false,
+    "default": "N'Finalizata'",
+    "chei": "",
+    "check": [
+     "Status IN (N'Finalizata', N'Rambursata')"
+    ]
+   },
+   {
+    "col": "NumarBonFiscal",
+    "tip": "NVARCHAR(50)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   }
+  ],
+  "uq_compuse": []
+ },
+ {
+  "tabel": "LogAudit",
+  "coloane": [
+   {
+    "col": "LogID",
+    "tip": "BIGINT IDENTITY(1, 1)",
+    "null": false,
+    "default": null,
+    "chei": "PK",
+    "check": []
+   },
+   {
+    "col": "UtilizatorID",
+    "tip": "UNIQUEIDENTIFIER",
+    "null": true,
+    "default": null,
+    "chei": "FK → Utilizatori",
+    "check": []
+   },
+   {
+    "col": "Actiune",
+    "tip": "NVARCHAR(200)",
+    "null": false,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "Entitate",
+    "tip": "NVARCHAR(100)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "EntitateID",
+    "tip": "NVARCHAR(50)",
+    "null": true,
+    "default": null,
+    "chei": "",
+    "check": []
+   },
+   {
+    "col": "DataOra",
+    "tip": "DATETIME2(3)",
+    "null": false,
+    "default": "SYSUTCDATETIME()",
+    "chei": "",
+    "check": []
+   }
+  ],
+  "uq_compuse": []
+ }
+]
