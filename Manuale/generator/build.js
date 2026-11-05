@@ -51,7 +51,6 @@ function foaiaDeTitlu() {
       new TextRun({ text: "Calificarea: ", size: 28 }), new TextRun({ text: "Administrator al bazelor de date", bold: true, size: 28 })] }),
     new Paragraph({ spacing: { before: 1300 }, children: [] }),
     bloc,
-    C("Bălţi, 2026", { before: 2000 }),
   ];
 }
 
@@ -113,7 +112,9 @@ const doc = new Document({
       page: { size: { width: 11906, height: 16838 }, margin: { top: MM(20), bottom: MM(20), left: MM(30), right: MM(10), footer: MM(8) } },
     },
     footers: {
-      first: new Footer({ children: [new Paragraph({ children: [] })] }),
+      // „Bălţi, 2026” stă în subsolul primei pagini, ca să rămână pe foaia de titlu indiferent de programul care deschide documentul
+      first: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, spacing: { line: 240, after: 480 },
+        children: [new TextRun({ text: "Bălţi, 2026", size: 28 })] })] }),
       default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, spacing: { line: 240 },
         children: [new TextRun({ children: [PageNumber.CURRENT], size: 24 })] })] }),
     },
