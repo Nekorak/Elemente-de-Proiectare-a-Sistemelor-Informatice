@@ -6,5 +6,7 @@
 
 Construire: `IMG_DIR=<folderul cu capturi> SKIP_MISSING=1 bash generator/make.sh`
 (make.sh folosește căi din containerul în care a fost generat; ajustează `cd` și IMG_DIR.)
+`tabele_vechi.json` conține tabelele preluate din `raport.docx` (mediul de testare și cazurile de test), citite de `c4_testare.js`.
+Diagrama Gantt: `python3 generator/gantt.py <rădăcina depozitului> capturi/GANTT_lucrari.png`.
 
 Varianta 1: lipsesc încă 19 capturi din aplicație (FE10–FE28), care vor fi adăugate ulterior.
