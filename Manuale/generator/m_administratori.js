@@ -1,0 +1,302 @@
+// Manualul administratorului (serverul, stațiile, conturile, joburile, backup-ul, diagnosticarea)
+const { P, H, bullets, numbered, code, fig, table, startChapter } = require("./lib");
+const { despreImagini, conventii, indicator } = require("./comun");
+
+module.exports = {
+  titlu: "MANUALUL ADMINISTRATORULUI",
+  subtitlu: "(serverul, stațiile de lucru, conturile și copiile de siguranță)",
+  surse: [],
+  continut: () => [
+    H(1, "INTRODUCERE"),
+    P("Manualul se adresează **administratorului sistemului**: persoana care instalează și întreține serverul autogării, configurează stațiile de lucru, creează conturile utilizatorilor, desenează harta stațiilor și schemele autobuzelor, urmărește joburile automate și copiile de siguranță și rezolvă problemele de funcționare."),
+    P("Sistemul „Autogara” are trei părți: **serverul de baze de date** (SQL Server, instanța `EPSI`, cu SQL Server Agent pentru joburi), **serverul de fișiere** (SFTP, pe OpenSSH Server) și **aplicația desktop** de pe stațiile de lucru (casierii, managerii, pasagerii). Manualul urmează ordinea în care se fac lucrurile: instalarea serverului, instalarea stațiilor, conturile, datele de bază (harta și autobuzele), întreținerea zilnică, copiile de siguranță, diagnosticarea și actualizarea."),
+    P("Planificarea curselor, tarifele și rapoartele sunt descrise în Manualul managerului, vânzarea la ghișeu în Manualul operatorului-casier, iar structura codului, compilarea și testele în Manualul programatorului."),
+    P("**Parolele nu sunt scrise în acest manual.** Parolele conturilor SQL, ale contului Windows de pe server și ale conturilor din aplicație se păstrează doar la administrator, într-un loc sigur, și nu se trimit prin email sau mesagerie."),
+    ...despreImagini(),
+    ...conventii(),
+
+    // ======================= 1 =======================
+    (startChapter(1), H(1, "1. ARHITECTURA SISTEMULUI")),
+    P("Figura arată componentele sistemului și legăturile dintre ele. Stațiile de lucru se conectează la server prin internet, pe două porturi: unul pentru baza de date și unul pentru serverul de fișiere. Nicio stație nu păstrează datele propriu-zise; ea are doar configurarea, jurnalele și o copie locală pentru modul offline."),
+    ...fig("Arhitectura", "Arhitectura sistemului: stația de lucru, rețeaua și serverul", { maxH: 420 }),
+    ...table(["Componenta", "Ce face", "Unde rulează"], [
+      ["SQL Server, instanța `EPSI` (serviciul `MSSQL$EPSI`)", "baza de date `autogara`: curse, locuri, bilete, plăți, conturi, jurnal de audit; procedurile stocate de vânzare și anulare", "calculatorul-server, port TCP 14330"],
+      ["SQL Server Agent (`SQLAgent$EPSI`)", "cele 6 joburi automate: eliberarea rezervărilor, backup-ul, alertele ITP și de spațiu pe disc, curățarea jurnalului", "calculatorul-server"],
+      ["OpenSSH Server (`sshd`)", "serverul de fișiere SFTP: harta, schemele autobuzelor, rapoartele arhivate, actualizările", "calculatorul-server, port 22 (extern 44545)"],
+      ["Aplicația „Autogara” (.NET 10, Windows Forms)", "interfața pentru casieri, manageri, administratori și pasageri", "fiecare stație de lucru"],
+      ["Routerul", "redirecționează porturile externe spre server", "rețeaua locală a serverului"],
+    ], [30, 46, 24], { caption: "Componentele sistemului" }),
+
+    // ======================= 2 =======================
+    (startChapter(2), H(1, "2. INSTALAREA SERVERULUI")),
+    H(2, "2.1. SQL Server"),
+    ...numbered([
+      "Se instalează SQL Server cu o instanță numită `EPSI`, cu **autentificare mixtă** (Windows și SQL Server), necesară pentru conturile SQL ale aplicației [[MsSql]]. Se instalează și SQL Server Management Studio (SSMS).",
+      "În SQL Server Configuration Manager se verifică că serviciile `SQL Server (EPSI)` și `SQL Server Agent (EPSI)` au pornire **automată**.",
+      "Tot acolo, la **SQL Server Network Configuration → Protocols for EPSI**, se activează **TCP/IP**; în fila **IP Addresses**, la **IPAll**, se șterge valoarea din **TCP Dynamic Ports** și se scrie `14330` la **TCP Port** [[MsSqlPort]]. Serviciul se repornește.",
+      "Se verifică instanța în SSMS (ediția, versiunea, autentificarea mixtă).",
+    ]),
+    ...fig("DO01_servicii", "Serviciile instanței EPSI, cu pornire automată"),
+    ...fig("DO02_retea_tcp_14330", "Instanța EPSI ascultă pe portul fix 14330"),
+    ...fig("DO07_instanta_versiune", "Datele instanței: ediția, versiunea, colația și autentificarea"),
+    H(2, "2.2. Baza de date"),
+    P("Scripturile bazei de date sunt în folderul `SQL Code` al proiectului și se rulează în SSMS, în ordinea numerelor, cu un cont `sysadmin`."),
+    ...table(["Scriptul", "Ce face", "La autogară"], [
+      ["`01_CreateDatabase.sql`", "creează baza `autogara` (colația `Romanian_100_CI_AS`, modelul de recuperare FULL)", "obligatoriu"],
+      ["`02_Schema.sql`", "creează schema `autogara`", "obligatoriu"],
+      ["`03_Tables.sql`", "cele 17 tabele, cu cheile și constrângerile", "obligatoriu"],
+      ["`04_Indexes.sql`", "indecșii pentru căutări și rapoarte", "obligatoriu"],
+      ["`05_Functions.sql`", "funcțiile (ora locală, prețul cu reducere, rambursarea)", "obligatoriu"],
+      ["`06_Views.sql`", "vederile pentru locuri, curse și rapoarte", "obligatoriu"],
+      ["`07_StoredProcedures.sql`", "procedurile de rezervare, vânzare, anulare, rapoarte și conturi", "obligatoriu"],
+      ["`08_Security.sql`", "conturile SQL și drepturile lor", "obligatoriu, cu parole noi"],
+      ["`09_Jobs.sql`", "cele 6 joburi SQL Server Agent", "obligatoriu, cu folderul de backup verificat"],
+      ["`10_BackupRestore.sql`", "backup de probă și restaurare într-o bază separată", "lunar, ca verificare"],
+      ["`11_Seed.sql`", "datele de demonstrație (stații, trasee, autobuze, conturi)", "nu; se introduc datele reale"],
+      ["`12_DateVolum.sql`", "date de volum pentru testare (~9 700 de bilete)", "nu; doar pe copia de test"],
+    ], [26, 52, 22], { caption: "Scripturile bazei de date, în ordinea rulării" }),
+    ...fig("BD91_scripturi_proiect", "Scripturile bazei de date în folderul SQL Code"),
+    P("Înainte de `08_Security.sql`, în script se înlocuiesc parolele conturilor cu parole noi, lungi, generate pentru autogară. Scriptul din proiect conține parolele folosite la dezvoltare, care **nu se folosesc în producție**. Înainte de `09_Jobs.sql` se verifică variabila `@BackupPath` (în proiect `D:\\Backup\\autogara`): folderul trebuie să existe și serviciul SQL Server trebuie să poată scrie în el. Lipsa folderului a fost una din cauzele defectului D3 de la testare."),
+    H(2, "2.3. Conturile SQL"),
+    P("Fiecare program și fiecare persoană care lucrează direct cu baza are contul lui SQL, cu drepturile minime necesare [[MsSqlSecurity]]. Aplicația nu folosește niciodată un cont `sysadmin`."),
+    ...table(["Contul", "Cine îl folosește", "Drepturile"], [
+      ["`autogara_app`", "aplicația, de pe toate stațiile", "citire și scriere în tabele, execuția procedurilor; fără modificarea structurii; fără ștergerea sau modificarea jurnalului de audit"],
+      ["`autogara_rapoarte`", "conducerea, pentru analize în Excel", "doar citire; fără coloana cu hash-urile parolelor"],
+      ["`dba_gojinevschii`", "administratorul bazei de date", "`sysadmin` (instalare, backup, restaurare)"],
+      ["`dev_hanganu`, `dev_crivenco`", "programatorii", "citire (și scriere, la primul), execuție, vizualizarea definițiilor"],
+      ["`test_sopivnic`", "testerul", "citire, scriere, execuție; pornirea joburilor (SQLAgentOperatorRole)"],
+    ], [24, 28, 48], { caption: "Conturile SQL și drepturile lor" }),
+    ...fig("BD60_securitate_loginuri", "Login-urile SQL ale sistemului"),
+    ...fig("BD62_securitate_permisiuni", "Permisiunile explicite GRANT și DENY"),
+    ...fig("TC35_sql_drepturi_autogara_app", "Contul aplicației nu poate modifica structura bazei"),
+    H(2, "2.4. Serverul de fișiere (SFTP)"),
+    ...numbered([
+      "Din **Setări Windows → Sistem → Caracteristici opționale** se adaugă **OpenSSH Server** [[OpenSsh]]. Serviciul `sshd` se pune pe pornire automată și se pornește.",
+      "Se creează folderul `File-Server`, cu subfolderele `Autobuze`, `Harta` și `Backup`. Folderele `Rapoarte` și `Actualizari` se creează la prima folosire.",
+      "Accesul se face cu un cont Windows al serverului; în configurarea stațiilor se trec contul și calea folderului față de profilul lui. Fișierul `sshd_config` nu se copiază în documente, pentru că conține date de acces.",
+    ], { continua: false }),
+    ...table(["Folderul", "Ce conține", "Cine scrie"], [
+      ["`Autobuze/`", "schema locurilor fiecărui autobuz: `autobuz_N.json` (N = codul autobuzului)", "editorul autobuzului"],
+      ["`Harta/`", "harta stațiilor și a drumurilor: `harta.json`", "editorul hărții"],
+      ["`Backup/Autobuze/`, `Backup/Harta/`", "versiunile anterioare, pe zile (`AAAA-LL-ZZ`), copiate automat înainte de fiecare salvare", "aplicația"],
+      ["`Rapoarte/an/lună/`", "rapoartele arhivate de manageri (CSV)", "secțiunea Rapoarte"],
+      ["`version.json`, `Actualizari/`", "anunțul versiunii noi și pachetul ei", "administratorul (capitolul 9)"],
+    ], [28, 50, 22], { caption: "Structura serverului de fișiere" }),
+    ...fig("DO08_file_server_structura", "Structura folderului File-Server"),
+    H(2, "2.5. Rețeaua și porturile"),
+    P("Pe router se redirecționează două porturi spre adresa locală fixă a serverului. Portul SFTP extern este diferit de 22, ca serverul să nu fie găsit ușor de scanările automate. În firewall-ul Windows al serverului se permit intrările doar pe porturile 14330 și 22."),
+    ...table(["Serviciul", "Portul extern", "Destinația pe server"], [
+      ["SQL Server (instanța EPSI)", "14330", "14330/TCP"],
+      ["Serverul de fișiere (SFTP)", "44545", "22/TCP"],
+    ], [40, 24, 36], { caption: "Redirecționarea porturilor pe router" }),
+    P("Verificarea se face de pe un calculator din afara rețelei serverului, în PowerShell:"),
+    ...code(`Test-NetConnection <adresa-publica> -Port 14330
+Test-NetConnection <adresa-publica> -Port 44545`),
+    ...fig("TC32_conexiune_porturi_publice", "Ambele porturi publice răspund"),
+
+    // ======================= 3 =======================
+    (startChapter(3), H(1, "3. INSTALAREA STAȚIILOR DE LUCRU")),
+    H(2, "3.1. Cerințele stației"),
+    ...bullets([
+      "Windows 10 sau 11 pe 64 de biți, cu .NET 10 Desktop Runtime instalat;",
+      "rezoluția ecranului de cel puțin 1280 × 720;",
+      "acces la internet, cu porturile spre server (14330 și 44545) neblocate de rețeaua locală;",
+      "un cont Windows separat pentru fiecare stație sau persoană (configurarea se salvează pe contul Windows).",
+    ]),
+    H(2, "3.2. Instalarea aplicației"),
+    ...numbered([
+      "Se copiază pe stație folderul publicat al aplicației (primit de la programator, capitolul 9), de exemplu în `C:\\Program Files\\Autogara`, și se creează o scurtătură spre `Autogara.WinForms.exe` pe desktop.",
+      "La prima pornire se deschide fereastra **Configurarea stației de lucru**. Se completează: la **Baza de date (SQL Server)** serverul, portul 14330, baza `autogara`, utilizatorul `autogara_app` și parola; la **File server (SFTP)** serverul, portul 44545, utilizatorul, parola și **Folderul de bază**; la **Aplicație**, durata rezervării provizorii (implicit 10 minute). Butonul **Valorile echipei** completează adresele serverului proiectului, fără parole.",
+      "Se apasă **Testează conexiunea**. Ambele rânduri trebuie să arate conexiune reușită; altfel mesajul arată ce nu merge (server indisponibil, parolă greșită, port închis).",
+      "Se apasă **Salvează**. Aplicația repornește și deschide ecranul de autentificare.",
+    ]),
+    ...fig("EX_configurare", "Configurarea stației de lucru"),
+    ...fig("TC33_test_conexiune_reusit", "Testul conexiunii reușit pentru baza de date și file server", { maxW: 420 }),
+    ...fig("TC34_test_conexiune_server_indisponibil", "Testul conexiunii cu un port greșit", { maxW: 420 }),
+    P("Configurarea se poate redeschide oricând din legătura **Setări conexiune** de pe ecranul de autentificare, de exemplu după schimbarea adresei serverului sau a parolei contului `autogara_app`."),
+    H(2, "3.3. Fișierele locale ale stației"),
+    P("Pe stație, aplicația folosește doar folderul `%LOCALAPPDATA%\\Autogara` al contului Windows:"),
+    ...table(["Fișierul sau folderul", "Ce conține"], [
+      ["`appsettings.local.json`", "configurarea stației; parolele sunt criptate cu DPAPI, pentru contul Windows curent [[Dpapi]], deci fișierul copiat pe alt calculator nu funcționează"],
+      ["`Logs\\autogara-AAAAMMZZ.log`", "jurnalul zilnic al aplicației (pornirea, autentificările, vânzările, erorile); parolele nu se scriu niciodată"],
+      ["`Cache\\`", "copia locală a curselor, a hărții și a schemelor autobuzelor, folosită în modul offline"],
+    ], [32, 68], { caption: "Fișierele locale ale aplicației" }),
+    ...fig("DO14_loguri_cache", "Folderul local al aplicației și jurnalele zilnice"),
+    P("**Indicatorul de conexiune** din colțul ferestrei arată starea stației:"),
+    ...indicator(),
+
+    // ======================= 4 =======================
+    (startChapter(4), H(1, "4. CONTURILE UTILIZATORILOR")),
+    H(2, "4.1. Rolurile"),
+    ...table(["Rolul", "Cine îl are", "Ce poate face"], [
+      ["Admin", "administratorul, conducerea, dispecerii", "toate secțiunile: vânzare, curse, trasee, stații, harta, autobuze, mentenanță, șoferi, reduceri, utilizatori, rapoarte, jurnal audit"],
+      ["Casier", "operatorii de la ghișee", "Dashboard, Vânzare bilete, Bilete (căutare și anulare)"],
+      ["Pasager", "clienții cu cont", "Cumpără bilet (plata cu cardul), Biletele mele"],
+    ], [14, 30, 56], { caption: "Rolurile din aplicație" }),
+    H(2, "4.2. Crearea unui cont"),
+    P("În meniu se alege **Utilizatori**. Fila **Conturi** arată toate conturile: numele de utilizator, numele, rolul, emailul, telefonul și dacă este activ."),
+    ...fig("EX_utilizatori", "Administrarea conturilor"),
+    ...numbered([
+      "Se apasă **Adaugă**.",
+      "Se completează **Numele de utilizator** (cel puțin 3 caractere, fără spații; de obicei `prenume.nume`), **Numele**, **Prenumele**, emailul și telefonul (opționale) și se alege **Rolul**.",
+      "Se scrie **Parola inițială**: cel puțin 8 caractere, cu cel puțin o literă și o cifră, fără numele de utilizator.",
+      "Se apasă **Salvează** și se comunică persoanei, personal, numele de utilizator și parola inițială, cu rugămintea de a o schimba la prima autentificare.",
+    ], { continua: false }),
+    ...fig("MK24_utilizator_nou", "Crearea contului unui casier nou"),
+    P("Parolele se păstrează în bază doar ca hash PBKDF2-SHA256, cu sare aleatoare și 210 000 de iterații [[Pbkdf2]]; nici administratorul nu poate afla parola unui utilizator, o poate doar înlocui cu una temporară."),
+    H(2, "4.3. Cererile de resetare și parola temporară"),
+    P("Cererile trimise de utilizatori cu **Am uitat parola** apar în fila **Cereri de resetare**, cu numele de utilizator și ora cererii. Se verifică identitatea persoanei (la ghișeu sau la telefonul din cont), se alege cererea și se apasă **Generează parolă temporară**. Pentru un cont fără cerere se folosește **Parolă temporară** din fila Conturi."),
+    ...fig("MK25_cereri_resetare", "Cererile de resetare a parolei"),
+    P("Parola temporară se afișează o singură dată și se copiază automat în clipboard. Parola veche nu mai funcționează. Utilizatorul se autentifică cu parola temporară și o schimbă din butonul cu cheie."),
+    ...fig("MK26_parola_temporara", "Parola temporară generată", { maxW: 380 }),
+    H(2, "4.4. Dezactivarea unui cont"),
+    P("Când o persoană pleacă sau contul ei este compromis, contul se **dezactivează** (nu se șterge, pentru că biletele vândute rămân pe numele lui). Se alege contul și se apasă **Dezactivează**, apoi se confirmă. Rezervările în curs ale contului se eliberează, iar vânzările lui sunt refuzate de server. Un cont dezactivat se poate readuce cu **Reactivează**."),
+    ...fig("MK27_confirmare_dezactivare", "Confirmarea dezactivării unui cont", { maxW: 380 }),
+    ...fig("GT10_admin_dezactiveaza_casier", "Dezactivarea unui casier care are un loc rezervat pe altă stație"),
+    P("Regulile de siguranță: trebuie să rămână cel puțin un administrator activ, iar un administrator nu își poate retrage singur rolul. Un casier dezactivat în timpul lucrului mai poate rezerva un loc, până la 10 minute, dar nu poate vinde (defectul D10); de aceea, după dezactivare, se închide și aplicația de pe stația lui."),
+    H(2, "4.5. Blocarea după parole greșite"),
+    P("După **5 parole greșite în 15 minute**, contul se blochează 15 minute pe toate stațiile. Blocarea trece singură; dacă persoana și-a uitat parola, se generează o parolă temporară. Încercările eșuate se văd în **Jurnal audit** (textul `Autentificare eșuată`). Multe încercări eșuate pe conturi diferite, de pe aceeași stație, pot însemna o încercare de atac și se raportează."),
+
+    // ======================= 5 =======================
+    (startChapter(5), H(1, "5. HARTA ȘI SCHEMELE AUTOBUZELOR")),
+    H(2, "5.1. Editorul hărții"),
+    P("Harta stațiilor este rețeaua pe care se construiesc traseele: **stațiile** (unde urcă și coboară pasagerii), **intersecțiile** (puncte de trecere) și **drumurile** dintre ele, cu distanța în kilometri. În meniu se alege **Harta**."),
+    ...fig("EX_harta", "Editorul hărții stațiilor"),
+    ...table(["Instrumentul", "Ce face"], [
+      ["**Stație**, **Intersecție**", "clic pe hartă adaugă un nod de acel tip"],
+      ["**Conexiune**", "se trage de la un nod la altul; distanța se propune după hartă și se poate corecta. Drumurile se salvează în ambele sensuri"],
+      ["**Selectare**", "clic alege un nod sau un drum; nodurile se mută prin tragere"],
+      ["**Proprietăți** (dreapta)", "numele și tipul nodului sau distanța drumului; se aplică cu **Aplică**"],
+      ["**Șterge** / tasta Delete", "șterge nodul sau drumul ales"],
+      ["rotița mouse-ului; clic dreapta + tragere", "mărirea; deplasarea hărții"],
+      ["**Salvează harta**, **Reîncarcă**", "salvează pe file server; renunță la modificările nesalvate"],
+    ], [32, 68], { caption: "Instrumentele editorului hărții" }),
+    ...fig("TC27_editor_harta_proprietati_nod", "Proprietățile unui nod pe hartă"),
+    P("La salvare, fiecare nod de tip Stație devine o stație în lista **Stații**, unde managerul completează adresa și peronul. Versiunea veche a hărții se copiază automat în `Backup/Harta/AAAA-LL-ZZ/`. O stație folosită în trasee active nu poate fi ștearsă de pe hartă și nici transformată în intersecție; traseul se modifică întâi."),
+    H(2, "5.2. Editorul schemei unui autobuz"),
+    P("Schema locurilor arată casierilor și pasagerilor locurile exact ca în autobuz. Din **Autobuze** se alege autobuzul și se apasă **Locuri**."),
+    ...numbered([
+      "Se aleg **Rândurile**, **Locurile pe rând** și **Culoarul după coloana** (0 = fără culoar) și se apasă **Aplică grila**.",
+      "Clic pe un loc îl scoate (de exemplu în dreptul ușii); clic pe o poziție goală adaugă un loc. Locurile se numerotează automat, pe rânduri, de la stânga la dreapta.",
+      "Se apasă **Salvează**. Dacă numărul de locuri diferă de capacitatea autobuzului, aplicația cere confirmarea și schimbă și capacitatea.",
+    ], { continua: false }),
+    ...fig("TC28_editor_autobuz_SMB115", "Schema locurilor autobuzului SMB 115 în editor"),
+    ...fig("TC29_editor_autobuz_confirmare_capacitate", "Confirmarea schimbării capacității", { maxW: 380 }),
+    P("Capacitatea se poate schimba doar dacă autobuzul nu are curse planificate, pentru că locurile curselor sunt deja create. Schema veche se copiază în `Backup/Autobuze/AAAA-LL-ZZ/`."),
+
+    // ======================= 6 =======================
+    (startChapter(6), H(1, "6. JOBURILE AUTOMATE")),
+    P("SQL Server Agent rulează șase joburi, din categoria „Autogara” [[MsSqlAgent]]. Ele se văd în SSMS, la **SQL Server Agent → Jobs**."),
+    ...table(["Jobul", "Programul", "Ce face"], [
+      ["`Job_ElibereazaRezervariExpirate`", "la fiecare minut", "eliberează locurile rezervate provizoriu de mai mult de 10 minute și nevândute"],
+      ["`Job_BackupComplet`", "zilnic, 02:00", "backup complet cu CHECKSUM, verificat cu RESTORE VERIFYONLY; șterge backup-urile mai vechi de 30 de zile"],
+      ["`Job_BackupDiferential`", "la 4 ore, 06:00–22:00", "backup diferențial față de ultimul backup complet"],
+      ["`Job_VerificaExpirareITP`", "zilnic, 07:00", "trece în Service autobuzele cu ITP expirat; scrie alerte în jurnal pentru ITP-urile care expiră în 14 zile"],
+      ["`Job_VerificaSpatiuDisc`", "la 6 ore", "alertă dacă discul bazei are sub 5 GB sau sub 10 % liber"],
+      ["`Job_CurataLogAudit`", "lunar, ziua 1, 03:30", "șterge înregistrările din jurnalul de audit mai vechi de 12 luni"],
+    ], [34, 20, 46], { caption: "Joburile SQL Server Agent" }),
+    ...fig("BD70_joburi_lista", "Joburile, programul și rezultatul ultimei rulări"),
+    P("**Verificarea zilnică** se face în **SQL Server Agent → Job Activity Monitor**: coloana **Last Run Outcome** trebuie să fie „Succeeded” la toate joburile. Pentru un job eșuat, clic dreapta → **View History** arată mesajul de eroare."),
+    ...fig("BD74_job_activity_monitor", "Job Activity Monitor: starea joburilor"),
+    ...fig("BD71_joburi_istoric", "Istoricul rulărilor joburilor"),
+    P("**Atenție (defectul D3).** Backup-ul complet de la 02:00 rulează doar dacă serverul este pornit noaptea. Dacă serverul se oprește seara, ora jobului se mută în programul de lucru (de exemplu 22:30, din **Job Properties → Schedules**); altfel backup-urile diferențiale eșuează, pentru că nu au un backup complet de bază."),
+    ...fig("BD71b_cauza_esec_backup", "Eșecul backup-ului diferențial fără backup complet de bază"),
+
+    // ======================= 7 =======================
+    (startChapter(7), H(1, "7. COPIILE DE SIGURANȚĂ ȘI RESTAURAREA")),
+    H(2, "7.1. Planul de backup"),
+    P("Baza `autogara` are modelul de recuperare FULL. Backup-ul complet zilnic și cele diferențiale la 4 ore înseamnă că, la o defecțiune, se pierd cel mult 4 ore de lucru [[MsSqlBackup]]. Fișierele de backup se păstrează 30 de zile."),
+    ...fig("DG09_backup", "Planul copiilor de siguranță", { maxH: 520 }),
+    ...bullets([
+      "Folderul de backup trebuie să fie pe alt disc decât baza de date, iar o copie săptămânală se mută pe un disc extern sau în alt loc, ca o defecțiune a serverului să nu distrugă și copiile.",
+      "Fișierele de pe serverul de fișiere (`File-Server`) se copiază săptămânal împreună cu backup-ul bazei; harta și schemele autobuzelor au și copiile automate din `Backup/`.",
+      "Istoricul backup-urilor se vede în SSMS: clic dreapta pe baza `autogara` → **Reports → Standard Reports → Backup and Restore Events**, sau cu o interogare pe `msdb.dbo.backupset`.",
+    ]),
+    ...fig("BD80_backup_istoric", "Istoricul backup-urilor bazei autogara"),
+    H(2, "7.2. Verificarea lunară prin restaurare"),
+    P("Un backup este bun doar dacă se poate restaura. O dată pe lună se rulează `10_BackupRestore.sql`: el face un backup `COPY_ONLY` (care nu strică lanțul backup-urilor diferențiale), îl restaurează într-o bază separată, `autogara_TestRestaurare`, rulează `DBCC CHECKDB` și compară numărul de rânduri din fiecare tabel cu baza reală. La final, baza de test se șterge."),
+    ...fig("BD81_script_backup", "Scriptul de backup și restaurare de probă"),
+    ...fig("TS05_copie_comparatie", "Compararea numărului de rânduri: toate tabelele sunt egale"),
+    H(2, "7.3. Restaurarea după o defecțiune"),
+    P("Restaurarea se face când baza este deteriorată sau datele au fost pierdute. Pașii sunt în diagramă, iar comenzile sunt mai jos."),
+    ...fig("DG13_restaurare", "Restaurarea bazei după o defecțiune", { maxH: 560 }),
+    ...code(`USE master;
+ALTER DATABASE autogara SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+RESTORE DATABASE autogara FROM DISK = N'D:\\Backup\\autogara\\autogara_FULL_20261014_2230.bak'
+    WITH NORECOVERY, REPLACE, CHECKSUM;
+RESTORE DATABASE autogara FROM DISK = N'D:\\Backup\\autogara\\autogara_DIFF_20261015_1800.dif'
+    WITH RECOVERY, CHECKSUM;
+ALTER DATABASE autogara SET MULTI_USER;
+DBCC CHECKDB (autogara) WITH NO_INFOMSGS;`),
+    P("Numele fișierelor se iau din folderul de backup: ultimul backup complet și ultimul diferențial făcut **după** el. Stațiile pot rămâne pornite: în timpul restaurării arată „Mod local (offline)”, iar după aceea revin singure la „Online”, fără repornire. Vânzările făcute după ultimul backup diferențial se refac din bonurile fiscale și din registrul ghișeelor."),
+
+    // ======================= 8 =======================
+    (startChapter(8), H(1, "8. MONITORIZAREA ȘI JURNALELE")),
+    H(2, "8.1. Verificările periodice"),
+    ...table(["Ce se verifică", "Unde", "Cât de des"], [
+      ["joburile au rulat fără erori", "SSMS → SQL Server Agent → Job Activity Monitor", "zilnic"],
+      ["alertele de ITP și de spațiu pe disc", "aplicația → Jurnal audit, textul `ALERTĂ`", "zilnic"],
+      ["cererile de resetare a parolei", "aplicația → Utilizatori → Cereri de resetare", "zilnic"],
+      ["autentificările eșuate repetate", "aplicația → Jurnal audit, textul `eșuată`", "săptămânal"],
+      ["spațiul liber pe discurile serverului (minimum 10 %)", "jobul de spațiu pe disc; Explorer", "săptămânal"],
+      ["copia de backup mutată în afara serverului", "folderul de backup, discul extern", "săptămânal"],
+      ["restaurarea de probă", "`10_BackupRestore.sql`", "lunar"],
+      ["actualizările Windows și SQL Server", "Windows Update, cu repornire în afara programului", "lunar"],
+      ["conturile persoanelor plecate, dezactivate", "aplicația → Utilizatori", "lunar"],
+    ], [42, 40, 18], { caption: "Verificările periodice ale administratorului" }),
+    H(2, "8.2. Jurnalele"),
+    P("Sistemul are trei jurnale, fiecare pentru alt scop:"),
+    ...table(["Jurnalul", "Unde", "Ce conține"], [
+      ["jurnalul de audit", "tabelul `LogAudit`; aplicația → **Jurnal audit**", "cine a făcut ce: autentificările, vânzările, anulările, modificările de date, alertele joburilor; 12 luni"],
+      ["jurnalul stației", "`%LOCALAPPDATA%\\Autogara\\Logs\\autogara-AAAAMMZZ.log`", "pornirea, conexiunea, operațiile și erorile tehnice ale unei stații"],
+      ["jurnalul SQL Server și istoricul joburilor", "SSMS → **Management → SQL Server Logs**; istoricul fiecărui job", "erorile serverului, mesajele joburilor, alertele scrise cu `RAISERROR … WITH LOG`"],
+    ], [24, 36, 40], { caption: "Jurnalele sistemului" }),
+    ...fig("DO14c_jurnal_continut", "Conținutul unui jurnal zilnic al stației"),
+    P("În jurnalul stației, erorile afișate utilizatorului sunt scrise momentan cu nivelul „INF” (defectul D12), deci se caută după text (`Eroare`, `Conflict`, `nu este disponibilă`), nu după nivel."),
+
+    // ======================= 9 =======================
+    (startChapter(9), H(1, "9. ACTUALIZAREA APLICAȚIEI")),
+    P("Aplicația verifică singură, la pornire, dacă există o versiune nouă pe serverul de fișiere. Administratorul publică o versiune nouă astfel:"),
+    ...numbered([
+      "Primește de la programator pachetul versiunii noi (o arhivă `.zip`, de exemplu `Autogara-1.2.0.zip`) și notele versiunii.",
+      "Copiază pachetul pe serverul de fișiere, în folderul `Actualizari/`.",
+      "Modifică (sau creează) în rădăcina serverului de fișiere fișierul `version.json`:",
+    ]),
+    ...code(`{ "versiune": "1.2.0", "fisier": "Actualizari/Autogara-1.2.0.zip",
+  "note": "Corectat mesajul bazei indisponibile; raport nou de ocupare." }`),
+    ...numbered([
+      "La următoarea pornire, fiecare stație cu o versiune mai veche afișează „Este disponibilă versiunea 1.2.0 a aplicației (acum rulați 1.0.0).”, cu notele, și întreabă dacă se descarcă. Pachetul se descarcă în `%TEMP%\\Autogara\\`, iar folderul se deschide în Explorer.",
+      "Se închide aplicația și se înlocuiesc fișierele din folderul aplicației cu cele din arhivă. Configurarea stației (din `%LOCALAPPDATA%`) rămâne neschimbată.",
+    ], { continua: true }),
+    P("Dacă versiunea nouă cere și modificări ale bazei de date, scripturile primite de la programator se rulează pe server **înainte** de publicarea fișierului `version.json`, după un backup complet făcut manual."),
+
+    // ======================= 10 =======================
+    (startChapter(10), H(1, "10. PROBLEMELE FRECVENTE")),
+    ...table(["Problema", "Cauza probabilă", "Ce se face"], [
+      ["Toate stațiile arată „Mod local (offline)”", "serverul oprit, internetul serverului căzut, adresa publică schimbată", "se verifică serverul și serviciul `MSSQL$EPSI`; `Test-NetConnection` pe portul 14330; la adresă nouă se reface configurarea stațiilor"],
+      ["O singură stație este offline", "rețeaua stației blochează portul 14330", "`Test-NetConnection` de pe stație; altă rețea sau deblocarea portului"],
+      ["„Fără file server”", "serviciul `sshd` oprit sau portul 44545 neredirecționat", "se pornește `sshd`; se verifică redirecționarea pe router"],
+      ["La pornire se deschide configurarea stației", "fișierul de configurare lipsește sau a fost copiat de pe alt calculator (DPAPI)", "se completează din nou configurarea pe stație"],
+      ["Testul conexiunii: autentificare eșuată pentru `autogara_app`", "parola contului a fost schimbată pe server", "se scrie parola nouă în configurarea stației"],
+      ["Backup-ul diferențial eșuează", "nu există backup complet de bază sau lipsește folderul", "se rulează manual `Job_BackupComplet`; se verifică folderul și ora jobului (D3)"],
+      ["Jobul de spațiu pe disc eșuează", "discul are sub 10 % liber", "se eliberează spațiu; se mută backup-urile vechi (D6)"],
+      ["Un utilizator este blocat", "5 parole greșite în 15 minute", "se așteaptă 15 minute sau se generează o parolă temporară"],
+      ["„Încercați din nou” la vânzare, la ore de vârf", "conflict între vânzări simultane pe aceeași cursă (D8)", "casierul repetă confirmarea; datele rămân corecte"],
+      ["Un traseu nu se poate salva: lipsește drumul", "pe hartă nu există drum între două opriri", "se adaugă conexiunea în editorul hărții"],
+      ["Eroare necunoscută la o stație", "—", "se citește jurnalul stației din ziua respectivă și se trimite programatorului"],
+    ], [28, 32, 40], { caption: "Problemele frecvente și rezolvarea lor" }),
+
+    // ======================= 11 =======================
+    (startChapter(11), H(1, "11. REGULILE DE SECURITATE")),
+    P("Regulile de mai jos se respectă la instalare și pe toată durata exploatării [[Owasp]]:"),
+    ...bullets([
+      "parolele conturilor SQL din `08_Security.sql` se schimbă înainte de punerea în funcțiune și apoi cel puțin o dată pe an; parola contului `autogara_app` se schimbă și când pleacă cineva care o cunoștea;",
+      "fiecare persoană are contul ei, în aplicație și în SQL Server; conturile comune nu se folosesc;",
+      "contul `sa` se dezactivează sau primește o parolă lungă, păstrată sigilat; lucrul zilnic se face cu conturi personale;",
+      "pe router se deschid doar porturile 14330 și 44545; accesul la desktopul serverului (RDP) nu se deschide spre internet;",
+      "stațiile se blochează (Windows + L) când casierul pleacă de la ghișeu; aplicația se închide cu **Ieșire** la sfârșitul turei;",
+      "copiile de backup și fișierele de configurare nu se trimit prin email și nu se pun pe stick-uri nesecurizate;",
+      "jurnalul de audit nu poate fi modificat sau șters de aplicație; el se citește la orice suspiciune de fraudă.",
+    ]),
+  ],
+};
