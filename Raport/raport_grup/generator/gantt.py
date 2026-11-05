@@ -43,6 +43,7 @@ ELEMENTE = [
     ("Testarea extinsă și recuperarea", "Sopivnic Maxim", ["Testare/Capturi_v2"], None),
     ("Raportul de progres (raport.docx)", "Echipa", ["raport.docx"], None),
     ("Raportul de grup", "Echipa", ["Raport/raport_grup", "Raport/pachet_capturi"], None),
+    ("Manualele pe roluri (5 manuale)", "Echipa", ["Manuale"], None),
 ]
 
 
@@ -67,17 +68,18 @@ for nume, dev, cai, filtru in ELEMENTE:
     randuri.append((nume, dev, c[0], c[-1], len(c)))
     print(f"{dev:20} | {nume:48} | {c[0]:%d.%m %H:%M} -> {c[-1]:%d.%m %H:%M} | {len(c)} commit-uri")
 
-# Axa timpului e intrerupta: lucrul s-a facut in trei perioade, intre ele nu exista commit-uri.
+# Axa timpului e intrerupta: lucrul s-a facut in patru perioade, intre ele nu exista commit-uri.
 PERIOADE = [
-    (datetime(2026, 9, 17, 13), datetime(2026, 9, 19, 16), "17–19 septembrie", 6),
-    (datetime(2026, 10, 13, 15), datetime(2026, 10, 13, 17), "13 octombrie", 1.5),
+    (datetime(2026, 9, 17, 13), datetime(2026, 9, 19, 16), "17–19 septembrie", 5.5),
+    (datetime(2026, 10, 13, 15), datetime(2026, 10, 13, 17), "13 octombrie", 1.9),
     (datetime(2026, 10, 21, 12), datetime(2026, 10, 22, 1), "21–22 octombrie", 3),
+    (datetime(2026, 11, 3, 6), datetime(2026, 11, 5, 18), "3–5 noiembrie", 2.4),
 ]
 
 plt.rcParams["font.family"] = "DejaVu Sans"
 INK, INK2, GRID = "#1b1b1b", "#52514e", "#e4e3df"
 n = len(randuri)
-fig, axe = plt.subplots(1, 3, figsize=(10.5, 0.36 * n + 1.9), dpi=220, sharey=True,
+fig, axe = plt.subplots(1, len(PERIOADE), figsize=(10.5, 0.36 * n + 1.9), dpi=220, sharey=True,
                         gridspec_kw={"width_ratios": [p[3] for p in PERIOADE], "wspace": 0.05})
 for ax, (a, b, titlu, lat) in zip(axe, PERIOADE):
     span = (b - a).total_seconds() / 3600
@@ -93,8 +95,11 @@ for ax, (a, b, titlu, lat) in zip(axe, PERIOADE):
         ax.barh(y, (f2 - s2).total_seconds() / 86400, left=matplotlib.dates.date2num(s2), height=0.62,
                 color=DEV[dev], edgecolor="white", linewidth=1.5)
     ax.set_xlim(matplotlib.dates.date2num(a), matplotlib.dates.date2num(b))
-    ax.set_title(titlu, fontsize=11.5, color=INK, pad=8)
-    if span > 24:
+    ax.set_title(titlu, fontsize=10.5, color=INK, pad=8)
+    if span > 40:
+        ax.xaxis.set_major_locator(matplotlib.dates.DayLocator())
+        ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter("%d.%m"))
+    elif span > 24:
         ax.xaxis.set_major_locator(matplotlib.dates.HourLocator(byhour=[0, 12]))
         ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter("%d.%m\n%H:%M"))
     else:

@@ -305,6 +305,7 @@ module.exports = () => {
       ["Raportul de testare și programul de stres", "Testare/"],
       ["Raportul de grup, cu manualele (6.3–6.5) și dicționarul de date (6.9)", "Raport/raport_grup/raport_proiect_grup.docx"],
       ["Generatorul raportului și al diagramelor", "Raport/raport_grup/generator/"],
+      ["Manualele pe roluri: utilizatori (pasageri), operatori-casieri, manageri, administratori, programator/DevOps", "Manuale/ (generatorul în Manuale/generator/)"],
     ], [60, 40], { caption: "Documentația și componentele predate (depozitul Git)" }),
     P("Starea defectelor la predare este cea din secțiunea 5.8: înainte de pilotare trebuie remediate D3 (backup-ul complet automat) și D7 (limita de autentificare), apoi D1 și datele de test rămase (D4, D5). După remediere se repetă testarea de regresie."),
 
