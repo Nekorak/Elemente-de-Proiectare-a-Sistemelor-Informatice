@@ -306,11 +306,47 @@ module.exports = () => {
       ["Raportul de grup, cu manualele (6.3–6.5) și dicționarul de date (6.9)", "Raport/raport_grup/raport_proiect_grup.docx"],
       ["Generatorul raportului și al diagramelor", "Raport/raport_grup/generator/"],
       ["Manualele pe roluri: utilizatori (pasageri), operatori-casieri, manageri, administratori, programator/DevOps", "Manuale/ (generatorul în Manuale/generator/)"],
+      ["Modelele actului despre rezultatele experimentării și ale actului de recepție", "acest raport, secțiunea 6.11"],
     ], [60, 40], { caption: "Documentația și componentele predate (depozitul Git)" }),
     P("Starea defectelor la predare este cea din secțiunea 5.8: înainte de pilotare trebuie remediate D3 (backup-ul complet automat) și D7 (limita de autentificare), apoi D1 și datele de test rămase (D4, D5). După remediere se repetă testarea de regresie."),
 
-    // ---------------- 6.11 Concluzii ----------------
-    H(2, "6.11. Concluzii la capitolul 6"),
-    P("Performanțele măsurate arată că sistemul își atinge obiectivele principale: vânzarea concurentă fără bilete duble, răspunsuri în milisecunde și revenirea singură după căderea serverului. Rapoartele de stare au arătat abaterile fiecărei etape și deciziile luate. Pentru predare au fost pregătite manualele de prezentare, al administratorului și al utilizatorului, împărțirea procedurilor între om și sistem, planul de instruire, condițiile de pilotare și dicționarul de date, astfel încât autogara să poată folosi și întreține sistemul fără echipa de proiect."),
+    // ---------------- 6.11 Actele ----------------
+    H(2, "6.11. Actele de experimentare și de recepție"),
+    P("Integrarea sistemului la beneficiar se încheie cu două documente. Actul despre rezultatele experimentării se întocmește la sfârșitul pilotării (6.8) și arată dacă sistemul a îndeplinit criteriile de reușită. Actul de recepție se semnează după remedierea observațiilor și înseamnă trecerea sistemului în exploatarea curentă a autogării. Mai jos sunt modelele celor două acte, completate cu datele proiectului; rubricile cu linie se completează la pilotare."),
+    H(3, "6.11.1. Actul despre rezultatele experimentării"),
+    ...table(["Rubrica", "Conținutul"], [
+      ["Denumirea sistemului", "Sistem informatic pentru gestionarea unei autogări („Autogara”), versiunea 1.0"],
+      ["Beneficiarul", "autogara (persoana de contact: dispecerul-șef)"],
+      ["Executantul", "echipa de proiect, grupa BD-423: Gojinevschii Dmitri, Hanganu Sergiu, Crivenco Alexandr, Sopivnic Maxim"],
+      ["Perioada și locul experimentării", "două săptămâni, de la ____ până la ____, la ghișeul nr. ____, în paralel cu modul vechi de lucru"],
+      ["Comisia", "din partea beneficiarului: dispecerul-șef, un casier, contabilul; din partea executantului: membrul de serviciu"],
+      ["Condițiile asigurate", "serverul pornit permanent și pe UPS; backup-ul complet mutat în programul de lucru; defectele D3 și D7 remediate; datele reale ale curselor introduse"],
+      ["Problemele constatate", "conform registrului de pilotare: ____ probleme, dintre care remediate ____"],
+      ["Concluzia comisiei", "sistemul □ se recomandă pentru recepție   □ se recomandă după remedierea observațiilor   □ nu se recomandă"],
+      ["Semnăturile", "beneficiarul ____________        executantul ____________        data ____________"],
+    ], [26, 74], { caption: "Modelul actului despre rezultatele experimentării" }),
+    ...table(["Criteriul de reușită (6.8)", "Valoarea cerută", "Rezultatul obținut", "Îndeplinit"], [
+      ["Locuri vândute de două ori", "0", "____", "da / nu"],
+      ["Durata vânzării unui bilet la ghișeu", "cel mult 2 minute", "____", "da / nu"],
+      ["Backup-ul zilnic al bazei", "reușit în fiecare zi", "____ din ____ zile", "da / nu"],
+      ["Totalul raportului zilnic față de raportul de casă", "egal în fiecare zi", "____", "da / nu"],
+      ["Disponibilitatea serverului în programul de lucru", "fără întreruperi mai lungi de 15 minute", "____", "da / nu"],
+    ], [38, 24, 24, 14], { caption: "Rezultatele experimentării pe criterii (anexă la act)" }),
+    H(3, "6.11.2. Actul de recepție a sistemului informatic"),
+    ...table(["Rubrica", "Conținutul"], [
+      ["Obiectul recepției", "sistemul informatic „Autogara” 1.0: baza de date autogara, aplicația pentru stații, serverul de fișiere, joburile automate"],
+      ["Temeiul", "caietul de sarcini (1.5) și actul despre rezultatele experimentării nr. ____ din ____"],
+      ["Documentația predată", "conform Tabelului 6.25: scripturile SQL, codul sursă, manualele pe roluri, dicționarul de date, raportul de testare, acest raport"],
+      ["Instruirea personalului", "efectuată conform planului din secțiunea 6.7; au fost instruiți ____ casieri și ____ administratori"],
+      ["Observațiile rămase", "lista observațiilor nerezolvate, cu termenul de remediere: ____"],
+      ["Garanția și mentenanța", "executantul remediază defectele găsite în perioada de garanție de ____ luni; întreținerea curentă se face după manualul administratorului (6.4)"],
+      ["Decizia comisiei", "sistemul □ se recepționează   □ se recepționează cu condițiile de mai sus   □ nu se recepționează"],
+      ["Semnăturile", "conducătorul autogării ____________        executantul ____________        data ____________"],
+    ], [26, 74], { caption: "Modelul actului de recepție a sistemului informatic" }),
+    P("La data raportului, sistemul este testat, iar actele sunt pregătite. Ele pot fi semnate doar după pilotarea la o autogară reală; până atunci, rezultatele testării din capitolul 5 țin locul rezultatelor experimentării."),
+
+    // ---------------- 6.12 Concluzii ----------------
+    H(2, "6.12. Concluzii la capitolul 6"),
+    P("Performanțele măsurate arată că sistemul își atinge obiectivele principale: vânzarea concurentă fără bilete duble, răspunsuri în milisecunde și revenirea singură după căderea serverului. Rapoartele de stare au arătat abaterile fiecărei etape și deciziile luate. Pentru predare au fost pregătite manualele de prezentare, al administratorului și al utilizatorului, împărțirea procedurilor între om și sistem, planul de instruire, condițiile de pilotare, dicționarul de date și modelele actelor de experimentare și de recepție, astfel încât autogara să poată folosi și întreține sistemul fără echipa de proiect."),
   ];
 };

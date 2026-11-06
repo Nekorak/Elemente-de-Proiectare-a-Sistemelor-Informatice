@@ -51,6 +51,14 @@ def hyperlink(url):
 paras = []
 for i, k in enumerate(ordine):
     s = surse[k]
+    if s.get("type") == "Book":
+        # carte tiparita (sursele recomandate de curriculumul disciplinei): autor, titlu, editura, orasul, anul
+        loc = ", ".join(x for x in (s.get("publisher"), s.get("city"), s["year"]) if x)
+        body = (f'<w:r><w:t xml:space="preserve">{escape(f"[{i + 1}]")}\t{escape(s["author"])}, </w:t></w:r>'
+                f'<w:r><w:rPr><w:i/></w:rPr><w:t xml:space="preserve">{escape(s["title"])}</w:t></w:r>'
+                f'<w:r><w:t xml:space="preserve">. {escape(loc)}.</w:t></w:r>')
+        paras.append(body)
+        continue
     text = f'[{i + 1}]\t{s["author"]}, „{s["title"]}”, {s["site"]}, {s["year"]}. [Online]. Disponibil: '
     body = f'<w:r><w:t xml:space="preserve">{escape(text)}</w:t></w:r>{hyperlink(s["url"])}<w:r><w:t xml:space="preserve">. [Accesat: {s.get("accesat", "21.10.2026")}].</w:t></w:r>'
     paras.append(body)
@@ -91,6 +99,11 @@ doc = re.sub(r'<w:p>(?:(?!</w:p>).)*⟦CUPRINS⟧(?:(?!</w:p>).)*</w:p>', lambda
 # ---------- surse Word (customXml) ----------
 def sursa(k):
     s = surse[k]
+    if s.get("type") == "Book":
+        return (f'<b:Source><b:Tag>{k}</b:Tag><b:SourceType>Book</b:SourceType><b:Guid>{{{"%08X" % (abs(hash(k)) % 0xFFFFFFFF)}-0000-0000-0000-000000000000}}</b:Guid>'
+                f'<b:Author><b:Author><b:Corporate>{escape(s["author"])}</b:Corporate></b:Author></b:Author>'
+                f'<b:Title>{escape(s["title"])}</b:Title><b:Year>{s["year"]}</b:Year><b:City>{escape(s.get("city", ""))}</b:City>'
+                f'<b:Publisher>{escape(s.get("publisher", ""))}</b:Publisher><b:RefOrder>{nr[k]}</b:RefOrder></b:Source>')
     return (f'<b:Source><b:Tag>{k}</b:Tag><b:SourceType>InternetSite</b:SourceType><b:Guid>{{{"%08X" % (abs(hash(k)) % 0xFFFFFFFF)}-0000-0000-0000-000000000000}}</b:Guid>'
             f'<b:Author><b:Author><b:Corporate>{escape(s["author"])}</b:Corporate></b:Author></b:Author>'
             f'<b:Title>{escape(s["title"])}</b:Title><b:InternetSiteTitle>{escape(s["site"])}</b:InternetSiteTitle>'

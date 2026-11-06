@@ -61,6 +61,15 @@ module.exports = () => {
       ["O8", "Păstrarea datelor", "backup zilnic verificat și restaurare testată", "2.9, 5.2, 5.7"],
       ["O9", "Lucrul de pe mai multe stații prin internet", "acces criptat, pe porturi nestandard, fără VPN", "3.8.4, 5.3.6"],
     ], [7, 30, 43, 20], { caption: "Obiectivele sistemului și indicatorii lor" }),
+    P("**Clasificarea sistemului informatic.** Sistemul informatic este partea automatizată a sistemului informațional al firmei: el culege, păstrează, prelucrează și transmite cu ajutorul calculatorului o parte din informațiile de care firma are nevoie [[Lungu]]. După criteriile obișnuite de clasificare, sistemul proiectat se încadrează astfel:"),
+    ...bullets([
+      "**după domeniul de activitate:** sistem informatic de gestiune pentru transportul rutier de pasageri (evidența curselor, a biletelor, a încasărilor și a flotei);",
+      "**după nivelul de conducere deservit:** sistem operațional (tranzacțional) la nivelul ghișeelor, cu rapoarte de sinteză pentru nivelul tactic (conducerea autogării); nu este un sistem de asistare a deciziilor;",
+      "**după modul de prelucrare a datelor:** prelucrare în timp real, tranzacțională (OLTP): fiecare rezervare, vânzare și anulare se înregistrează imediat în baza de date, iar joburile automate fac prelucrări periodice (eliberarea rezervărilor, backup-ul, alertele);",
+      "**după arhitectură:** sistem client–server, multiutilizator, cu o bază de date centralizată și componente distribuite pe stații (secțiunea 3.9);",
+      "**după gradul de automatizare:** sistem parțial automatizat, pentru că emiterea bonului fiscal, contabilitatea și anunțarea curselor rămân în afara lui (secțiunea 1.3.7);",
+      "**după modul de realizare:** sistem realizat la comandă (produs-program propriu), nu un pachet de programe cumpărat și adaptat.",
+    ]),
 
     // ---------------- 1.2 Firma ----------------
     H(2, "1.2. Firma beneficiară: serviciile și resursele economice"),
@@ -146,21 +155,30 @@ module.exports = () => {
     ], [22, 58, 20], { caption: "Necesitățile informaționale pe utilizatori" }),
     P("**Concluzia studiului.** Sistemul existent nu poate garanta un loc vândut o singură dată, produce rapoarte cu întârziere și nu protejează datele. Sistemul nou trebuie să aibă o singură bază de date pentru toate ghișeele, operații de vânzare tranzacționale, roluri și jurnal de audit, rapoarte automate și copii de rezervă zilnice. Aceste cerințe stau la baza caietului de sarcini (secțiunea 1.5)."),
 
+    H(3, "1.3.7. Aria de acoperire a sistemului informațional de către sistemul informatic"),
+    P("Sistemul informațional cuprinde toate informațiile și activitățile autogării, inclusiv cele făcute de mână sau în alte programe. Sistemul informatic proiectat acoperă doar o parte din el: activitățile legate de curse, de vânzarea biletelor și de evidența flotei. Schema de mai jos arată ce este automatizat complet, ce este automatizat doar parțial și ce rămâne în afara sistemului."),
+    ...fig("AN05_aria_acoperire", "Aria de acoperire a sistemului informațional al autogării de către sistemul informatic", { maxW: 640 }),
+    P("Din cele 19 activități identificate, 12 sunt acoperite complet, 2 parțial (încasarea fiscală și ITP-ul) și 5 rămân în afara sistemului. Acoperirea parțială are motive clare: bonul fiscal trebuie emis de casa de marcat înregistrată la fisc, iar integrarea cu ea a fost amânată (1.5.2); controlul tehnic al autobuzelor este făcut de transportator, iar autogara are nevoie doar de data expirării și de alertă. Activitățile din afara sistemului nu țin de vânzarea biletelor și pot fi adăugate în versiunile următoare, de exemplu exportul raportului zilnic direct în programul de contabilitate."),
+
     // ---------------- 1.4 Etape si metodologie ----------------
     H(2, "1.4. Etapele proiectării și metodologia"),
-    H(3, "1.4.1. Etapele și activitățile"),
+    H(3, "1.4.1. Ciclul de viață al sistemului informatic"),
+    P("Ciclul de viață al unui sistem informatic cuprinde toate fazele prin care trece sistemul, de la ideea de a-l realiza până la înlocuirea lui [[Lungu]]. Fazele se repetă: după o perioadă de exploatare apar cerințe noi, care pornesc o nouă analiză și o versiune nouă a sistemului. Figura arată fazele și unde se află fiecare în proiectul nostru."),
+    ...fig("AN06_ciclu_viata", "Ciclul de viață al sistemului informatic și fazele parcurse în proiect", { maxW: 600 }),
+    P("Proiectul a parcurs complet primele patru faze. Faza a cincea este făcută parțial: testarea este încheiată (capitolul 5), iar experimentarea la beneficiar, instruirea și recepția sunt pregătite ca documente și planuri (capitolul 6), pentru că autogara este un beneficiar model. Exploatarea și mentenanța au proceduri scrise în manualul administratorului (6.4), iar dezvoltările propuse pentru o versiune nouă sunt enumerate în concluzii. Etapele concrete ale realizării, de la analiză la punerea în funcțiune, sunt descrise în secțiunea următoare."),
+    H(3, "1.4.2. Etapele și activitățile"),
     P("Proiectul a parcurs șase etape. Perioadele sunt cele din istoricul Git (diagrama Gantt din introducere); pentru etapele de analiză și proiectare, data este cea a primului document salvat în depozit."),
     ...fig("AN04_etape_cascada", "Etapele proiectării sistemului după modelul cascadă", { maxW: 600 }),
     ...table(["Etapa", "Activitățile", "Rezultatul", "Responsabil", "Metoda de colectare"], [
       ["1. Analiza", "studiul autogării, nevoile utilizatorilor, alegerea tehnologiilor", "studiul sistemului existent, Sarcina tehnică", "echipa; Hanganu Sergiu", "interviul, observarea, analiza documentelor, chestionarul"],
       ["2. Proiectarea de ansamblu", "arhitectura client–server, împărțirea pe compartimente, planul tehnic", "schema de ansamblu (Figura 3.1), planul tehnic", "Hanganu Sergiu", "studiul aplicațiilor similare, discuții în echipă"],
-      ["3. Proiectarea de detaliu", "schema bazei de date, straturile .NET, ferestrele, formatul JSON", "diagrama relațiilor (Figura 2.4), DFD (Figura 1.4)", "fiecare responsabil de compartiment", "analiza documentelor (biletul, orarul)"],
+      ["3. Proiectarea de detaliu", "schema bazei de date, straturile .NET, ferestrele, formatul JSON", "diagrama relațiilor (Figura 2.4), DFD (Figura 1.8)", "fiecare responsabil de compartiment", "analiza documentelor (biletul, orarul)"],
       ["4. Realizarea", "scripturile SQL, backend-ul, interfața, serverul", "baza autogara, aplicația, serverul de fișiere", "toți patru", "istoricul Git, testele automate"],
       ["5. Testarea", "testarea funcțională, de concurență, de securitate și de recuperare", "raportul de testare, defectele D1–D12", "Sopivnic Maxim", "cazurile de test, programul de stres, jurnalele"],
       ["6. Punerea în funcțiune", "datele de volum, configurarea stațiilor, manualele, instruirea, pilotarea", "documentația (capitolul 6)", "echipa", "rezultatele testelor, observarea în pilotare"],
     ], [16, 26, 22, 14, 22], { caption: "Etapele proiectării, activitățile și metodele de colectare a informațiilor" }),
 
-    H(3, "1.4.2. Alegerea metodologiei"),
+    H(3, "1.4.3. Alegerea metodologiei"),
     P("Au fost comparate patru modele de dezvoltare [[Sommerville]]. Criteriile au fost cele care contau pentru proiect: cerințe cunoscute de la început, echipă mică, timp scurt și dependența puternică dintre compartimente (backend-ul are nevoie de procedurile bazei de date, interfața de serviciile backend-ului)."),
     ...table(["Criteriul", "Cascada", "Agil (Scrum)", "Spirala", "RAD"], [
       ["Cerințele sunt fixate de la început", "potrivit", "nu e necesar", "potrivit", "parțial"],
@@ -171,6 +189,32 @@ module.exports = () => {
       ["Schimbarea cerințelor pe parcurs", "costisitoare", "ușoară", "posibilă", "ușoară"],
     ], [28, 18, 20, 16, 18], { caption: "Compararea metodologiilor de dezvoltare" }),
     P("S-a ales **modelul cascadă**: cerințele erau fixate în Sarcina tehnică, iar fiecare compartiment avea nevoie ca cel dinainte să fie terminat. Baza de date a fost gata prima, backend-ul s-a construit peste procedurile ei, iar interfața a folosit doar serviciile backend-ului. Dezavantajul cascadei, costul mare al schimbărilor târzii, s-a văzut la testare: defectele D3 și D7 cer întoarcerea la etapa de realizare. Pentru a-l reduce, s-au folosit metode care fac schimbările mai ieftine: modelarea entitate–relație înainte de cod, arhitectura pe straturi (o schimbare în baza de date nu atinge interfața) și controlul versiunilor în Git."),
+
+    H(3, "1.4.4. Fazele procesului managerial al proiectării"),
+    P("Conducerea proiectului a urmat fazele obișnuite ale procesului managerial: planificarea, organizarea, coordonarea, controlul și evaluarea cu corectarea abaterilor [[Andronie]]. Tabelul arată, pentru fiecare fază, ce s-a făcut în proiect și unde se găsește dovada."),
+    ...table(["Faza managerială", "Conținutul fazei", "Ce s-a făcut în proiect", "Dovada"], [
+      ["Planificarea", "obiectivele, etapele, termenele, resursele și costurile", "obiectivele măsurabile, Sarcina tehnică, cele șase etape, calendarul lucrărilor, estimarea costurilor", "1.1, 1.4.2, diagrama Gantt, 1.8, Sarcina Tehnica.docx"],
+      ["Organizarea", "împărțirea lucrărilor, a rolurilor și a resurselor", "patru compartimente cu câte un responsabil; depozitul Git comun; serverul echipei; câte un cont SQL personal pentru fiecare membru", "Tabelul 1 din introducere, 2.7, 3.8"],
+      ["Coordonarea", "legătura dintre membri și dintre compartimente, deciziile comune", "coordonarea tehnică (Hanganu Sergiu); interfețe fixate între subsisteme: procedurile stocate și clasa AutogaraBackend; convențiile comune ale bazei de date", "2.1, 3.1, 1.4.5"],
+      ["Controlul", "compararea stării reale cu planul", "rapoartele de stare pe etape; testele automate la fiecare compilare; testarea pe cazuri de test; registrul defectelor D1–D12", "6.2, 3.7, capitolul 5, 5.8"],
+      ["Evaluarea și corectarea", "analiza abaterilor și măsurile de corectare", "analiza riscurilor și a abaterilor de la cascadă; remedierea defectelor D3 și D7 planificată înainte de pilotare", "1.7, 6.8, 6.10"],
+    ], [16, 24, 40, 20], { caption: "Fazele procesului managerial al proiectării sistemului informatic", size: 20 }),
+
+    H(3, "1.4.5. Proiectarea eșalonată pe subsisteme"),
+    P("Sistemul a fost împărțit în subsisteme care pot fi proiectate, realizate și verificate separat, apoi asamblate. Împărțirea s-a făcut după dependențe: un subsistem începe după ce subsistemul pe care îl folosește are interfața fixată. Astfel, compartimentele au putut lucra în paralel, iar o schimbare în interiorul unui subsistem nu a cerut schimbări în celelalte. Figura arată cele cinci eșaloane și ordinea dintre ele."),
+    ...fig("AN08_subsisteme", "Proiectarea eșalonată a sistemului pe subsisteme și componente", { maxW: 640 }),
+    ...table(["Eșalonul", "Subsistemul", "Interfața prin care e folosit", "Criteriul de terminare"], [
+      ["I", "Baza de date (schema autogara)", "procedurile stocate, viziunile, rolurile SQL", "scripturile 01–08 rulează fără erori; constrângerile verificate"],
+      ["I", "Domain și Common", "clasele entităților, setările stației, jurnalul", "proiectele compilează; testele unitare trec"],
+      ["I", "Serverul (DevOps)", "porturile 14330 și 44545, conturile", "conectarea reușită din internet de pe toate laptopurile"],
+      ["II", "DataAccess", "AutogaraDbContext și metodele ProceduriStocate", "fiecare procedură apelată cu succes din cod"],
+      ["II", "FileServer", "citirea și scrierea fișierelor JSON prin SFTP, cu validare", "fișierele autobuzelor și ale hărții citite și salvate"],
+      ["II", "Joburile și backup-ul", "joburile SQL Server Agent, scriptul de restaurare", "joburile rulează după program; restaurarea testată"],
+      ["III", "Business", "clasa AutogaraBackend cu serviciile ei", "regulile de preț, rambursare, roluri și parole acoperite de teste"],
+      ["IV", "Interfața WinForms", "ferestrele aplicației", "toate funcțiile rolurilor accesibile din meniu"],
+      ["V", "Testarea și punerea în funcțiune", "raportul de testare, manualele, documentația", "cazurile de test executate; documentația predată"],
+    ], [10, 26, 34, 30], { caption: "Subsistemele, interfețele lor și criteriile de terminare", size: 20 }),
+    P("Eșalonarea a avut două avantaje vizibile. Primul: baza de date, cu procedurile ei tranzacționale, a fost gata înainte de backend, deci regulile de concurență au fost scrise o singură dată, în SQL Server. Al doilea: interfața a folosit doar clasa AutogaraBackend, așa că ferestrele au putut fi construite fără să cunoască tabelele. Dezavantajul este că un defect găsit târziu într-un eșalon de jos (de exemplu D7, în autentificare) cere verificarea tuturor eșaloanelor de deasupra."),
 
     // ---------------- 1.5 Caietul de sarcini ----------------
     H(2, "1.5. Caietul de sarcini"),
@@ -214,33 +258,37 @@ module.exports = () => {
       ["Drepturi", "să primească sistemul conform caietului de sarcini și la termen; să ceară remedierea defectelor în perioada de garanție; să refuze recepția dacă criteriile de acceptare nu sunt îndeplinite; să primească toată documentația și codul sursă", "să primească datele și accesul necesar (orar, trasee, autobuze, spațiu pentru server); să ceară clarificări la cerințe; să propună modificări ale cerințelor, cu acordul beneficiarului; să fie plătit pentru etapele recepționate"],
       ["Obligații", "să furnizeze datele inițiale și o persoană de contact; să asigure serverul, rețeaua și stațiile conform cerințelor tehnice; să participe la instruire și pilotare; să recepționeze fiecare etapă în termenul stabilit", "să livreze sistemul, manualele și scripturile de instalare; să respecte confidențialitatea datelor pasagerilor; să instruiască personalul; să remedieze defectele găsite în pilotare și în garanție; să predea parolele de administrare doar persoanei desemnate"],
     ], [12, 44, 44], { caption: "Drepturile și obligațiile părților" }),
+    P("Relația dintre beneficiar și executant nu se reduce la contract: pe toată durata proiectului între cele două părți circulă cerințe, date, versiuni ale sistemului și documente. Diagrama arată cine participă din fiecare parte și ce trece de la una la alta; recepția fiecărei etape se face pe baza actelor din secțiunea 6.11."),
+    ...fig("AN07_beneficiar_executant", "Relația beneficiarului și a executantului sistemului informatic", { maxW: 640 }),
 
     // ---------------- 1.6 Intrari si iesiri ----------------
     H(2, "1.6. Intrările și ieșirile sistemului"),
     P("Diagrama fluxurilor de date de nivelul 1 descompune sistemul în șase procese. Ea arată de unde vin intrările, în ce depozite de date ajung și ce ieșiri primesc utilizatorii. Depozitele D1–D6 corespund tabelelor din capitolul 2, iar D7 fișierelor de pe serverul SFTP."),
     ...fig("AN03_dfd_nivel1", "Diagrama fluxurilor de date (DFD, nivelul 1) a sistemului nou (figura este rotită)", { maxW: 640, maxH: 880 }),
-    ...table(["Intrarea", "Sursa", "Unde se introduce", "Frecvența", "Validarea"], [
-      ["Datele pasagerului (nume, telefon)", "pasagerul", "fereastra de vânzare", "la fiecare bilet", "nume obligatoriu, telefon în format moldovenesc"],
-      ["Cursa, locul ales, reducerea, metoda de plată, nr. bonului", "casierul", "căutarea curselor, schema autobuzului", "la fiecare bilet", "locul liber sau rezervat de același casier; procentul reducerii 0–100"],
-      ["Cererea de anulare (codul biletului)", "pasagerul, casierul", "secțiunea Bilete", "la cerere", "biletul activ, cursa neplecată"],
-      ["Stațiile, nodurile și distanțele hărții", "administratorul", "editorul hărții", "rar", "distanța pozitivă, noduri diferite"],
-      ["Traseele și opririle", "transportatorul, prin administrator", "secțiunea Trasee", "la schimbarea orarului", "denumire unică, ordinea opririlor unică"],
-      ["Cursele (traseu, autobuz, șofer, data, orele, prețul)", "transportatorul, prin administrator", "secțiunea Curse", "zilnic sau săptămânal", "sosirea după plecare, preț nenegativ"],
-      ["Autobuzele, schema locurilor, ITP-ul, mentenanța", "transportatorul", "secțiunile Autobuze și Mentenanță, editorul autobuzului", "la schimbări", "număr de înmatriculare unic, capacitate pozitivă, fișierul JSON validat"],
-      ["Șoferii", "transportatorul", "secțiunea Șoferi", "la schimbări", "număr de permis unic"],
-      ["Conturile utilizatorilor și parolele", "conducerea, prin administrator", "secțiunea Utilizatori", "la angajare", "nume unic, politica de parole"],
-    ], [24, 16, 20, 14, 26], { caption: "Intrările sistemului informatic", size: 20 }),
-    ...table(["Ieșirea", "Destinatarul", "Forma", "Frecvența"], [
-      ["Biletul (cod unic, cursa, locul, prețul)", "pasagerul", "pe ecran, în „Biletele mele”", "la fiecare vânzare"],
-      ["Suma rambursată", "pasagerul, contabilitatea", "pe ecran, plată nouă cu statusul Rambursată", "la anulare"],
-      ["Lista curselor cu locurile libere", "casierul, pasagerul", "tabel în aplicație", "la cerere"],
-      ["Dashboard-ul zilei", "casierii, conducerea", "carduri și tabel, reîmprospătat la 30 s", "permanent"],
-      ["Raportul de vânzări pe zi, pe interval, pe traseu și casier", "conducerea, contabilitatea", "tabel, export CSV, arhivă pe file server", "zilnic, lunar"],
-      ["Raportul de ocupare și comparația lunară", "conducerea, transportatorii", "tabel, export CSV", "lunar"],
-      ["Alertele de ITP și de spațiu pe disc", "administratorul", "jurnalul de audit, log-ul SQL Server", "zilnic, la 6 ore"],
-      ["Jurnalul de audit", "conducerea", "tabel filtrabil", "la cerere"],
-      ["Copiile de rezervă ale bazei și ale fișierelor JSON", "administratorul", "fișiere .bak, folderul Backup de pe file server", "zilnic, la fiecare modificare"],
-    ], [34, 22, 28, 16], { caption: "Ieșirile sistemului informatic", size: 20 }),
+    P("Intrările sunt definite pornind de la ieșiri: fiecare ieșire din Tabelul 1.16 trebuie să poată fi obținută din datele introduse. Volumele sunt estimări pentru autogara-model, cu 300 de bilete și 40–50 de curse pe zi (Tabelul 1.3)."),
+    ...table(["Intrarea", "Sursa", "Unde se introduce", "Frecvența", "Volumul (estimare)", "Validarea"], [
+      ["Datele pasagerului (nume, telefon)", "pasagerul", "fereastra de vânzare", "la fiecare bilet", "≈ 300 pe zi", "nume obligatoriu, telefon în format moldovenesc"],
+      ["Cursa, locul ales, reducerea, metoda de plată, nr. bonului", "casierul", "căutarea curselor, schema autobuzului", "la fiecare bilet", "≈ 300 pe zi", "locul liber sau rezervat de același casier; procentul reducerii 0–100"],
+      ["Cererea de anulare (codul biletului)", "pasagerul, casierul", "secțiunea Bilete", "la cerere", "≈ 10–15 pe zi", "biletul activ, cursa neplecată"],
+      ["Stațiile, nodurile și distanțele hărții", "administratorul", "editorul hărții", "rar", "câteva pe an", "distanța pozitivă, noduri diferite"],
+      ["Traseele și opririle", "transportatorul, prin administrator", "secțiunea Trasee", "la schimbarea orarului", "câteva pe lună", "denumire unică, ordinea opririlor unică"],
+      ["Cursele (traseu, autobuz, șofer, data, orele, prețul)", "transportatorul, prin administrator", "secțiunea Curse", "zilnic sau săptămânal", "≈ 300 pe săptămână", "sosirea după plecare, preț nenegativ"],
+      ["Autobuzele, schema locurilor, ITP-ul, mentenanța", "transportatorul", "secțiunile Autobuze și Mentenanță, editorul autobuzului", "la schimbări", "câteva pe lună", "număr de înmatriculare unic, capacitate pozitivă, fișierul JSON validat"],
+      ["Șoferii", "transportatorul", "secțiunea Șoferi", "la schimbări", "câteva pe lună", "număr de permis unic"],
+      ["Conturile utilizatorilor și parolele", "conducerea, prin administrator", "secțiunea Utilizatori", "la angajare", "câteva pe an", "nume unic, politica de parole"],
+    ], [20, 14, 18, 12, 12, 24], { caption: "Intrările sistemului informatic", size: 18 }),
+    P("Ieșirile sunt definite după tipologia lor: documente pentru pasager (biletul), situații operative (pentru lucrul zilnic la ghișeu), situații de sinteză (pentru conducere și contabilitate), semnalări (alerte) și ieșiri de arhivare. Pentru fiecare se precizează scopul, destinatarul, forma, volumul, frecvența și modul de obținere."),
+    ...table(["Ieșirea", "Tipul", "Scopul", "Destinatarul", "Forma", "Volumul (estimare)", "Frecvența", "Modul de obținere"], [
+      ["Biletul (cod unic, cursa, locul, prețul)", "document", "dovada călătoriei", "pasagerul", "pe ecran, în „Biletele mele”", "≈ 300 pe zi", "la fiecare vânzare", "sp_ConfirmaVanzareBilet"],
+      ["Suma rambursată", "document", "plata înapoi la anulare", "pasagerul, contabilitatea", "pe ecran; plată cu statusul Rambursată", "≈ 10–15 pe zi", "la anulare", "sp_AnuleazaBilet, după regula 100/50/0 %"],
+      ["Lista curselor cu locurile libere", "situație operativă", "alegerea cursei și a locului", "casierul, pasagerul", "tabel în aplicație", "40–50 de rânduri pe zi", "la cerere", "vw_CurseActive, vw_LocuriDisponibile"],
+      ["Dashboard-ul zilei", "situație operativă", "urmărirea vânzărilor în timpul zilei", "casierii, conducerea", "carduri și tabel, reîmprospătat la 30 s", "1 ecran", "permanent", "DashboardService, din viziuni"],
+      ["Raportul de vânzări pe zi, pe interval, pe traseu și casier", "situație de sinteză", "raportul de casă, controlul încasărilor", "conducerea, contabilitatea", "tabel, export CSV, arhivă pe file server", "1–2 pagini pe zi", "zilnic, lunar", "sp_RaportVanzariZilnic, vw_VanzariZilnice"],
+      ["Raportul de ocupare și comparația lunară", "situație de sinteză", "planificarea curselor", "conducerea, transportatorii", "tabel, export CSV", "un rând pe cursă sau pe traseu", "lunar", "sp_RaportOcupareCurse, vw_RapoarteComparative"],
+      ["Alertele de ITP și de spațiu pe disc", "semnalare", "prevenirea curselor fără ITP și a opririi serverului", "administratorul", "jurnalul de audit, log-ul SQL Server", "câteva pe săptămână", "zilnic, la 6 ore", "joburile SQL Server Agent"],
+      ["Jurnalul de audit", "situație de control", "aflarea autorului fiecărei operații", "conducerea", "tabel filtrabil", "≈ 400 de rânduri pe zi", "la cerere", "tabelul LogAudit, AuditService"],
+      ["Copiile de rezervă ale bazei și ale fișierelor JSON", "arhivare", "restaurarea după o defecțiune", "administratorul", "fișiere .bak, folderul Backup de pe file server", "1 complet + 4 diferențiale pe zi", "zilnic, la fiecare modificare", "joburile de backup, FileServer"],
+    ], [16, 9, 14, 11, 14, 11, 10, 15], { caption: "Ieșirile sistemului informatic", size: 16 }),
 
     // ---------------- 1.7 Riscuri ----------------
     H(2, "1.7. Riscurile și abaterile de la termene"),
@@ -278,6 +326,6 @@ module.exports = () => {
 
     // ---------------- 1.9 Concluzii ----------------
     H(2, "1.9. Concluzii la capitolul 1"),
-    P("Analiza a arătat că problemele principale ale unei autogări fără sistem informatic sunt vânzarea dublă a locurilor, datele copiate de mai multe ori și rapoartele întârziate. Din ele au rezultat nouă obiective măsurabile și caietul de sarcini cu cerințele tehnice și legislative. Proiectul a urmat modelul cascadă în șase etape, potrivit pentru o echipă mică și cerințe fixate; abaterile (pauza dintre realizare și testare și defectele care cer o iterație în plus) sunt cunoscute și au măsuri. Intrările și ieșirile sistemului sunt descrise prin diagramele fluxurilor de date, iar eficiența economică estimată arată că investiția se recuperează în mai puțin de un an."),
+    P("Analiza a arătat că problemele principale ale unei autogări fără sistem informatic sunt vânzarea dublă a locurilor, datele copiate de mai multe ori și rapoartele întârziate. Din ele au rezultat nouă obiective măsurabile și caietul de sarcini cu cerințele tehnice și legislative. Proiectul a urmat modelul cascadă în șase etape, potrivit pentru o echipă mică și cerințe fixate; abaterile (pauza dintre realizare și testare și defectele care cer o iterație în plus) sunt cunoscute și au măsuri. Sistemul a fost încadrat după criteriile de clasificare, iar aria lui de acoperire arată ce rămâne în afara automatizării. Ciclul de viață, fazele manageriale și eșalonarea pe subsisteme explică ordinea lucrărilor. Intrările și ieșirile sistemului sunt descrise prin diagramele fluxurilor de date și prin tabelele cu tipul, scopul, volumul și modul de obținere, iar eficiența economică estimată arată că investiția se recuperează în mai puțin de un an."),
   ];
 };
