@@ -194,6 +194,7 @@ module.exports = () => {
       ["un backup restaurat de probă pe o bază separată", "`10_BackupRestore.sql` (baza `autogara_TestRestaurare`)", "lunar"],
       ["spațiul liber pe discul serverului (minimum 10 %)", "jobul de verificare a spațiului", "săptămânal"],
       ["actualizările Windows și SQL Server", "Windows Update", "lunar"],
+      ["antivirusul (Microsoft Defender) pornit și actualizat, firewall-ul activ (secțiunea 2.15.2)", "Securitate Windows", "lunar"],
     ], [46, 36, 18], { caption: "Verificările periodice ale administratorului" }),
     H(3, "6.4.4. Restaurarea după o defecțiune"),
     ...numbered([
