@@ -24,5 +24,6 @@ module.exports = {
   Lungu: { tag: "Lungu", type: "Book", author: "I. Lungu, Gh. Sabău, M. Velicanu, M. Muntean, S. Ionescu, E. Posdărie, D. Sandu", title: "Sisteme informatice. Analiză, proiectare și implementare", publisher: "Editura Economică", city: "București", year: "2003" },
   Andronie: { tag: "Andronie", type: "Book", author: "M. Andronie", title: "Analiza și proiectarea sistemelor informatice de gestiune", publisher: "Editura Fundației România de Mâine", city: "București", year: "2007" },
   Iacob: { tag: "Iacob", type: "Book", author: "M. Iacob", title: "Modelarea sistemelor informatice. Material de învățare", publisher: "", city: "București", year: "2009" },
+  Stisc: { tag: "Stisc", type: "InternetSite", author: "I.P. Serviciul Tehnologia Informației și Securitate Cibernetică", title: "Securitatea cibernetică. Ghid de bune practici", site: "stisc.gov.md", year: "2019", url: "https://stisc.gov.md/", accesat: "17.11.2026" },
   DataFlow: { tag: "DataFlow", type: "InternetSite", author: "Visual Paradigm", title: "What is Data Flow Diagram (DFD)?", site: "visual-paradigm.com", year: "2025", url: "https://www.visual-paradigm.com/guide/data-flow-diagram/what-is-data-flow-diagram/", accesat: "03.11.2026" },
 };
