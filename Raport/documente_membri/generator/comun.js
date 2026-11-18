@@ -44,7 +44,6 @@ function pagina1(cheie) {
     ...table(["Membrul echipei", "Compartimentul", "Ce cuprinde"],
       ECHIPA.map((e) => e[0] === cheie ? [`**${e[1]}**`, `**${e[2]}**`, e[3]] : [e[1], e[2], e[3]]),
       [26, 20, 54], { caption: "Echipa și împărțirea lucrului", size: 21 }),
-    P("Proiectul a fost realizat după modelul cascadă, între 17 septembrie și 17 noiembrie 2026, iar tot codul și documentația sunt păstrate într-un depozit Git comun."),
   ];
 }
 
