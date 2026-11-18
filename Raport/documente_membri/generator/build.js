@@ -18,14 +18,14 @@ const doc = new Document({
   description: "Proiectul de grup EPSI, grupa BD-423, Colegiul Tehnic Feroviar din Bălți",
   styles: {
     default: { document: { run: { font: FONT, size: 24, language: { value: "ro-RO" } },
-      paragraph: { spacing: { line: 300, lineRule: LineRuleType.AUTO, after: 60 } } } },
+      paragraph: { spacing: { line: 276, lineRule: LineRuleType.AUTO, after: 60 } } } },
     paragraphStyles: [
       { id: "Heading1", name: "Heading 1", basedOn: "Normal", next: "Normal", quickFormat: true,
         run: { font: FONT, size: 28, bold: true, color: "000000" },
-        paragraph: { alignment: AlignmentType.CENTER, spacing: { before: 0, after: 160, line: 300 }, outlineLevel: 0, keepNext: true } },
+        paragraph: { alignment: AlignmentType.CENTER, spacing: { before: 0, after: 160, line: 276 }, outlineLevel: 0, keepNext: true } },
       { id: "Heading2", name: "Heading 2", basedOn: "Normal", next: "Normal", quickFormat: true,
         run: { font: FONT, size: 26, bold: true, color: "000000" },
-        paragraph: { spacing: { before: 160, after: 60, line: 300 }, indent: { firstLine: 567 }, outlineLevel: 1, keepNext: true } },
+        paragraph: { spacing: { before: 160, after: 60, line: 276 }, indent: { firstLine: 567 }, outlineLevel: 1, keepNext: true } },
       { id: "Cod", name: "Cod sursă", basedOn: "Normal", run: { font: MONO, size: 20 },
         paragraph: { alignment: AlignmentType.LEFT, spacing: { line: 240, before: 0, after: 0 } } },
       { id: "Legenda", name: "Legendă figură", basedOn: "Normal", next: "Normal", run: { font: FONT, size: 22 },
