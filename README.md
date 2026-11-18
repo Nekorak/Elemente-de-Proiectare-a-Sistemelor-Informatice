@@ -48,7 +48,7 @@ Aplicația rulează pe laptop (client). Computerul de acasă este serverul: pe e
 - [x] Scriptul de backup/restore (testat local)
 - [ ] Testul de restaurare pe serverul real
 - [x] Scriptul de creare a bazei de date și seed-ul
-- [ ] Dicționarul de date
+- [x] Dicționarul de date
 
 ### Backend — Hanganu Sergiu
 - [x] Stratul de acces la date și conexiunea la distanță
@@ -77,10 +77,10 @@ Aplicația rulează pe laptop (client). Computerul de acasă este serverul: pe e
 - [x] Testarea editorului de hartă și a celui de autobuz
 - [x] Testarea vânzării, a rezervării provizorii și a anulării
 - [x] Testarea concurenței și a expirării rezervărilor
-- [ ] Testarea conexiunii la distanță și a modului offline
+- [x] Testarea conexiunii la distanță și a modului offline
 - [x] Testarea securității și a integrității datelor
 - [x] Testarea rapoartelor, a dashboard-ului și a joburilor SQL
-- [ ] Testarea backup-ului și a restaurării
+- [x] Testarea backup-ului și a restaurării
 - [x] Testarea de regresie înainte de livrare
 
 ## Structura repository-ului
