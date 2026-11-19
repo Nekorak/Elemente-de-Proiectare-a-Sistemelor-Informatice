@@ -1,5 +1,6 @@
 # Diagrama Gantt a lucrarilor, din istoricul Git: pentru fiecare element, primul si ultimul
-# commit care atinge fisierele lui (fara commit-ul "recup" din 21.09, care a rescris tot depozitul).
+# commit care atinge fisierele lui (fara commit-ul "recup" din 21.09, care a rescris tot depozitul,
+# si fara commit-ul de curatenie din 18.11, care doar a sters fisiere vechi).
 import subprocess, sys
 from datetime import datetime, timedelta
 import matplotlib
@@ -9,7 +10,7 @@ from matplotlib.patches import Patch
 
 REPO = sys.argv[1]
 OUT = sys.argv[2]
-EXCLUS = {"recup"}
+EXCLUS = {"recup", "Curățenie: șterse versiunile vechi și fișierele nefolosite"}  # commit-uri care doar mută/șterg fișiere
 
 DEV = {  # culoarea urmeaza dezvoltatorul (paleta categoriala validata)
     "Gojinevschii Dmitri": "#2a78d6",
